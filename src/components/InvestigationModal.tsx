@@ -105,7 +105,7 @@ export default function InvestigationModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-[3px] animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-[3px] animate-backdrop-fade"
       role="dialog"
       aria-modal="true"
       aria-labelledby="investigation-modal-title"
@@ -119,7 +119,7 @@ export default function InvestigationModal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="bg-white rounded-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.25)] border border-[#e4e4e0] w-full max-h-[88vh] overflow-hidden flex flex-col focus:outline-none transition-all duration-200"
+        className="bg-white rounded-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.25)] border border-[#e4e4e0] w-full max-h-[88vh] overflow-hidden flex flex-col focus:outline-none animate-modal-enter"
         style={{ width: 'min(760px, calc(100vw - 32px))' }}
       >
         {/* Modal Header */}
