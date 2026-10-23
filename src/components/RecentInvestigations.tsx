@@ -22,7 +22,7 @@ function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
 
   return (
     <span
-      className={`text-[11px] font-bold px-3.5 py-1 rounded-lg tracking-wider uppercase border text-center whitespace-nowrap min-w-[105px] sm:min-w-[115px] ${style}`}
+      className={`text-[9.5px] sm:text-[10px] font-bold px-2.5 py-0.5 rounded-none tracking-wider uppercase border text-center whitespace-nowrap min-w-[85px] sm:min-w-[95px] ${style}`}
     >
       {text}
     </span>
@@ -54,89 +54,89 @@ export default function RecentInvestigations() {
   }, []);
 
   return (
-    <section className="w-full px-6 lg:px-10 py-12 md:py-16 border-t border-[#e4e4e0]">
+    <section className="w-full px-6 lg:px-10 py-8 md:py-11 border-t border-[#e4e4e0]">
       {/* Header row */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2.5 mb-4 sm:mb-5">
         <div>
-          <div className="flex flex-wrap items-baseline gap-2.5 sm:gap-3">
-            <h2 className="text-[28px] sm:text-[34px] font-serif font-normal text-neutral-900 tracking-tight leading-none">
+          <div className="flex flex-wrap items-baseline gap-2.5">
+            <h2 className="text-[21px] sm:text-[24px] font-serif font-normal text-neutral-900 tracking-tight leading-none">
               Recent investigations
             </h2>
-            <span className="text-[13px] sm:text-[14px] text-neutral-500 font-sans font-normal">
+            <span className="text-[12px] sm:text-[12.5px] text-neutral-400 font-sans font-normal">
               {displayList.length} sample cases
             </span>
             {hasRealRecord && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a]" />
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-none text-[10px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
+                <span className="w-1.5 h-1.5 bg-[#16a34a]" />
                 Live Session Active
               </span>
             )}
           </div>
-          <p className="text-[13px] sm:text-[14px] text-neutral-500 font-sans mt-2">
+          <p className="text-[12px] sm:text-[12.5px] text-neutral-500 font-sans mt-1">
             Illustrative demo data — not real employer records.
           </p>
         </div>
 
         <button
-          className="inline-flex items-center gap-1.5 text-[14px] font-medium text-neutral-900 hover:text-neutral-600 transition-colors cursor-pointer group self-start sm:self-auto"
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-neutral-900 hover:text-neutral-600 transition-colors cursor-pointer group self-start sm:self-auto"
           onClick={() => navigate('/investigations')}
         >
           View all
           <ArrowRight
-            size={14}
+            size={13}
             className="group-hover:translate-x-0.5 transition-transform"
           />
         </button>
       </div>
 
-      {/* Card container matching reference design */}
-      <div className="border border-neutral-200/90 rounded-2xl bg-white overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-        <div className="divide-y divide-neutral-100">
+      {/* Card container with sharp, square edges and compact content */}
+      <div className="border border-[#e4e4e0] rounded-none bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+        <div className="divide-y divide-[#f0f0ee]">
           {displayList.map((inv) => (
             <div
               key={inv.id}
-              className="grid grid-cols-12 items-center px-5 sm:px-7 py-4.5 sm:py-5 gap-3 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-neutral-50/60"
+              className="grid grid-cols-12 items-center px-4 sm:px-5 py-3 sm:py-3.5 gap-3 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-[#fafaf9]"
               onClick={() => navigate(`/investigations/${inv.id}`)}
             >
               {/* Column 1: Document Icon + Job Title & Employer */}
-              <div className="col-span-8 sm:col-span-6 flex items-center gap-3.5 sm:gap-4 min-w-0 pr-2">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white border border-neutral-200/90 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-center justify-center text-neutral-700 shrink-0">
-                  <FileText className="w-5 h-5 text-neutral-700" strokeWidth={1.5} />
+              <div className="col-span-8 sm:col-span-6 flex items-center gap-3 min-w-0 pr-2">
+                <div className="w-8 h-8 rounded-none bg-[#fafaf9] border border-[#e4e4e0] flex items-center justify-center text-neutral-700 shrink-0">
+                  <FileText className="w-4 h-4 text-neutral-700" strokeWidth={1.5} />
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[15px] sm:text-[16px] font-semibold text-neutral-900 leading-snug group-hover:text-black transition-colors truncate">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[13.5px] sm:text-[14px] font-semibold text-neutral-900 leading-snug group-hover:text-black transition-colors truncate">
                       {inv.jobTitle}
                     </span>
                     {inv.isRealAnalysis && (
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono uppercase bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
-                        <Sparkles size={10} />
+                      <span className="inline-flex items-center gap-1 px-1 py-0.2 rounded-none text-[9px] font-mono uppercase bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                        <Sparkles size={8} />
                         Live ML
                       </span>
                     )}
                   </div>
-                  <span className="text-[13px] text-neutral-500 mt-0.5 truncate">
+                  <span className="text-[11.5px] sm:text-[12px] text-neutral-500 mt-0.5 truncate">
                     {inv.employer}
                   </span>
                   {/* Mobile-only location subtitle */}
-                  <div className="sm:hidden flex items-center gap-1.5 text-[12px] text-neutral-500 mt-1">
-                    <MapPin size={12} className="text-neutral-400 shrink-0" />
+                  <div className="sm:hidden flex items-center gap-1 text-[11px] text-neutral-500 mt-0.5">
+                    <MapPin size={11} className="text-neutral-400 shrink-0" />
                     <span className="truncate">{inv.location || 'Remote'}</span>
                   </div>
                 </div>
               </div>
 
               {/* Column 2: Location (Desktop column aligned) */}
-              <div className="hidden sm:flex sm:col-span-3 items-center gap-2 text-[13.5px] text-neutral-600 font-normal truncate">
-                <MapPin size={15} className="text-neutral-400 shrink-0" strokeWidth={1.75} />
+              <div className="hidden sm:flex sm:col-span-3 items-center gap-1.5 text-[12px] text-neutral-500 font-normal truncate">
+                <MapPin size={13} className="text-neutral-400 shrink-0" strokeWidth={1.75} />
                 <span className="truncate">{inv.location || 'Remote'}</span>
               </div>
 
               {/* Column 3: Assessment Badge + Action Arrow */}
-              <div className="col-span-4 sm:col-span-3 flex items-center justify-end gap-3 sm:gap-4 shrink-0">
+              <div className="col-span-4 sm:col-span-3 flex items-center justify-end gap-2.5 sm:gap-3.5 shrink-0">
                 <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />
                 <ArrowRight
-                  size={16}
+                  size={13}
                   className="text-neutral-400 group-hover:text-neutral-900 group-hover:translate-x-0.5 transition-all shrink-0"
                   strokeWidth={1.75}
                 />
