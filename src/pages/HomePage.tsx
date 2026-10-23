@@ -2,6 +2,7 @@ import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import WorkflowSection from '../components/WorkflowSection';
 import RecentInvestigations from '../components/RecentInvestigations';
+import AboutSection from '../components/AboutSection';
 
 export default function HomePage() {
   return (
@@ -11,6 +12,7 @@ export default function HomePage() {
         <HeroSection />
         <WorkflowSection />
         <RecentInvestigations />
+        <AboutSection />
       </main>
       <footer className="border-t border-[#e4e4e0]">
         <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-[#e4e4e0] py-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">

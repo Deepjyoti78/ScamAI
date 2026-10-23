@@ -22,10 +22,10 @@ export default function Header() {
   }, []);
 
   const navLinks = [
-    { label: 'Product', href: '#workflow' },
-    { label: 'How it works', href: '#workflow' },
-    { label: 'Research', href: '#' },
-    { label: 'About', href: '#' },
+    { label: 'Product', href: '/#workflow' },
+    { label: 'How it works', href: '/#workflow' },
+    { label: 'Research', href: '/investigations' },
+    { label: 'About', href: '/#about' },
   ];
 
   return (
