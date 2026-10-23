@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-23T16:39:52.214217",
+  "timestamp": "2026-10-23T17:24:13.071744",
   "audit_data": {
     "dataset_file": "C:\\Users\\deepjyoti\\Desktop\\college project\\data\\fake_job_postings.csv",
     "total_records": 17880,
@@ -8,25 +8,72 @@
       "fraudulent_count": 866,
       "fraud_prevalence_pct": 4.8434
     },
-    "duplicate_statistics": {
-      "exact_duplicate_rows": 0,
-      "duplicate_descriptions": 3078,
-      "cross_split_text_leakage_count": 310
+    "duplicate_group_audit": {
+      "total_records": 17880,
+      "unique_group_count": 14572,
+      "duplicate_groups_count": 1267,
+      "postings_in_duplicate_groups": 4575,
+      "conflicting_groups_count": 1,
+      "conflicting_groups": [
+        {
+          "group_preview": "workable is a product-driven software company. with thousands of enterprise users and millions in venture funding, we're...",
+          "total_occurrences": 3,
+          "fraud_occurrences": 1,
+          "legit_occurrences": 2,
+          "sample_records": [
+            {
+              "job_id": 9139,
+              "title": "Front-End/JavaScript Engineer",
+              "fraudulent": 1
+            },
+            {
+              "job_id": 11890,
+              "title": "Developer (Front-end team)",
+              "fraudulent": 0
+            },
+            {
+              "job_id": 15237,
+              "title": "Developer",
+              "fraudulent": 0
+            }
+          ]
+        }
+      ]
     },
-    "split_configuration": {
+    "random_stratified_split": {
       "strategy": "Stratified random split (80% train / 20% test)",
       "random_seed": 42,
       "train_sample_count": 14304,
-      "test_sample_count": 3576
+      "test_sample_count": 3576,
+      "train_fraud_count": 693,
+      "test_fraud_count": 173,
+      "cross_split_text_leakage_count": 310
+    },
+    "duplicate_aware_grouped_split": {
+      "strategy": "StratifiedGroupKFold (n_splits=5, fold=0, random_state=42)",
+      "train_sample_count": 14304,
+      "test_sample_count": 3576,
+      "train_fraud_count": 693,
+      "test_fraud_count": 173,
+      "train_fraud_prevalence_pct": 4.84,
+      "test_fraud_prevalence_pct": 4.84,
+      "train_unique_groups": 11695,
+      "test_unique_groups": 2877,
+      "cross_split_overlapping_groups": 0
     },
     "limitations": [
-      "Dataset collected historically (~2012-2014) from Workable ATS; lacks modern 2024-2026 scam vectors (e.g., Telegram task scams, crypto deposits, WhatsApp identity spoofing).",
-      "Text-only historical records lack multi-source corroboration fields (no recruiter email addresses, company websites, or destination application URLs).",
-      "Cross-split text leakage occurs under standard row-level random splitting due to identical corporate job posting templates across geographic branches.",
-      "Extreme class imbalance (95.2% legit vs 4.8% fraud) necessitates PR-AUC and minority recall metrics over raw accuracy."
+      "Historical EMSCAD dataset collected between 2012 and 2014 from Workable ATS; lacks modern 2024-2026 recruitment scam modalities (e.g. Telegram task scams, WhatsApp identity spoofing, crypto gas deposits).",
+      "Text-only historical corpus lacks multi-source corroboration metadata (recruiter email addresses, company website domains, and application destination URLs are completely absent).",
+      "Random stratified splitting incurs 310 duplicate text descriptions shared between train and test splits due to template reuse across locations.",
+      "Duplicate-aware grouping eliminates exact normalized description leakage (0 cross-split groups), but does not guarantee elimination of near-duplicates (e.g. minor word substitutions or slight reformatting).",
+      "Identified 1 conflicting label group (job_id 9139 labeled fraud, job_ids 11890 & 15237 labeled legitimate with identical description text), reflecting natural human annotation ambiguity in historical data."
     ]
   },
-  "emscad_test_split_results": {
+  "emscad_random_split_results": {
+    "split_name": "Random Stratified Holdout (Historical Baseline)",
+    "sample_count": 3576,
+    "actual_fraud_count": 173,
+    "actual_legit_count": 3403,
     "configuration_a_ml_alone": {
       "sample_count": 3576,
       "actual_fraud_count": 173,
@@ -59,17 +106,65 @@
       "accuracy": 0.9759507829977628,
       "precision": 0.6899563318777293,
       "recall_sensitivity": 0.9132947976878613,
-      "f1_score": 0.7860696517412935,
+      "f1_score": 0.7860696517412936,
       "false_positive_rate": 0.020863943579194827,
       "false_negative_rate": 0.08670520231213873,
       "rule_overrides_count": 9,
       "rule_tp_added": 0,
       "rule_fp_added": 9
     },
-    "configuration_c_dataset_feasibility_note": "Configuration C (Trust Chain Cross-Source Consistency) cannot be meaningfully evaluated on historical EMSCAD records because EMSCAD contains no external domain fields (recruiter email, company website, or application URL). All domain checks return 'unable_to_determine' on text-only records."
+    "configuration_c_dataset_feasibility_note": "Configuration C (Trust Chain Cross-Source Consistency) cannot be evaluated on historical EMSCAD records because EMSCAD contains no external domain fields (recruiter email, company website, or application URL). All domain checks return 'unable_to_determine' on text-only records."
   },
-  "labelled_evidence_benchmark_results": {
+  "emscad_duplicate_aware_split_results": {
+    "split_name": "Duplicate-Aware Grouped Holdout (0 Cross-Split Group Leakage)",
+    "sample_count": 3576,
+    "actual_fraud_count": 173,
+    "actual_legit_count": 3403,
+    "configuration_a_ml_alone": {
+      "sample_count": 3576,
+      "actual_fraud_count": 173,
+      "actual_legit_count": 3403,
+      "confusion_matrix": {
+        "true_negatives": 3326,
+        "false_positives": 77,
+        "false_negatives": 26,
+        "true_positives": 147
+      },
+      "accuracy": 0.9711968680089486,
+      "precision": 0.65625,
+      "recall_sensitivity": 0.8497109826589595,
+      "f1_score": 0.7405541561712846,
+      "false_positive_rate": 0.022627093740816926,
+      "false_negative_rate": 0.15028901734104047,
+      "roc_auc": 0.9802894080197853,
+      "pr_auc_average_precision": 0.8534148289459175
+    },
+    "configuration_b_ml_plus_warning_rules": {
+      "sample_count": 3576,
+      "actual_fraud_count": 173,
+      "actual_legit_count": 3403,
+      "confusion_matrix": {
+        "true_negatives": 3315,
+        "false_positives": 88,
+        "false_negatives": 25,
+        "true_positives": 148
+      },
+      "accuracy": 0.968400447427293,
+      "precision": 0.6271186440677966,
+      "recall_sensitivity": 0.8554913294797688,
+      "f1_score": 0.7237163814180929,
+      "false_positive_rate": 0.02585953570379077,
+      "false_negative_rate": 0.14450867052023122,
+      "rule_overrides_count": 12,
+      "rule_tp_added": 1,
+      "rule_fp_added": 11
+    },
+    "configuration_c_dataset_feasibility_note": "Configuration C (Trust Chain Cross-Source Consistency) cannot be evaluated on historical EMSCAD records because EMSCAD contains no external domain fields (recruiter email, company website, or application URL). All domain checks return 'unable_to_determine' on text-only records."
+  },
+  "curated_functional_benchmark_results": {
     "evaluation_set_file": "C:\\Users\\deepjyoti\\Desktop\\college project\\data\\labelled_evidence_eval_set.json",
+    "benchmark_type": "manually_curated_functional_benchmark",
+    "benchmark_disclaimer": "METHODOLOGICAL DISCLAIMER: This benchmark contains 32 manually curated functional test fixtures covering 8 targeted recruitment scam and legitimacy patterns. Perfect performance by Configuration C confirms that the rule and consistency checking logic functions exactly as specified for these designed scenarios. It DOES NOT demonstrate or imply 100% generalization to unobserved, real-world recruitment fraud.",
     "case_count": 32,
     "ground_truth_fraud_count": 14,
     "ground_truth_legit_count": 18,
@@ -104,7 +199,7 @@
         "accuracy": 0.875,
         "precision": 1.0,
         "recall_sensitivity": 0.7142857142857143,
-        "f1_score": 0.8333333333333334,
+        "f1_score": 0.8333333333333333,
         "false_positive_rate": 0.0,
         "false_negative_rate": 0.2857142857142857
       },
