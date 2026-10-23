@@ -1,0 +1,617 @@
+{
+  "timestamp": "2026-10-23T16:39:52.214217",
+  "audit_data": {
+    "dataset_file": "C:\\Users\\deepjyoti\\Desktop\\college project\\data\\fake_job_postings.csv",
+    "total_records": 17880,
+    "class_distribution": {
+      "legitimate_count": 17014,
+      "fraudulent_count": 866,
+      "fraud_prevalence_pct": 4.8434
+    },
+    "duplicate_statistics": {
+      "exact_duplicate_rows": 0,
+      "duplicate_descriptions": 3078,
+      "cross_split_text_leakage_count": 310
+    },
+    "split_configuration": {
+      "strategy": "Stratified random split (80% train / 20% test)",
+      "random_seed": 42,
+      "train_sample_count": 14304,
+      "test_sample_count": 3576
+    },
+    "limitations": [
+      "Dataset collected historically (~2012-2014) from Workable ATS; lacks modern 2024-2026 scam vectors (e.g., Telegram task scams, crypto deposits, WhatsApp identity spoofing).",
+      "Text-only historical records lack multi-source corroboration fields (no recruiter email addresses, company websites, or destination application URLs).",
+      "Cross-split text leakage occurs under standard row-level random splitting due to identical corporate job posting templates across geographic branches.",
+      "Extreme class imbalance (95.2% legit vs 4.8% fraud) necessitates PR-AUC and minority recall metrics over raw accuracy."
+    ]
+  },
+  "emscad_test_split_results": {
+    "configuration_a_ml_alone": {
+      "sample_count": 3576,
+      "actual_fraud_count": 173,
+      "actual_legit_count": 3403,
+      "confusion_matrix": {
+        "true_negatives": 3341,
+        "false_positives": 62,
+        "false_negatives": 15,
+        "true_positives": 158
+      },
+      "accuracy": 0.9784675615212528,
+      "precision": 0.7181818181818181,
+      "recall_sensitivity": 0.9132947976878613,
+      "f1_score": 0.8040712468193384,
+      "false_positive_rate": 0.01821921833676168,
+      "false_negative_rate": 0.08670520231213873,
+      "roc_auc": 0.9895179194148651,
+      "pr_auc_average_precision": 0.9279323602665298
+    },
+    "configuration_b_ml_plus_warning_rules": {
+      "sample_count": 3576,
+      "actual_fraud_count": 173,
+      "actual_legit_count": 3403,
+      "confusion_matrix": {
+        "true_negatives": 3332,
+        "false_positives": 71,
+        "false_negatives": 15,
+        "true_positives": 158
+      },
+      "accuracy": 0.9759507829977628,
+      "precision": 0.6899563318777293,
+      "recall_sensitivity": 0.9132947976878613,
+      "f1_score": 0.7860696517412935,
+      "false_positive_rate": 0.020863943579194827,
+      "false_negative_rate": 0.08670520231213873,
+      "rule_overrides_count": 9,
+      "rule_tp_added": 0,
+      "rule_fp_added": 9
+    },
+    "configuration_c_dataset_feasibility_note": "Configuration C (Trust Chain Cross-Source Consistency) cannot be meaningfully evaluated on historical EMSCAD records because EMSCAD contains no external domain fields (recruiter email, company website, or application URL). All domain checks return 'unable_to_determine' on text-only records."
+  },
+  "labelled_evidence_benchmark_results": {
+    "evaluation_set_file": "C:\\Users\\deepjyoti\\Desktop\\college project\\data\\labelled_evidence_eval_set.json",
+    "case_count": 32,
+    "ground_truth_fraud_count": 14,
+    "ground_truth_legit_count": 18,
+    "comparative_metrics": {
+      "configuration_a_ml_alone": {
+        "sample_count": 32,
+        "actual_fraud_count": 14,
+        "actual_legit_count": 18,
+        "confusion_matrix": {
+          "true_negatives": 18,
+          "false_positives": 0,
+          "false_negatives": 8,
+          "true_positives": 6
+        },
+        "accuracy": 0.75,
+        "precision": 1.0,
+        "recall_sensitivity": 0.42857142857142855,
+        "f1_score": 0.6,
+        "false_positive_rate": 0.0,
+        "false_negative_rate": 0.5714285714285714
+      },
+      "configuration_b_ml_plus_warning_rules": {
+        "sample_count": 32,
+        "actual_fraud_count": 14,
+        "actual_legit_count": 18,
+        "confusion_matrix": {
+          "true_negatives": 18,
+          "false_positives": 0,
+          "false_negatives": 4,
+          "true_positives": 10
+        },
+        "accuracy": 0.875,
+        "precision": 1.0,
+        "recall_sensitivity": 0.7142857142857143,
+        "f1_score": 0.8333333333333334,
+        "false_positive_rate": 0.0,
+        "false_negative_rate": 0.2857142857142857
+      },
+      "configuration_c_full_trust_chain": {
+        "sample_count": 32,
+        "actual_fraud_count": 14,
+        "actual_legit_count": 18,
+        "confusion_matrix": {
+          "true_negatives": 18,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "true_positives": 14
+        },
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall_sensitivity": 1.0,
+        "f1_score": 1.0,
+        "false_positive_rate": 0.0,
+        "false_negative_rate": 0.0
+      }
+    },
+    "category_breakdown": {
+      "explicit_fee_request": {
+        "total_cases": 4,
+        "ground_truth_fraud": 4,
+        "ground_truth_legit": 0,
+        "config_a_correct": 1,
+        "config_b_correct": 4,
+        "config_c_correct": 4,
+        "config_a_accuracy": 0.25,
+        "config_b_accuracy": 1.0,
+        "config_c_accuracy": 1.0
+      },
+      "credential_or_otp_request": {
+        "total_cases": 4,
+        "ground_truth_fraud": 4,
+        "ground_truth_legit": 0,
+        "config_a_correct": 3,
+        "config_b_correct": 4,
+        "config_c_correct": 4,
+        "config_a_accuracy": 0.75,
+        "config_b_accuracy": 1.0,
+        "config_c_accuracy": 1.0
+      },
+      "matching_supplied_domains": {
+        "total_cases": 4,
+        "ground_truth_fraud": 0,
+        "ground_truth_legit": 4,
+        "config_a_correct": 4,
+        "config_b_correct": 4,
+        "config_c_correct": 4,
+        "config_a_accuracy": 1.0,
+        "config_b_accuracy": 1.0,
+        "config_c_accuracy": 1.0
+      },
+      "mismatched_supplied_domains": {
+        "total_cases": 4,
+        "ground_truth_fraud": 4,
+        "ground_truth_legit": 0,
+        "config_a_correct": 0,
+        "config_b_correct": 0,
+        "config_c_correct": 4,
+        "config_a_accuracy": 0.0,
+        "config_b_accuracy": 0.0,
+        "config_c_accuracy": 1.0
+      },
+      "legitimate_third_party_recruitment": {
+        "total_cases": 4,
+        "ground_truth_fraud": 0,
+        "ground_truth_legit": 4,
+        "config_a_correct": 4,
+        "config_b_correct": 4,
+        "config_c_correct": 4,
+        "config_a_accuracy": 1.0,
+        "config_b_accuracy": 1.0,
+        "config_c_accuracy": 1.0
+      },
+      "missing_or_malformed_information": {
+        "total_cases": 4,
+        "ground_truth_fraud": 1,
+        "ground_truth_legit": 3,
+        "config_a_correct": 4,
+        "config_b_correct": 4,
+        "config_c_correct": 4,
+        "config_a_accuracy": 1.0,
+        "config_b_accuracy": 1.0,
+        "config_c_accuracy": 1.0
+      },
+      "benign_anti_scam_warnings": {
+        "total_cases": 4,
+        "ground_truth_fraud": 0,
+        "ground_truth_legit": 4,
+        "config_a_correct": 4,
+        "config_b_correct": 4,
+        "config_c_correct": 4,
+        "config_a_accuracy": 1.0,
+        "config_b_accuracy": 1.0,
+        "config_c_accuracy": 1.0
+      },
+      "ambiguous_postings": {
+        "total_cases": 4,
+        "ground_truth_fraud": 1,
+        "ground_truth_legit": 3,
+        "config_a_correct": 4,
+        "config_b_correct": 4,
+        "config_c_correct": 4,
+        "config_a_accuracy": 1.0,
+        "config_b_accuracy": 1.0,
+        "config_c_accuracy": 1.0
+      }
+    },
+    "case_level_details": {
+      "explicit_fee_request": [
+        {
+          "case_id": "fee_01_interview_fee",
+          "title": "Junior Data Entry Associate",
+          "ground_truth": 1,
+          "config_a_pred": 1,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.8459,
+          "text_rules_fired": [
+            "fee_payment_demand"
+          ],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "fee_02_equipment_wire",
+          "title": "Remote Customer Support Representative",
+          "ground_truth": 1,
+          "config_a_pred": 0,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.2799,
+          "text_rules_fired": [
+            "fee_payment_demand"
+          ],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "fee_03_visa_processing",
+          "title": "International Hospitality Operations Manager",
+          "ground_truth": 1,
+          "config_a_pred": 0,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.2055,
+          "text_rules_fired": [
+            "fee_payment_demand"
+          ],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "fee_04_crypto_starter_kit",
+          "title": "Digital Asset Quality Inspector",
+          "ground_truth": 1,
+          "config_a_pred": 0,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.2091,
+          "text_rules_fired": [
+            "fee_payment_demand"
+          ],
+          "domain_rules_fired": []
+        }
+      ],
+      "credential_or_otp_request": [
+        {
+          "case_id": "cred_01_otp_verification",
+          "title": "Online Workflow Coordinator",
+          "ground_truth": 1,
+          "config_a_pred": 1,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.5026,
+          "text_rules_fired": [
+            "fee_payment_demand",
+            "credential_otp_request"
+          ],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "cred_02_email_password",
+          "title": "Executive Virtual Assistant",
+          "ground_truth": 1,
+          "config_a_pred": 1,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.5858,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "cred_03_banking_pin",
+          "title": "Payroll Preparation Clerk",
+          "ground_truth": 1,
+          "config_a_pred": 1,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.5287,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "cred_04_whatsapp_code",
+          "title": "Social Media Engagement Assistant",
+          "ground_truth": 1,
+          "config_a_pred": 0,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.1829,
+          "text_rules_fired": [
+            "fee_payment_demand",
+            "credential_otp_request"
+          ],
+          "domain_rules_fired": []
+        }
+      ],
+      "matching_supplied_domains": [
+        {
+          "case_id": "domain_01_stripe_matching",
+          "title": "Senior Infrastructure Engineer",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.166,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "domain_02_microsoft_matching",
+          "title": "Cloud Solutions Architect",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.1446,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "domain_03_gitlab_matching",
+          "title": "Full Stack Engineer - Monitor",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.174,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "domain_04_apollo_hospitals",
+          "title": "Senior Clinical Data Specialist",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.2444,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        }
+      ],
+      "mismatched_supplied_domains": [
+        {
+          "case_id": "mismatch_01_google_webmail",
+          "title": "Remote Data Scientist - Machine Learning",
+          "ground_truth": 1,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 1,
+          "fraud_probability": 0.1278,
+          "text_rules_fired": [],
+          "domain_rules_fired": [
+            "recruiter_email_domain",
+            "application_destination"
+          ]
+        },
+        {
+          "case_id": "mismatch_02_amazon_lookalike",
+          "title": "Operations Lead - Fulfillment",
+          "ground_truth": 1,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 1,
+          "fraud_probability": 0.3744,
+          "text_rules_fired": [],
+          "domain_rules_fired": [
+            "recruiter_email_domain",
+            "application_destination"
+          ]
+        },
+        {
+          "case_id": "mismatch_03_netflix_harvesting",
+          "title": "Creative Content Reviewer",
+          "ground_truth": 1,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 1,
+          "fraud_probability": 0.1932,
+          "text_rules_fired": [],
+          "domain_rules_fired": [
+            "application_destination"
+          ]
+        },
+        {
+          "case_id": "mismatch_04_cisco_three_way",
+          "title": "Network Security Analyst",
+          "ground_truth": 1,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 1,
+          "fraud_probability": 0.2192,
+          "text_rules_fired": [],
+          "domain_rules_fired": [
+            "recruiter_email_domain",
+            "application_destination"
+          ]
+        }
+      ],
+      "legitimate_third_party_recruitment": [
+        {
+          "case_id": "ats_01_figma_greenhouse",
+          "title": "Product Designer - Design Systems",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.1655,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "ats_02_airbnb_workday",
+          "title": "Senior Financial Analyst",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.1232,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "ats_03_databricks_lever",
+          "title": "Software Engineer - Lakehouse Core",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.1289,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "ats_04_robert_half_agency",
+          "title": "Senior Accounting Manager (Confidential Client)",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.4929,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        }
+      ],
+      "missing_or_malformed_information": [
+        {
+          "case_id": "missing_01_sparse_legit",
+          "title": "Part-Time Warehouse Assistant",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.2961,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "missing_02_malformed_url",
+          "title": "Junior Graphic Designer",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.1101,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "missing_03_telegram_solicitation",
+          "title": "Remote Data Entry / Typing Clerk",
+          "ground_truth": 1,
+          "config_a_pred": 1,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.9468,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "missing_04_no_metadata_standard",
+          "title": "Technical Customer Support",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.2423,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        }
+      ],
+      "benign_anti_scam_warnings": [
+        {
+          "case_id": "warning_01_corporate_disclaimer",
+          "title": "Senior DevOps Engineer",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.1304,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "warning_02_recruitment_alert",
+          "title": "Regional Sales Director",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.2435,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "warning_03_ngo_free_application",
+          "title": "Humanitarian Aid Project Coordinator",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.2476,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "warning_04_security_alert_otp",
+          "title": "Information Security Analyst",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.2452,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        }
+      ],
+      "ambiguous_postings": [
+        {
+          "case_id": "ambig_01_vague_virtual_assistant",
+          "title": "Work from Home Administrative Assistant",
+          "ground_truth": 1,
+          "config_a_pred": 1,
+          "config_b_pred": 1,
+          "config_c_pred": 1,
+          "fraud_probability": 0.8737,
+          "text_rules_fired": [],
+          "domain_rules_fired": [
+            "recruiter_email_domain"
+          ]
+        },
+        {
+          "case_id": "ambig_02_brief_junior_dev",
+          "title": "Junior React Developer",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.0753,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "ambig_03_commission_sales",
+          "title": "Direct B2B Energy Consultant (100% Commission)",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.4707,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        },
+        {
+          "case_id": "ambig_04_stealth_startup",
+          "title": "Founding Systems Engineer",
+          "ground_truth": 0,
+          "config_a_pred": 0,
+          "config_b_pred": 0,
+          "config_c_pred": 0,
+          "fraud_probability": 0.1092,
+          "text_rules_fired": [],
+          "domain_rules_fired": []
+        }
+      ]
+    }
+  }
+}
