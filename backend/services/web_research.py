@@ -123,6 +123,8 @@ def analyze_search_result(
     _, app_domain = normalize_domain(application_url) if application_url else (None, None)
 
     retrieved_at = datetime.now(timezone.utc).isoformat()
+    raw_date = result.get("published_date") or result.get("page_age") or result.get("date")
+    published_date = str(raw_date).strip() if raw_date else None
 
     comparison = {
         "claimed_employer": claimed_employer,
@@ -139,6 +141,44 @@ def analyze_search_result(
     title_lower = title.lower()
     combined_text = f"{title_lower} {snippet_lower}"
 
+    employer_compact = re.sub(r"[^a-z0-9]", "", employer_clean)
+    result_compact = re.sub(r"[^a-z0-9]", "", result_domain or "")
+    employer_tokens = [
+        w
+        for w in re.split(r"\s+", employer_clean)
+        if len(w) >= 3
+        and w not in ("inc", "corp", "corporation", "ltd", "llc", "global", "group", "solutions", "technologies", "careers")
+    ]
+    matches_domain_token = any(token in (result_domain or "") for token in employer_tokens)
+    is_employer_in_domain = bool(
+        employer_compact
+        and len(employer_compact) >= 3
+        and (employer_compact in result_compact or matches_domain_token)
+    )
+
+    # Check 0: Recruiter domain mismatch against corroborated employer domain
+    if recruiter_domain and recruiter_domain != result_domain and recruiter_domain not in PUBLIC_EMAIL_PROVIDERS and recruiter_domain not in RECOGNIZED_STAFFING_AGENCIES:
+        if (supplied_domain and result_domain == supplied_domain) or is_employer_in_domain:
+            return {
+                "query_performed": query_performed,
+                "source_title": title,
+                "source_url": url,
+                "source_domain": result_domain or "unknown",
+                "snippet": snippet,
+                "retrieved_at": retrieved_at,
+                "published_date": published_date,
+                "evidence_status": "potential_domain_inconsistency",
+                "explanation": (
+                    f"External search identified {result_domain} as the primary domain for '{claimed_employer}', "
+                    f"but the recruiter email domain is '@{recruiter_domain}'. This discrepancy suggests potential lookalike or unverified sender routing."
+                ),
+                "limitations": (
+                    "Search ranking is not legal proof of domain ownership. Exercise caution and verify recruiter "
+                    "identity through official company directories."
+                ),
+                "comparison_detail": comparison,
+            }
+
     # Check 1: Official company careers page match
     if supplied_domain and result_domain == supplied_domain:
         if title_clean and (title_clean in combined_text or any(w in combined_text for w in title_clean.split() if len(w) > 3)):
@@ -149,6 +189,7 @@ def analyze_search_result(
                 "source_domain": result_domain or "unknown",
                 "snippet": snippet,
                 "retrieved_at": retrieved_at,
+                "published_date": published_date,
                 "evidence_status": "official_vacancy_match_found",
                 "explanation": (
                     f"Corroborating vacancy found on the claimed employer's official website ({result_domain}). "
@@ -169,6 +210,7 @@ def analyze_search_result(
                 "source_domain": result_domain or "unknown",
                 "snippet": snippet,
                 "retrieved_at": retrieved_at,
+                "published_date": published_date,
                 "evidence_status": "official_vacancy_match_found",
                 "explanation": (
                     f"Official careers presence confirmed on {result_domain}. "
@@ -192,6 +234,7 @@ def analyze_search_result(
                 "source_domain": result_domain or "unknown",
                 "snippet": snippet,
                 "retrieved_at": retrieved_at,
+                "published_date": published_date,
                 "evidence_status": "possible_vacancy_match",
                 "explanation": (
                     f"Observed matching job listing on recognized recruitment platform ({platform_name} / {result_domain}) "
@@ -232,6 +275,7 @@ def analyze_search_result(
                 "source_domain": result_domain or "unknown",
                 "snippet": snippet,
                 "retrieved_at": retrieved_at,
+                "published_date": published_date,
                 "evidence_status": "potential_domain_inconsistency",
                 "explanation": (
                     f"External search identified {result_domain} as the likely primary web domain for '{claimed_employer}', "
@@ -251,6 +295,7 @@ def analyze_search_result(
                 "source_domain": result_domain or "unknown",
                 "snippet": snippet,
                 "retrieved_at": retrieved_at,
+                "published_date": published_date,
                 "evidence_status": "potential_domain_inconsistency",
                 "explanation": (
                     f"Search identified {result_domain} for '{claimed_employer}', but the recruiter email domain "
@@ -271,6 +316,7 @@ def analyze_search_result(
         "source_domain": result_domain or "unknown",
         "snippet": snippet,
         "retrieved_at": retrieved_at,
+        "published_date": published_date,
         "evidence_status": "possible_vacancy_match" if (employer_clean in combined_text and title_clean in combined_text) else "no_matching_vacancy_found_in_search",
         "explanation": (
             f"Public web excerpt mentioning relevant terms from {result_domain}."

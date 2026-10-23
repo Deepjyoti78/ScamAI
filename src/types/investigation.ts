@@ -71,6 +71,7 @@ export interface WebResearchFinding {
   source_domain: string;
   snippet: string;
   retrieved_at: string;
+  published_date?: string;
   evidence_status: WebResearchStatus;
   explanation: string;
   limitations: string;

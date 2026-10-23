@@ -532,3 +532,185 @@ def test_tavily_search_provider_execution(mock_urlopen):
         # Confirms snippet was cleanly mapped from Tavily's 'content' field
         assert "lead foundational infrastructure" in first_finding["snippet"]
 
+
+@patch("urllib.request.urlopen")
+def test_tavily_authentication_failure_401(mock_urlopen):
+    """Verify that Tavily HTTP 401 returns honest search_unavailable status without asserting fraud."""
+    mock_urlopen.side_effect = urllib.error.HTTPError(
+        url="https://api.tavily.com/search",
+        code=401,
+        msg="Unauthorized",
+        hdrs={},
+        fp=BytesIO(b'{"detail": "Invalid API key"}'),
+    )
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-invalid-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Software Engineer",
+            company_website="https://stripe.com",
+        )
+
+        assert findings == []
+        assert summary["status"] == "search_unavailable"
+        assert summary["provider"] == "Tavily Search API"
+        assert "authentication failed" in summary["overall_evidence_assessment"].lower()
+        assert "TAVILY_API_KEY" in summary["overall_evidence_assessment"]
+        assert "External web corroboration could not complete" in summary["limitations_disclaimer"]
+
+
+@patch("urllib.request.urlopen")
+def test_tavily_internal_server_error_500(mock_urlopen):
+    """Verify that upstream 500 errors degrade gracefully to search_unavailable."""
+    mock_urlopen.side_effect = urllib.error.HTTPError(
+        url="https://api.tavily.com/search",
+        code=500,
+        msg="Internal Server Error",
+        hdrs={},
+        fp=BytesIO(b'{"error": "Backend timeout"}'),
+    )
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Acme Corp",
+            job_title="DevOps Engineer",
+            company_website="https://acme.org",
+        )
+
+        assert findings == []
+        assert summary["status"] == "search_unavailable"
+        assert "HTTP 500" in summary["overall_evidence_assessment"]
+
+
+@patch("urllib.request.urlopen")
+def test_tavily_malformed_json_response(mock_urlopen):
+    """Verify that corrupt or malformed provider responses do not crash the investigation."""
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = b"<html><head><title>Cloudflare 502</title></head><body>Bad Gateway</body></html>"
+    mock_resp.getcode.return_value = 200
+    mock_resp.headers = {"Content-Type": "text/html"}
+    mock_resp.__enter__.return_value = mock_resp
+    mock_resp.__exit__.return_value = None
+    mock_urlopen.return_value = mock_resp
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Engineer",
+            company_website="https://stripe.com",
+        )
+
+        assert findings == []
+        assert summary["status"] == "search_unavailable"
+        assert "error" in summary["overall_evidence_assessment"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_third_party_ats_platforms_greenhouse_lever_workday_ashby(mock_urlopen):
+    """Verify that legitimate ATS listings (Greenhouse, Lever, Workday, Ashby) are recognized as possible_vacancy_match."""
+    ats_scenarios = [
+        ("https://boards.greenhouse.io/stripe/jobs/123", "greenhouse.io", "Greenhouse"),
+        ("https://jobs.lever.co/stripe/456", "lever.co", "Lever"),
+        ("https://stripe.myworkdayjobs.com/en-US/careers/job/789", "myworkdayjobs.com", "Workday"),
+        ("https://jobs.ashbyhq.com/stripe/abc", "ashbyhq.com", "Ashby"),
+    ]
+
+    for url, root_domain, ats_name in ats_scenarios:
+        mock_data = {
+            "results": [
+                {
+                    "title": f"Staff Software Engineer - Stripe Careers ({ats_name})",
+                    "url": url,
+                    "content": "Stripe is seeking an experienced Staff Software Engineer to join our payments platform.",
+                    "published_date": "2026-10-15",
+                }
+            ]
+        }
+        mock_urlopen.return_value = _make_mock_response(mock_data)
+
+        with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+            findings, summary = execute_web_research(
+                employer_name="Stripe",
+                job_title="Staff Software Engineer",
+                company_website="https://stripe.com",
+            )
+
+            assert summary["status"] == "completed"
+            assert len(findings) >= 1
+            finding = findings[0]
+            assert finding["evidence_status"] == "possible_vacancy_match"
+            assert finding["source_domain"] == root_domain
+            assert finding["published_date"] == "2026-10-15"
+            assert "recognized recruitment platform" in finding["explanation"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_source_attribution_and_timestamp_propagation(mock_urlopen):
+    """Verify that returned findings preserve exact title, source URL, snippet, retrieved_at, and published_date."""
+    test_url = "https://stripe.com/jobs/staff-eng-999"
+    test_title = "Staff Infrastructure Engineer - Stripe Careers"
+    test_content = "Core ledger systems team at Stripe seeking a Staff Infrastructure Engineer."
+    test_date = "2026-10-20T08:30:00Z"
+
+    mock_data = {
+        "results": [
+            {
+                "title": test_title,
+                "url": test_url,
+                "content": test_content,
+                "published_date": test_date,
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Staff Infrastructure Engineer",
+            company_website="https://stripe.com",
+        )
+
+        assert len(findings) >= 1
+        finding = findings[0]
+        assert finding["source_title"] == test_title
+        assert finding["source_url"] == test_url
+        assert finding["source_domain"] == "stripe.com"
+        assert finding["snippet"] == test_content
+        assert finding["published_date"] == test_date
+        assert finding["retrieved_at"] is not None
+        assert "T" in finding["retrieved_at"]  # Valid ISO timestamp
+
+
+@patch("urllib.request.urlopen")
+def test_epistemic_restraint_on_missing_results(mock_urlopen):
+    """Verify that when no search match is found, the system never fabricates claims or labels the job as fraud."""
+    mock_data = {
+        "results": [
+            {
+                "title": "Random Technology News Article",
+                "url": "https://technews.example.com/article/1",
+                "content": "A report about global technology investments and venture capital.",
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stealth Labs",
+            job_title="Lead Cryptographer",
+            company_website="https://stealthlabs.internal",
+        )
+
+        assert summary["status"] == "completed"
+        # The finding is marked as no_matching_vacancy_found_in_search
+        assert len(findings) >= 1
+        assert findings[0]["evidence_status"] == "no_matching_vacancy_found_in_search"
+
+        # Explicit limitations must affirm absence != fraud
+        assert "absence of search results does not establish fraud" in summary["limitations_disclaimer"]
+        assert "does not prove that the vacancy does not exist" in findings[0]["limitations"]
+
+
+

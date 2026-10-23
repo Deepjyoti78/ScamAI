@@ -150,6 +150,7 @@ class WebResearchFinding(BaseModel):
     source_domain: str = Field(description="Domain name of the search result.")
     snippet: str = Field(description="Text snippet returned by search provider.")
     retrieved_at: str = Field(description="ISO timestamp of when the search was executed.")
+    published_date: Optional[str] = Field(default=None, description="Optional publication date or age returned by the search provider.")
     evidence_status: str = Field(
         description="'official_vacancy_match_found', 'possible_vacancy_match', 'potential_domain_inconsistency', 'no_matching_vacancy_found_in_search', 'insufficient_evidence', 'not_configured', or 'search_unavailable'."
     )
