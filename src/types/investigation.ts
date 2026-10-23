@@ -160,3 +160,42 @@ export interface ModelStatusResponse {
   evaluation_metrics?: Record<string, unknown>;
   message: string;
 }
+
+// 5-Card Investigation Modal Stage Types
+export type InvestigationStageKey =
+  | 'validation'
+  | 'extraction'
+  | 'ml_analysis'
+  | 'warning_signals'
+  | 'trust_chain';
+
+export type InvestigationStageStatus =
+  | 'pending'
+  | 'in_progress'
+  | 'completed'
+  | 'skipped'
+  | 'failed';
+
+export interface InvestigationStageUpdate {
+  card_id: 1 | 2 | 3 | 4 | 5;
+  key: InvestigationStageKey;
+  title: string;
+  description: string;
+  status: InvestigationStageStatus;
+  detail?: string;
+  progress?: number;
+  error?: string;
+}
+
+export interface InvestigationStageState {
+  id: 1 | 2 | 3 | 4 | 5;
+  key: InvestigationStageKey;
+  stepNumber: string; // '01', '02', '03', '04', '05'
+  title: string;
+  description: string;
+  status: InvestigationStageStatus;
+  detail?: string;
+  progress?: number;
+  error?: string;
+}
+

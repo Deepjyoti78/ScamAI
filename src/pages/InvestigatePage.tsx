@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Link2, FileText, ArrowRight, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { Link2, FileText, ArrowRight, Loader2, AlertCircle, RefreshCw, Eye } from 'lucide-react';
 import Header from '../components/Header';
 import Button from '../components/Button';
+import InvestigationModal from '../components/InvestigationModal';
 import {
-  analyzeJobPosting,
+  analyzeJobPostingWithStream,
+  getInitialInvestigationStages,
   buildInvestigationRecord,
   persistInvestigation,
   ApiError,
 } from '../services/investigationService';
+import type { InvestigationStageState } from '../types/investigation';
 
 type InputMode = 'text' | 'url';
 
@@ -25,19 +28,37 @@ export default function InvestigatePage() {
   const [recruiterMessage, setRecruiterMessage] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [loading, setLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingStepText, setLoadingStepText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Five-Card Live Investigation Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [stages, setStages] = useState<InvestigationStageState[]>(getInitialInvestigationStages());
+  const [isComplete, setIsComplete] = useState(false);
+  const [modalError, setModalError] = useState<{
+    message: string;
+    detail?: string;
+    failedCardId?: number;
+    canRetry?: boolean;
+  } | null>(null);
+  const [completedRecordId, setCompletedRecordId] = useState<string | null>(null);
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const executeInvestigation = async () => {
+    // Prevent duplicate submissions
+    if (loading) return;
+
     setError(null);
     setErrorDetail(null);
+    setModalError(null);
+    setIsComplete(false);
+    setCompletedRecordId(null);
 
     const trimmedDescription = jobDescription.trim();
     const trimmedUrl = jobUrl.trim();
 
+    // 1. Validate submitted form
     if (mode === 'url') {
       if (!trimmedUrl) {
         setError('Please enter a public job posting URL (e.g. https://careers.example.com/job/123).');
@@ -58,54 +79,55 @@ export default function InvestigatePage() {
       }
     }
 
+    // Initialize clean 5 cards with Card 01 in progress
+    const initialStages = getInitialInvestigationStages();
+    initialStages[0].status = 'in_progress';
+    initialStages[0].detail = 'Validating submitted fields and security parameters...';
+    setStages(initialStages);
+
+    // Open modal immediately
+    setIsModalOpen(true);
     setLoading(true);
 
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     try {
-      // 1. Initiate genuine request to FastAPI ML backend
-      const apiPromise = analyzeJobPosting({
-        description: trimmedDescription || undefined,
-        title: jobTitle.trim() || undefined,
-        employer_name: employer.trim() || undefined,
-        company_profile: employer.trim() || undefined,
-        employment_type: employmentType || undefined,
-        job_url: trimmedUrl || undefined,
-        company_website: companyWebsite.trim() || undefined,
-        recruiter_email: recruiterEmail.trim() || undefined,
-        application_url: applicationUrl.trim() || undefined,
-        recruiter_message: recruiterMessage.trim() || undefined,
-      });
-
-      if (mode === 'url' && !trimmedDescription) {
-        setLoadingProgress(20);
-        setLoadingStepText('Validating URL and checking SSRF security boundaries…');
-        await new Promise((r) => setTimeout(r, 450));
-        setLoadingProgress(50);
-        setLoadingStepText('Connecting to host and extracting clean job posting HTML…');
-        await new Promise((r) => setTimeout(r, 600));
-        setLoadingProgress(78);
-        setLoadingStepText('Evaluating fraud probability against trained EMSCAD model…');
-        await new Promise((r) => setTimeout(r, 500));
-        setLoadingProgress(92);
-        setLoadingStepText('Synthesizing evidence findings and Trust Chain checks…');
-      } else {
-        setLoadingProgress(25);
-        setLoadingStepText('Normalizing posting text and structure…');
-        await new Promise((r) => setTimeout(r, 400));
-        setLoadingProgress(55);
-        setLoadingStepText('Executing Trust Chain cross-domain and fee checks…');
-        await new Promise((r) => setTimeout(r, 500));
-        setLoadingProgress(80);
-        setLoadingStepText('Evaluating fraud probability against trained EMSCAD model…');
-        await new Promise((r) => setTimeout(r, 450));
-        setLoadingProgress(95);
-        setLoadingStepText('Synthesizing evidence findings & feature attribution…');
-      }
-
-      // Await backend response
-      const response = await apiPromise;
-
-      setLoadingProgress(100);
-      await new Promise((r) => setTimeout(r, 200));
+      const response = await analyzeJobPostingWithStream(
+        {
+          description: trimmedDescription || undefined,
+          title: jobTitle.trim() || undefined,
+          employer_name: employer.trim() || undefined,
+          company_profile: employer.trim() || undefined,
+          employment_type: employmentType || undefined,
+          job_url: trimmedUrl || undefined,
+          company_website: companyWebsite.trim() || undefined,
+          recruiter_email: recruiterEmail.trim() || undefined,
+          application_url: applicationUrl.trim() || undefined,
+          recruiter_message: recruiterMessage.trim() || undefined,
+        },
+        (stageUpdate) => {
+          setStages((prevStages) =>
+            prevStages.map((stage) => {
+              if (stage.id === stageUpdate.card_id) {
+                return {
+                  ...stage,
+                  status: stageUpdate.status,
+                  detail: stageUpdate.detail ?? stage.detail,
+                  progress: stageUpdate.progress !== undefined ? stageUpdate.progress : stage.progress,
+                  error: stageUpdate.error,
+                };
+              }
+              // Automatically mark previous pending stages completed when advancing
+              if (stage.id < stageUpdate.card_id && stage.status === 'pending') {
+                return { ...stage, status: 'completed' };
+              }
+              return stage;
+            })
+          );
+        },
+        abortController.signal
+      );
 
       // 2. Build full investigation record with real inference results
       const investigationRecord = buildInvestigationRecord(
@@ -123,26 +145,74 @@ export default function InvestigatePage() {
         response
       );
 
-      // 3. Persist record in application state (sessionStorage)
+      // 3. Persist record in application state
       persistInvestigation(investigationRecord);
+      setCompletedRecordId(investigationRecord.id);
+      setIsComplete(true);
 
-      // 4. Navigate to the results view
-      navigate(`/investigations/${investigationRecord.id}`);
+      // Ensure all applicable cards are marked completed
+      setStages((prev) =>
+        prev.map((s) => ({
+          ...s,
+          status: s.status === 'skipped' ? 'skipped' : 'completed',
+        }))
+      );
+
+      // 4. Briefly show completion state and navigate to existing report
+      setTimeout(() => {
+        navigate(`/investigations/${investigationRecord.id}`);
+      }, 1200);
     } catch (err: unknown) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-        if (err.detail && err.detail !== err.message) {
-          setErrorDetail(err.detail);
-        }
-      } else if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An unexpected error occurred while communicating with the analysis API.');
+      if (abortController.signal.aborted) {
+        // Safe dismissal without error
+        return;
       }
+
+      let errMsg = 'An unexpected error occurred during investigation.';
+      let errDetail: string | undefined = undefined;
+
+      if (err instanceof ApiError) {
+        errMsg = err.message;
+        errDetail = err.detail;
+      } else if (err instanceof Error) {
+        errMsg = err.message;
+      }
+
+      setModalError({
+        message: errMsg,
+        detail: errDetail,
+        canRetry: true,
+      });
+      setError(errMsg);
+      setErrorDetail(errDetail || null);
+
+      // Update failed card if active
+      setStages((prev) => {
+        const activeIdx = prev.findIndex((s) => s.status === 'in_progress');
+        if (activeIdx !== -1) {
+          const next = [...prev];
+          next[activeIdx] = { ...next[activeIdx], status: 'failed', error: errMsg };
+          return next;
+        }
+        return prev;
+      });
     } finally {
       setLoading(false);
-      setLoadingProgress(0);
-      setLoadingStepText('');
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    executeInvestigation();
+  };
+
+  const handleRetry = () => {
+    executeInvestigation();
+  };
+
+  const handleViewReport = () => {
+    if (completedRecordId) {
+      navigate(`/investigations/${completedRecordId}`);
     }
   };
 
@@ -409,37 +479,21 @@ export default function InvestigatePage() {
               </div>
             )}
 
-            {/* Dynamic Multi-Step Analysis Animation Panel */}
-            {loading && (
-              <div className="border border-[#e4e4e0] rounded-[6px] p-4.5 bg-[#fafaf9] shadow-[0_2px_12px_rgba(0,0,0,0.04)] my-1 animate-in fade-in duration-200">
-                <div className="flex items-center justify-between mb-2.5">
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#111110] opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#111110]" />
-                    </span>
-                    <span className="text-[11px] font-semibold text-[#111110] uppercase tracking-wider">
-                      Analyzing Job Posting
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-mono font-medium text-[#111110] bg-white border border-[#e4e4e0] px-2 py-0.5 rounded-[2px]">
-                    {loadingProgress}%
-                  </span>
-                </div>
-
-                {/* Animated Progress Bar */}
-                <div className="h-1.5 w-full bg-[#e8e8e6] rounded-full overflow-hidden mb-2.5">
-                  <div
-                    className="h-full bg-[#111110] rounded-full transition-all duration-300 ease-out"
-                    style={{ width: `${loadingProgress}%` }}
-                  />
-                </div>
-
-                {/* Dynamic Step Status */}
-                <div className="flex items-center gap-2 text-[12px] text-[#555552]">
+            {/* Running in background notice (if modal overlay was hidden) */}
+            {loading && !isModalOpen && (
+              <div className="border border-[#e4e4e0] bg-[#fafaf9] rounded-[4px] p-3.5 flex items-center justify-between gap-3 animate-in fade-in duration-200">
+                <div className="flex items-center gap-2 text-[12px] text-[#111110]">
                   <Loader2 size={13} className="animate-spin text-[#111110] flex-shrink-0" />
-                  <span className="font-medium text-[#111110]">{loadingStepText}</span>
+                  <span className="font-medium">Investigation running in background...</span>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(true)}
+                  className="text-[11px] font-medium text-[#111110] underline flex items-center gap-1 cursor-pointer flex-shrink-0 hover:text-[#555552]"
+                >
+                  <Eye size={12} />
+                  Reopen progress modal
+                </button>
               </div>
             )}
 
@@ -449,7 +503,7 @@ export default function InvestigatePage() {
                 {loading ? (
                   <>
                     <Loader2 size={14} className="animate-spin" />
-                    {mode === 'url' ? 'Fetching & analyzing URL' : 'Running investigation'} ({loadingProgress}%)
+                    Investigation running...
                   </>
                 ) : (
                   <>
@@ -468,6 +522,18 @@ export default function InvestigatePage() {
           </form>
         </div>
       </main>
+
+      {/* Five-Card Live Investigation Modal Overlay */}
+      <InvestigationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        stages={stages}
+        isComplete={isComplete}
+        error={modalError}
+        onRetry={handleRetry}
+        onViewReport={handleViewReport}
+        isSubmitting={loading}
+      />
     </div>
   );
 }

@@ -14,6 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 
 from backend.schemas import (
     HealthResponse,
@@ -119,3 +120,28 @@ def analyze_job_posting(payload: JobAnalysisRequest) -> JobAnalysisResponse:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Inference error: {str(e)}",
         )
+
+
+@app.post(
+    "/api/investigations/analyze/stream",
+    tags=["Investigation"],
+    summary="Analyze a job posting with live Server-Sent Events progress updates",
+)
+async def analyze_job_posting_stream(payload: JobAnalysisRequest):
+    """Execute job investigation and stream stage transitions for live progress cards.
+
+    Emits SSE events:
+    - 'stage_update' with card_id (1-5), status, and stage progress details
+    - 'complete' with final JobAnalysisResponse
+    - 'error' with error details
+    """
+    return StreamingResponse(
+        prediction_service.stream_analyze_job(payload),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
