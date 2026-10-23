@@ -367,7 +367,7 @@ export default function InvestigatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0EEE6]">
+    <div className="min-h-screen bg-[#FAF9F5]">
       <Header />
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-3 sm:pt-4 md:pt-5 pb-10 flex justify-center">
         <div className="w-full max-w-[720px] bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-6 sm:p-8 md:px-9 md:py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">

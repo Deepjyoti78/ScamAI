@@ -60,7 +60,7 @@ export default function AboutSection() {
         {pillars.map((pillar, index) => (
           <div
             key={index}
-            className="p-5 border border-[#E0DED4] bg-[#F0EEE6] rounded-none hover:border-[#141413] hover:bg-[#FAF9F5] transition-all duration-200 flex flex-col justify-between group"
+            className="p-5 border border-[#E0DED4] bg-[#FAF9F5] rounded-none hover:border-[#141413] transition-all duration-200 flex flex-col justify-between group shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
           >
             <div>
               <div className="w-8 h-8 rounded-none border border-[#E0DED4] bg-[#FAF9F5] flex items-center justify-center mb-4 group-hover:border-[#141413] transition-colors">
@@ -81,7 +81,7 @@ export default function AboutSection() {
       </div>
 
       {/* Stats Strip (Sharp Square Boxes) */}
-      <div className="border border-[#E0DED4] bg-[#F0EEE6] p-6 sm:p-7 rounded-none mb-10">
+      <div className="border border-[#E0DED4] bg-[#FAF9F5] p-6 sm:p-7 rounded-none mb-10 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E0DED4]">
           {stats.map((stat, i) => (
             <div key={i} className={`flex flex-col ${i > 0 ? 'pt-4 sm:pt-0 sm:pl-6' : ''}`}>

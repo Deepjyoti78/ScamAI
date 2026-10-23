@@ -58,7 +58,7 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-4">
             {apiConnected !== null && (
               <div
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[11px]"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none border border-[#E0DED4] bg-[#FAF9F5] text-[11px]"
                 title={apiConnected ? 'FastAPI ML backend is running and connected' : 'FastAPI backend is offline'}
               >
                 <span

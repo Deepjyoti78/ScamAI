@@ -201,7 +201,7 @@ export default function InvestigationResultPage() {
 
   if (!investigation) {
     return (
-      <div className="min-h-screen bg-[#F0EEE6]">
+      <div className="min-h-screen bg-[#FAF9F5]">
         <Header />
         <main className="max-w-[1200px] mx-auto px-6 lg:px-10 py-20 text-center border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
           <p className="text-[#77746C] text-sm mb-4">Investigation not found.</p>
@@ -228,7 +228,7 @@ export default function InvestigationResultPage() {
     typeof inv.confidence === 'number' ? (inv.confidence * 100).toFixed(2) : null;
 
   return (
-    <div className="min-h-screen bg-[#F0EEE6]">
+    <div className="min-h-screen bg-[#FAF9F5]">
       <Header />
       <main className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
         {/* Nav breadcrumb */}

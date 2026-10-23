@@ -30,7 +30,7 @@
 
 html {
   font-family: var(--font-sans);
-  background-color: #F0EEE6;
+  background-color: #FAF9F5;
   color: #141413;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -38,12 +38,12 @@ html {
 
 body {
   min-height: 100vh;
-  background-color: #F0EEE6;
+  background-color: #FAF9F5;
 }
 
 #root {
   min-height: 100vh;
-  background-color: #F0EEE6;
+  background-color: #FAF9F5;
 }
 
 /* Scrollbar */
@@ -51,7 +51,7 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F0EEE6;
+  background: #FAF9F5;
 }
 ::-webkit-scrollbar-thumb {
   background: #E0DED4;

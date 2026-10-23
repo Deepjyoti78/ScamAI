@@ -39,7 +39,7 @@ export default function InvestigationsListPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F0EEE6]">
+    <div className="min-h-screen bg-[#FAF9F5]">
       <Header />
       <main className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
         <div className="flex items-end justify-between mb-8">

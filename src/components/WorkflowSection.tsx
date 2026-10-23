@@ -83,7 +83,7 @@ export default function WorkflowSection() {
                   <span className="text-[11px] font-mono font-medium text-[#77746C]">
                     {step.num}
                   </span>
-                  <div className="w-8 h-8 rounded-none bg-[#F0EEE6] border border-[#E0DED4] flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-none bg-[#FAF9F5] border border-[#E0DED4] flex items-center justify-center shrink-0">
                     {step.icon}
                   </div>
                 </div>

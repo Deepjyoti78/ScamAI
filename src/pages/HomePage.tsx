@@ -6,7 +6,7 @@ import AboutSection from '../components/AboutSection';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#F0EEE6]">
+    <div className="min-h-screen bg-[#FAF9F5]">
       <Header />
       <main className="max-w-[1200px] mx-auto border-x border-[#E0DED4] bg-[#FAF9F5]">
         <HeroSection />
