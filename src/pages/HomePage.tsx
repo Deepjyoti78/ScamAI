@@ -14,8 +14,8 @@ export default function HomePage() {
         <RecentInvestigations />
         <AboutSection />
       </main>
-      <footer className="border-t border-[#E0DED4] bg-[#FAF9F5]">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-[#E0DED4] py-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <footer className="bg-[#FAF9F5]">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-t border-[#E0DED4] py-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <p className="text-[12px] text-[#77746C]">
             © 2026 ScamShield AI. All results are illustrative. Verify independently.
           </p>

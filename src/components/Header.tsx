@@ -29,8 +29,8 @@ export default function Header() {
   ];
 
   return (
-    <header className="w-full border-b border-[#E0DED4] bg-[#FAF9F5] sticky top-0 z-50">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-[#E0DED4]">
+    <header className="w-full bg-[#FAF9F5] sticky top-0 z-50">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-b border-[#E0DED4]">
         <div className="flex items-center justify-between h-[56px] md:h-[60px]">
 
           {/* Logo */}
@@ -89,8 +89,8 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-[#E0DED4] bg-[#FAF9F5]">
-          <div className="max-w-[1200px] mx-auto px-6 py-5 flex flex-col gap-4">
+        <div className="md:hidden bg-[#FAF9F5]">
+          <div className="max-w-[1200px] mx-auto px-6 py-5 flex flex-col gap-4 border-x border-b border-[#E0DED4]">
             {navLinks.map((link) => (
               <a
                 key={link.label}
