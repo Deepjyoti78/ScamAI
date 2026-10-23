@@ -369,42 +369,42 @@ export default function InvestigatePage() {
   return (
     <div className="min-h-screen bg-[#FAF9F5]">
       <Header />
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-3 sm:pt-4 md:pt-5 pb-10 flex justify-center">
-        <div className="w-full max-w-[720px] bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-6 sm:p-8 md:px-9 md:py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+      <main className="max-w-[1200px] mx-auto px-3 sm:px-6 pt-3 sm:pt-4 md:pt-5 pb-10 flex justify-center">
+        <div className="w-full max-w-[720px] bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-8 md:px-9 md:py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
           {/* Back button */}
           <button
             onClick={() => navigate(-1)}
-            className="text-[12px] text-[#77746C] hover:text-[#141413] transition-colors mb-3 flex items-center gap-1 cursor-pointer font-medium"
+            className="text-[13px] sm:text-[12px] text-[#77746C] hover:text-[#141413] transition-colors mb-3 flex items-center gap-1 cursor-pointer font-medium py-1"
           >
             ← Back
           </button>
 
           {/* Heading */}
-          <p className="text-[10px] font-semibold tracking-[0.16em] uppercase text-[#77746C] mb-2">
+          <p className="text-[11px] sm:text-[10px] font-semibold tracking-[0.16em] uppercase text-[#77746C] mb-2">
             ML & TRUST CHAIN INVESTIGATION
           </p>
-          <h1 className="font-serif text-[34px] sm:text-[40px] leading-[1.1] tracking-[-0.02em] text-[#141413] mb-3">
+          <h1 className="font-serif text-[28px] sm:text-[40px] leading-[1.1] tracking-[-0.02em] text-[#141413] mb-3">
             Investigate a job posting.
           </h1>
-          <p className="text-[13.5px] text-[#625F58] leading-relaxed mb-6 max-w-[600px]">
+          <p className="text-[14px] sm:text-[13.5px] text-[#625F58] leading-relaxed mb-6 max-w-[600px]">
             Submit a job description or a job URL to evaluate recruitment fraud probabilities and run cross-source Trust Chain checks.
           </p>
 
           {/* Input mode toggle */}
-          <div className="inline-flex border border-[#E0DED4] rounded-none p-[3px] bg-[#F0EEE6] mb-6 gap-1">
+          <div className="inline-flex border border-[#E0DED4] rounded-none p-[3px] bg-[#F0EEE6] mb-6 gap-1 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => {
                 setMode('text');
                 setError(null);
               }}
-              className={`flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-none transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-[13px] sm:text-[12px] font-medium px-4 py-2 sm:px-3.5 sm:py-1.5 rounded-none transition-all cursor-pointer ${
                 mode === 'text'
                   ? 'bg-[#141413] text-[#FAF9F5] shadow-sm'
                   : 'bg-transparent text-[#625F58] hover:text-[#141413]'
               }`}
             >
-              <FileText size={13} />
+              <FileText size={14} />
               Paste text
             </button>
             <button
@@ -413,13 +413,13 @@ export default function InvestigatePage() {
                 setMode('url');
                 setError(null);
               }}
-              className={`flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-none transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-[13px] sm:text-[12px] font-medium px-4 py-2 sm:px-3.5 sm:py-1.5 rounded-none transition-all cursor-pointer ${
                 mode === 'url'
                   ? 'bg-[#141413] text-[#FAF9F5] shadow-sm'
                   : 'bg-transparent text-[#625F58] hover:text-[#141413]'
               }`}
             >
-              <Link2 size={13} />
+              <Link2 size={14} />
               Job URL
             </button>
           </div>
@@ -429,19 +429,19 @@ export default function InvestigatePage() {
             {mode === 'url' && (
               <div className="border border-[#E0DED4] rounded-none p-4 bg-[#F0EEE6]">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em]">
+                  <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em]">
                     JOB POSTING URL <span className="text-[#c5291e]">*</span>
                   </label>
-                  <span className="text-[10px] text-[#77746C]">Public web link</span>
+                  <span className="text-[11px] sm:text-[10px] text-[#77746C]">Public web link</span>
                 </div>
                 <input
                   type="url"
                   value={jobUrl}
                   onChange={(e) => setJobUrl(e.target.value)}
                   placeholder="https://boards.greenhouse.io/... or https://company.com/careers/..."
-                  className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 text-[13px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] mb-2"
+                  className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 text-[14px] sm:text-[13px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] mb-2"
                 />
-                <p className="text-[11px] text-[#77746C] leading-relaxed">
+                <p className="text-[12px] sm:text-[11px] text-[#77746C] leading-relaxed">
                   ✦ ScamShield AI will fetch and extract readable job text for analysis. If the listing requires login or bot verification, paste the description below.
                 </p>
               </div>
@@ -450,7 +450,7 @@ export default function InvestigatePage() {
             {/* 1. Job Description (Textarea first, matching mockup) */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em]">
+                <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em]">
                   {mode === 'url' ? (
                     <>
                        JOB POSTING CONTENT <span className="text-[#77746C] font-normal lowercase">(optional fallback)</span>
@@ -468,7 +468,7 @@ export default function InvestigatePage() {
                 placeholder="Paste the full job posting description, requirements, benefits, or recruiter message here..."
                 rows={mode === 'url' ? 4 : 5}
                 required={mode === 'text'}
-                className="w-full border border-[#D7D4C9] rounded-none px-4 py-3 text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] resize-y leading-relaxed font-sans"
+                className="w-full border border-[#D7D4C9] rounded-none px-3.5 sm:px-4 py-3 text-[14px] sm:text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] resize-y leading-relaxed font-sans"
               />
               <div className="text-right text-[11px] text-[#77746C] mt-1 font-mono">
                 {jobDescription.length} / 5000
@@ -478,7 +478,7 @@ export default function InvestigatePage() {
             {/* 2. Optional Metadata Row: Title & Company */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
+                <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
                   JOB TITLE <span className="text-[#77746C] font-normal lowercase">(optional)</span>
                 </label>
                 <input
@@ -486,12 +486,12 @@ export default function InvestigatePage() {
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
                   placeholder="e.g. Data Entry Specialist"
-                  className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
+                  className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 text-[14px] sm:text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
+                <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
                   EMPLOYER / COMPANY <span className="text-[#77746C] font-normal lowercase">(optional)</span>
                 </label>
                 <input
@@ -499,21 +499,21 @@ export default function InvestigatePage() {
                   value={employer}
                   onChange={(e) => setEmployer(e.target.value)}
                   placeholder="e.g. Acme Logistics LLC"
-                  className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
+                  className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 text-[14px] sm:text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
                 />
               </div>
             </div>
 
             {/* 3. Employment Type */}
             <div>
-              <label className="block text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
+              <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
                 EMPLOYMENT TYPE <span className="text-[#77746C] font-normal lowercase">(optional)</span>
               </label>
               <div className="relative">
                 <select
                   value={employmentType}
                   onChange={(e) => setEmploymentType(e.target.value)}
-                  className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 pr-10 text-[13px] text-[#141413] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] appearance-none cursor-pointer"
+                  className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 pr-10 text-[14px] sm:text-[13px] text-[#141413] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] appearance-none cursor-pointer"
                 >
                   <option value="Full-time">Full-time</option>
                   <option value="Part-time">Part-time</option>
@@ -522,24 +522,24 @@ export default function InvestigatePage() {
                   <option value="Internship">Internship</option>
                   <option value="Other">Other / Unspecified</option>
                 </select>
-                <ChevronDown size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#77746C] pointer-events-none" />
+                <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#77746C] pointer-events-none" />
               </div>
             </div>
 
             {/* 4. Trust Chain Cross-Check Fields (Optional) */}
             <div className="border border-[#E0DED4] rounded-none p-4 sm:p-5 bg-[#F0EEE6] flex flex-col gap-3.5">
-              <div className="flex items-center justify-between pb-1">
-                <p className="text-[11px] font-bold text-[#141413] uppercase tracking-[0.06em]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-1 gap-1">
+                <p className="text-[12px] sm:text-[11px] font-bold text-[#141413] uppercase tracking-[0.06em]">
                   TRUST CHAIN CROSS-CHECK <span className="text-[#77746C] font-normal lowercase">(optional)</span>
                 </p>
-                <span className="text-[11px] text-[#77746C]">
+                <span className="text-[12px] sm:text-[11px] text-[#77746C]">
                   Help verify employer and recruiter details
                 </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-medium text-[#625F58] mb-1.5">
+                  <label className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
                     Official company website
                   </label>
                   <input
@@ -547,12 +547,12 @@ export default function InvestigatePage() {
                     value={companyWebsite}
                     onChange={(e) => setCompanyWebsite(e.target.value)}
                     placeholder="https://acmecorp.com"
-                    className="w-full border border-[#D7D4C9] rounded-none px-3 py-2 text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
+                    className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 sm:py-2 text-[13.5px] sm:text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-[#625F58] mb-1.5">
+                  <label className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
                     Recruiter email address
                   </label>
                   <input
@@ -560,14 +560,14 @@ export default function InvestigatePage() {
                     value={recruiterEmail}
                     onChange={(e) => setRecruiterEmail(e.target.value)}
                     placeholder="recruitment@acmecorp.com"
-                    className="w-full border border-[#D7D4C9] rounded-none px-3 py-2 text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
+                    className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 sm:py-2 text-[13.5px] sm:text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-medium text-[#625F58] mb-1.5">
+                  <label className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
                     Application destination URL
                   </label>
                   <input
@@ -575,12 +575,12 @@ export default function InvestigatePage() {
                     value={applicationUrl}
                     onChange={(e) => setApplicationUrl(e.target.value)}
                     placeholder="https://boards.greenhouse.io/acme/..."
-                    className="w-full border border-[#D7D4C9] rounded-none px-3 py-2 text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
+                    className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 sm:py-2 text-[13.5px] sm:text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-[#625F58] mb-1.5">
+                  <label className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
                     Recruiter message / InMail context
                   </label>
                   <input
@@ -588,7 +588,7 @@ export default function InvestigatePage() {
                     value={recruiterMessage}
                     onChange={(e) => setRecruiterMessage(e.target.value)}
                     placeholder="Optional context..."
-                    className="w-full border border-[#D7D4C9] rounded-none px-3 py-2 text-[12px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
+                    className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 sm:py-2 text-[13.5px] sm:text-[12px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
                   />
                 </div>
               </div>
@@ -600,9 +600,9 @@ export default function InvestigatePage() {
                 <div className="flex items-start gap-2.5">
                   <AlertCircle size={15} className="text-[#c5291e] mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-semibold text-[#c5291e] leading-snug">{error}</p>
+                    <p className="text-[12.5px] sm:text-[12px] font-semibold text-[#c5291e] leading-snug">{error}</p>
                     {errorDetail && (
-                      <p className="text-[11px] text-[#625F58] mt-1 font-mono break-all">{errorDetail}</p>
+                      <p className="text-[11.5px] sm:text-[11px] text-[#625F58] mt-1 font-mono break-all">{errorDetail}</p>
                     )}
                   </div>
                 </div>
@@ -610,14 +610,14 @@ export default function InvestigatePage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="text-[11px] font-medium text-[#c5291e] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-[12px] sm:text-[11px] font-medium text-[#c5291e] hover:underline flex items-center gap-1 cursor-pointer py-1"
                   >
                     <RefreshCw size={11} /> Retry submission
                   </button>
                   <button
                     type="button"
                     onClick={() => setError(null)}
-                    className="text-[11px] text-[#77746C] hover:text-[#141413] cursor-pointer"
+                    className="text-[12px] sm:text-[11px] text-[#77746C] hover:text-[#141413] cursor-pointer py-1"
                   >
                     Dismiss
                   </button>
@@ -628,14 +628,14 @@ export default function InvestigatePage() {
             {/* Running in background notice (if modal overlay was hidden) */}
             {loading && !isModalOpen && (
               <div className="border border-[#E0DED4] bg-[#F0EEE6] rounded-none p-3.5 flex items-center justify-between gap-3 animate-in fade-in duration-200">
-                <div className="flex items-center gap-2 text-[12px] text-[#141413]">
-                  <Loader2 size={13} className="animate-spin text-[#141413] flex-shrink-0" />
+                <div className="flex items-center gap-2 text-[13px] sm:text-[12px] text-[#141413]">
+                  <Loader2 size={14} className="animate-spin text-[#141413] flex-shrink-0" />
                   <span className="font-medium">Investigation running in background...</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(true)}
-                  className="text-[11px] font-medium text-[#141413] underline flex items-center gap-1 cursor-pointer flex-shrink-0 hover:text-[#625F58]"
+                  className="text-[12px] sm:text-[11px] font-medium text-[#141413] underline flex items-center gap-1 cursor-pointer flex-shrink-0 hover:text-[#625F58] py-1"
                 >
                   <Eye size={12} />
                   Reopen progress modal
@@ -647,16 +647,16 @@ export default function InvestigatePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#141413] hover:bg-[#30302D] active:bg-[#141413] text-[#FAF9F5] font-medium text-[13px] py-3.5 rounded-none flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="w-full bg-[#141413] hover:bg-[#30302D] active:bg-[#141413] text-[#FAF9F5] font-medium text-[14.5px] sm:text-[13px] py-4 sm:py-3.5 rounded-none flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
               {loading ? (
                 <>
-                  <Loader2 size={14} className="animate-spin" />
+                  <Loader2 size={15} className="animate-spin" />
                   Investigation running...
                 </>
               ) : (
                 <>
-                  {mode === 'url' ? 'Fetch & run investigation' : 'Run investigation'} <ArrowRight size={14} />
+                  {mode === 'url' ? 'Fetch & run investigation' : 'Run investigation'} <ArrowRight size={15} />
                 </>
               )}
             </button>

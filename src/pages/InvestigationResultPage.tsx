@@ -230,16 +230,16 @@ export default function InvestigationResultPage() {
   return (
     <div className="min-h-screen bg-[#FAF9F5]">
       <Header />
-      <main className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
         {/* Nav breadcrumb */}
         <button
           onClick={() => navigate(-1)}
-          className="text-[12px] text-[#77746C] hover:text-[#141413] transition-colors mb-5 flex items-center gap-1 cursor-pointer"
+          className="text-[13px] sm:text-[12px] text-[#77746C] hover:text-[#141413] transition-colors mb-5 flex items-center gap-1 cursor-pointer py-1 font-medium"
         >
           ← All investigations
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_330px] gap-10 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_330px] gap-8 lg:gap-12 items-start">
           {/* Main Content Area */}
           <div>
             {/* Header badges row: Eyebrow + Mode badge + Source badge */}
@@ -293,10 +293,10 @@ export default function InvestigationResultPage() {
             </div>
 
             {/* Title */}
-            <h1 className="font-serif text-[32px] md:text-[40px] leading-[1.12] tracking-[-0.02em] text-[#141413] mb-2">
+            <h1 className="font-serif text-[28px] sm:text-[34px] md:text-[40px] leading-[1.12] tracking-[-0.02em] text-[#141413] mb-2">
               {inv.jobTitle}
             </h1>
-            <p className="text-[14px] text-[#625F58] mb-4">
+            <p className="text-[14.5px] sm:text-[14px] text-[#625F58] mb-4">
               {inv.employer} · {inv.location}
             </p>
 

@@ -30,7 +30,7 @@ export default function Header() {
 
   return (
     <header className="w-full bg-[#FAF9F5] sticky top-0 z-50">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-b border-[#E0DED4]">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10 border-x border-b border-[#E0DED4]">
         <div className="flex items-center justify-between h-[56px] md:h-[60px]">
 
           {/* Logo */}
@@ -78,11 +78,11 @@ export default function Header() {
 
           {/* Mobile toggle */}
           <button
-            className="md:hidden p-1.5 rounded-none text-[#141413] hover:bg-[#F0EEE6] transition-colors"
+            className="md:hidden p-2 rounded-none text-[#141413] hover:bg-[#F0EEE6] active:bg-[#E8E6DC] transition-colors cursor-pointer"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle navigation"
           >
-            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
@@ -90,19 +90,19 @@ export default function Header() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden bg-[#FAF9F5]">
-          <div className="max-w-[1200px] mx-auto px-6 py-5 flex flex-col gap-4 border-x border-b border-[#E0DED4]">
+          <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-5 flex flex-col gap-3.5 border-x border-b border-[#E0DED4]">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="text-[14px] text-[#625F58] hover:text-[#141413] transition-colors"
+                className="text-[15px] font-medium text-[#141413] hover:text-[#625F58] py-1.5 transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </a>
             ))}
             {apiConnected !== null && (
-              <div className="flex items-center gap-2 px-1 text-[12px] text-[#625F58]">
+              <div className="flex items-center gap-2 px-1 py-1 text-[12.5px] text-[#625F58]">
                 <span
                   className={`w-2 h-2 rounded-none ${
                     apiConnected ? 'bg-[#2e7d32]' : 'bg-[#c5291e]'
@@ -119,7 +119,7 @@ export default function Header() {
                   setMobileOpen(false);
                   navigate('/investigate');
                 }}
-                className="w-full justify-center"
+                className="w-full justify-center h-[44px] text-[14px]"
               >
                 Investigate a job →
               </Button>

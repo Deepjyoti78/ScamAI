@@ -54,36 +54,36 @@ export default function RecentInvestigations() {
   }, []);
 
   return (
-    <section className="w-full px-6 lg:px-10 py-8 md:py-11 border-t border-[#E0DED4]">
+    <section className="w-full px-4 sm:px-6 lg:px-10 py-8 md:py-11 border-t border-[#E0DED4]">
       {/* Header row */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2.5 mb-5 sm:mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-5 sm:mb-6">
         <div>
-          <div className="flex flex-wrap items-baseline gap-2.5 sm:gap-3">
-            <h2 className="text-[28px] sm:text-[34px] md:text-[38px] font-serif font-normal text-[#141413] tracking-tight leading-[1.15]">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+            <h2 className="text-[26px] sm:text-[34px] md:text-[38px] font-serif font-normal text-[#141413] tracking-tight leading-[1.15]">
               Recent investigations
             </h2>
-            <span className="text-[12px] sm:text-[13px] text-[#77746C] font-sans font-normal">
+            <span className="text-[12.5px] sm:text-[13px] text-[#77746C] font-sans font-normal">
               {displayList.length} sample cases
             </span>
             {hasRealRecord && (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none text-[10px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-none text-[10.5px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
                 <span className="w-1.5 h-1.5 bg-[#16a34a]" />
                 Live Session Active
               </span>
             )}
           </div>
-          <p className="text-[12.5px] sm:text-[13px] text-[#625F58] font-sans mt-1">
+          <p className="text-[13px] sm:text-[13px] text-[#625F58] font-sans mt-1">
             Illustrative demo data — not real employer records.
           </p>
         </div>
 
         <button
-          className="inline-flex items-center gap-1 text-[13px] font-medium text-[#141413] hover:text-[#625F58] transition-colors cursor-pointer group self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 text-[13.5px] sm:text-[13px] font-medium text-[#141413] hover:text-[#625F58] transition-colors cursor-pointer group self-start sm:self-auto py-1"
           onClick={() => navigate('/investigations')}
         >
           View all
           <ArrowRight
-            size={13}
+            size={14}
             className="group-hover:translate-x-0.5 transition-transform"
           />
         </button>
@@ -106,31 +106,31 @@ export default function RecentInvestigations() {
             return (
               <div
                 key={inv.id}
-                className="grid grid-cols-12 items-center px-4 sm:px-5 py-3 sm:py-3.5 gap-3 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-[#F0EEE6]"
+                className="grid grid-cols-12 items-center px-3.5 sm:px-5 py-3.5 sm:py-3.5 gap-2.5 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-[#F0EEE6]"
                 onClick={() => navigate(`/investigations/${inv.id}`)}
               >
                 {/* Column 1: Document Icon + Job Title & Employer */}
-                <div className="col-span-8 sm:col-span-6 flex items-center gap-3 min-w-0 pr-2">
-                  <div className="w-8 h-8 rounded-none bg-[#FAF9F5] border border-[#E0DED4] flex items-center justify-center text-[#141413] shrink-0">
+                <div className="col-span-8 sm:col-span-6 flex items-center gap-3 min-w-0 pr-1 sm:pr-2">
+                  <div className="w-9 h-9 sm:w-8 sm:h-8 rounded-none bg-[#FAF9F5] border border-[#E0DED4] flex items-center justify-center text-[#141413] shrink-0">
                     <FileText className="w-4 h-4 text-[#141413]" strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0 flex flex-col justify-center">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[13.5px] sm:text-[14px] font-semibold text-[#141413] leading-snug group-hover:text-[#141413] transition-colors truncate">
+                      <span className="text-[14.5px] sm:text-[14px] font-semibold text-[#141413] leading-snug group-hover:text-[#141413] transition-colors truncate">
                         {inv.jobTitle}
                       </span>
                       {inv.isRealAnalysis && (
-                        <span className="inline-flex items-center gap-1 px-1 py-0.2 rounded-none text-[9px] font-mono uppercase bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none text-[9.5px] font-mono uppercase bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
                           <Sparkles size={8} />
                           Live ML
                         </span>
                       )}
                     </div>
-                    <span className="text-[11.5px] sm:text-[12px] text-[#625F58] mt-0.5 truncate">
+                    <span className="text-[12.5px] sm:text-[12px] text-[#625F58] mt-0.5 truncate">
                       {inv.employer}
                     </span>
-                    {/* Mobile-only percentage subtitle instead of location */}
-                    <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#625F58] mt-0.5">
+                    {/* Mobile-only percentage subtitle */}
+                    <div className="sm:hidden flex items-center gap-1.5 text-[12px] text-[#625F58] mt-0.5">
                       <span className="font-mono font-medium text-[#141413]">
                         {probPct}%
                       </span>
@@ -140,7 +140,7 @@ export default function RecentInvestigations() {
                 </div>
 
                 {/* Column 2: Percentage info instead of Location */}
-                <div className="hidden sm:flex sm:col-span-3 items-center gap-2 text-[12.5px] text-[#625F58] font-normal truncate">
+                <div className="hidden sm:flex sm:col-span-3 items-center gap-2 text-[13px] text-[#625F58] font-normal truncate">
                   <span className="font-mono font-medium text-[#141413]">
                     {probPct}%
                   </span>
@@ -150,10 +150,10 @@ export default function RecentInvestigations() {
                 </div>
 
                 {/* Column 3: Assessment Badge + Action Arrow */}
-                <div className="col-span-4 sm:col-span-3 flex items-center justify-end gap-2.5 sm:gap-3.5 shrink-0">
+                <div className="col-span-4 sm:col-span-3 flex items-center justify-end gap-2 sm:gap-3.5 shrink-0">
                   <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />
                   <ArrowRight
-                    size={13}
+                    size={14}
                     className="text-[#77746C] group-hover:text-[#141413] group-hover:translate-x-0.5 transition-all shrink-0"
                     strokeWidth={1.75}
                   />

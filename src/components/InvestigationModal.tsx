@@ -121,7 +121,7 @@ export default function InvestigationModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 bg-black/55 backdrop-blur-[4px] animate-backdrop-fade overflow-y-auto"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-2.5 sm:p-5 bg-black/55 backdrop-blur-[4px] animate-backdrop-fade overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="investigation-modal-title"
@@ -135,29 +135,29 @@ export default function InvestigationModal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="bg-[#FAF9F5] rounded-none shadow-[0_24px_70px_-15px_rgba(0,0,0,0.35)] border border-[#E0DED4] w-full max-h-[86vh] sm:max-h-[88vh] overflow-hidden flex flex-col focus:outline-none animate-modal-enter my-auto flex-shrink-0"
-        style={{ width: 'min(760px, calc(100vw - 32px))' }}
+        className="bg-[#FAF9F5] rounded-none shadow-[0_24px_70px_-15px_rgba(0,0,0,0.35)] border border-[#E0DED4] w-full max-h-[88vh] overflow-hidden flex flex-col focus:outline-none animate-modal-enter my-auto flex-shrink-0"
+        style={{ width: 'min(760px, calc(100vw - 20px))' }}
       >
         {/* Modal Header */}
-        <div className="px-6 md:px-8 pt-5 md:pt-6 pb-4 md:pb-5 border-b border-[#E0DED4] flex items-start justify-between gap-4 bg-[#FAF9F5] flex-shrink-0 z-20">
-          <div className="flex items-start gap-3.5">
+        <div className="px-4 sm:px-6 md:px-8 pt-4 md:pt-6 pb-3.5 md:pb-5 border-b border-[#E0DED4] flex items-start justify-between gap-3 sm:gap-4 bg-[#FAF9F5] flex-shrink-0 z-20">
+          <div className="flex items-start gap-3 sm:gap-3.5">
             <div
-              className={`w-11 h-11 md:w-12 md:h-12 rounded-none border flex items-center justify-center flex-shrink-0 transition-colors ${
+              className={`w-10 h-10 md:w-12 md:h-12 rounded-none border flex items-center justify-center flex-shrink-0 transition-colors ${
                 isComplete
                   ? 'bg-[#141413] text-[#FAF9F5] border-[#141413]'
                   : 'bg-[#F0EEE6] text-[#141413] border-[#E0DED4]'
               }`}
             >
-              {isComplete ? <Check size={22} className="stroke-[2.5]" /> : <Shield size={21} className="stroke-[1.8]" />}
+              {isComplete ? <Check size={20} className="stroke-[2.5]" /> : <Shield size={19} className="stroke-[1.8]" />}
             </div>
             <div>
               <h2
                 id="investigation-modal-title"
-                className="font-serif text-[23px] md:text-[27px] font-normal tracking-[-0.01em] text-[#141413] leading-tight"
+                className="font-serif text-[20px] sm:text-[23px] md:text-[27px] font-normal tracking-[-0.01em] text-[#141413] leading-tight"
               >
                 {isComplete ? 'Investigation Complete' : 'Running Investigation'}
               </h2>
-              <p className="text-[12px] md:text-[13px] text-[#625F58] mt-0.5">
+              <p className="text-[12.5px] sm:text-[12px] md:text-[13px] text-[#625F58] mt-0.5">
                 {isComplete
                   ? 'Analysis finished • Risk score and evidence dossier compiled.'
                   : 'Please wait while we analyze this job posting.'}
@@ -180,7 +180,7 @@ export default function InvestigationModal({
         </div>
 
         {/* 5-Card Progress Timeline List & Results */}
-        <div className="px-6 md:px-8 py-5 overflow-y-auto flex-1 flex flex-col gap-0 divide-y-0">
+        <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 overflow-y-auto flex-1 flex flex-col gap-0 divide-y-0">
           {/* Result Summary Box when complete */}
           {isComplete && result && (
             <div className="mb-6 p-4 sm:p-5 border rounded-none bg-[#F0EEE6] border-[#E0DED4] animate-page-enter">
@@ -223,20 +223,20 @@ export default function InvestigationModal({
 
               {/* Assessment Summary / Info */}
               <div className="pt-3.5">
-                <p className="text-[12px] sm:text-[13px] text-[#625F58] leading-relaxed">
+                <p className="text-[13px] sm:text-[13px] text-[#625F58] leading-relaxed">
                   {result.assessmentSummary}
                 </p>
 
                 {/* Detected Signals Pills */}
                 {result.topSuspiciousSignals && result.topSuspiciousSignals.length > 0 && (
                   <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] font-mono font-medium text-[#77746C] mr-1">
+                    <span className="text-[11.5px] sm:text-[11px] font-mono font-medium text-[#77746C] mr-1">
                       Key warning indicators:
                     </span>
                     {result.topSuspiciousSignals.slice(0, 4).map((signal, idx) => (
                       <span
                         key={idx}
-                        className="text-[11px] font-mono px-2 py-0.5 bg-[#FFFFFF] border border-[#E0DED4] text-[#141413] rounded-none shadow-2xs"
+                        className="text-[11.5px] sm:text-[11px] font-mono px-2 py-0.5 bg-[#FFFFFF] border border-[#E0DED4] text-[#141413] rounded-none shadow-2xs"
                       >
                         ⚠ {signal}
                       </span>
@@ -331,11 +331,11 @@ export default function InvestigationModal({
                 <div className="flex-1 min-w-0 pt-0.5">
                   <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-mono text-[#77746C] font-medium">
+                      <span className="text-[12px] sm:text-[11px] font-mono text-[#77746C] font-medium">
                         {stage.stepNumber}
                       </span>
                       <h3
-                        className={`text-[13px] md:text-[14px] font-semibold tracking-tight transition-colors ${
+                        className={`text-[14px] md:text-[14px] font-semibold tracking-tight transition-colors ${
                           isPending ? 'text-[#77746C]' : 'text-[#141413]'
                         }`}
                       >
@@ -378,7 +378,7 @@ export default function InvestigationModal({
                   </div>
 
                   {/* Description */}
-                  <p className="text-[11px] md:text-[12px] text-[#625F58] leading-relaxed">
+                  <p className="text-[12.5px] sm:text-[11.5px] md:text-[12px] text-[#625F58] leading-relaxed">
                     {stage.description}
                   </p>
 
@@ -393,7 +393,7 @@ export default function InvestigationModal({
                           }}
                         />
                       </div>
-                      <span className="text-[10px] font-mono font-medium text-[#77746C]">
+                      <span className="text-[11px] sm:text-[10px] font-mono font-medium text-[#77746C]">
                         {stage.progress ? `${stage.progress}%` : '60%'}
                       </span>
                     </div>
@@ -402,7 +402,7 @@ export default function InvestigationModal({
                   {/* Factual execution details note */}
                   {stage.detail && !isPending && (
                     <p
-                      className={`text-[11px] mt-1 font-mono break-words leading-tight ${
+                      className={`text-[12px] sm:text-[11px] mt-1.5 font-mono break-words leading-tight ${
                         isFailed ? 'text-[#c5291e]' : 'text-[#77746C]'
                       }`}
                     >
@@ -416,12 +416,12 @@ export default function InvestigationModal({
         </div>
 
         {/* Modal Footer / Completion & Error States */}
-        <div className="px-6 md:px-8 py-3.5 sm:py-4 bg-[#FAF9F5] border-t border-[#E0DED4] flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+        <div className="px-4 sm:px-6 md:px-8 py-3.5 sm:py-4 bg-[#FAF9F5] border-t border-[#E0DED4] flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
           {error ? (
             <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-[#c5291e]">
                 <AlertCircle size={15} className="flex-shrink-0" />
-                <span className="text-[12px] font-medium leading-tight">
+                <span className="text-[12.5px] font-medium leading-tight">
                   {error.message}
                 </span>
               </div>
@@ -430,7 +430,7 @@ export default function InvestigationModal({
                   <button
                     type="button"
                     onClick={onRetry}
-                    className="flex-1 sm:flex-none text-[12px] font-medium bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] px-3 py-1.5 rounded-none transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 sm:flex-none text-[13px] sm:text-[12px] font-medium bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] px-4 py-2 sm:px-3 sm:py-1.5 rounded-none transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <RefreshCw size={12} />
                     Retry investigation
@@ -439,17 +439,17 @@ export default function InvestigationModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="text-[12px] text-[#77746C] hover:text-[#141413] px-2 py-1.5 transition-colors cursor-pointer"
+                  className="text-[13px] sm:text-[12px] text-[#77746C] hover:text-[#141413] px-3 py-2 sm:py-1.5 transition-colors cursor-pointer"
                 >
                   Dismiss
                 </button>
               </div>
             </div>
           ) : isComplete ? (
-            <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-[#141413]">
-                <Check size={16} className="stroke-[2.5]" />
-                <span className="text-[13px] font-medium">
+                <Check size={16} className="stroke-[2.5] flex-shrink-0" />
+                <span className="text-[13px] font-medium leading-tight">
                   {result
                     ? `Analysis complete • ${(result.fraudProbability * 100).toFixed(1)}% estimated fraud probability`
                     : 'Investigation complete. Ready to view report.'}
@@ -460,7 +460,7 @@ export default function InvestigationModal({
                   <button
                     type="button"
                     onClick={onViewReport}
-                    className="flex-1 sm:flex-none text-[13px] font-medium bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] px-5 py-2.5 rounded-none transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                    className="w-full sm:w-auto text-[14px] sm:text-[13px] font-medium bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] px-5 py-3 sm:py-2.5 rounded-none transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                   >
                     Show full investigation <ArrowRight size={14} />
                   </button>
@@ -468,12 +468,12 @@ export default function InvestigationModal({
               </div>
             </div>
           ) : (
-            <div className="w-full flex items-center justify-between text-[11px] text-[#77746C]">
+            <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 text-[12px] sm:text-[11px] text-[#77746C]">
               <span>Real-time evaluation against EMSCAD ML model and Trust Chain</span>
               <button
                 type="button"
                 onClick={onClose}
-                className="text-[#77746C] hover:text-[#141413] underline cursor-pointer"
+                className="text-[#77746C] hover:text-[#141413] underline cursor-pointer py-0.5"
               >
                 Hide overlay (keeps running)
               </button>
