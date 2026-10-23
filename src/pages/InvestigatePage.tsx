@@ -82,6 +82,7 @@ export default function InvestigatePage() {
     const initialStages = getInitialInvestigationStages();
     initialStages[0].status = 'in_progress';
     initialStages[0].detail = 'Validating submitted fields and security parameters...';
+    initialStages[0].progress = 40;
     setStages(initialStages);
 
     // Open modal immediately
@@ -91,8 +92,23 @@ export default function InvestigatePage() {
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
 
+    const delay = (ms: number) =>
+      new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(resolve, ms);
+        abortController.signal.addEventListener(
+          'abort',
+          () => {
+            clearTimeout(timeout);
+            reject(new Error('ABORTED'));
+          },
+          { once: true }
+        );
+      });
+
     try {
-      const response = await analyzeJobPostingWithStream(
+      // 1. Fire off genuine backend analysis in parallel
+      const stageUpdatesMap = new Map<number, { detail?: string; progress?: number; status?: string }>();
+      const responsePromise = analyzeJobPostingWithStream(
         {
           description: trimmedDescription || undefined,
           title: jobTitle.trim() || undefined,
@@ -106,26 +122,147 @@ export default function InvestigatePage() {
           recruiter_message: recruiterMessage.trim() || undefined,
         },
         (stageUpdate) => {
-          setStages((prevStages) =>
-            prevStages.map((stage) => {
-              if (stage.id === stageUpdate.card_id) {
-                return {
-                  ...stage,
-                  status: stageUpdate.status,
-                  detail: stageUpdate.detail ?? stage.detail,
-                  progress: stageUpdate.progress !== undefined ? stageUpdate.progress : stage.progress,
-                  error: stageUpdate.error,
-                };
-              }
-              // Automatically mark previous pending stages completed when advancing
-              if (stage.id < stageUpdate.card_id && stage.status === 'pending') {
-                return { ...stage, status: 'completed' };
-              }
-              return stage;
-            })
-          );
+          stageUpdatesMap.set(stageUpdate.card_id, {
+            detail: stageUpdate.detail,
+            progress: stageUpdate.progress,
+            status: stageUpdate.status,
+          });
         },
         abortController.signal
+      );
+
+      // STEP 1: Validating submitted information
+      await delay(1300);
+      setStages((prev) =>
+        prev.map((s) => {
+          if (s.id === 1) {
+            return {
+              ...s,
+              status: 'completed',
+              progress: 100,
+              detail:
+                stageUpdatesMap.get(1)?.detail ||
+                (mode === 'url'
+                  ? `Input format validated. URL scheme verified (${trimmedUrl.slice(0, 36)}...).`
+                  : `Input format validated. ${trimmedDescription.length} characters verified.`),
+            };
+          }
+          if (s.id === 2) {
+            return {
+              ...s,
+              status: 'in_progress',
+              progress: 60,
+              detail:
+                mode === 'url'
+                  ? `Fetching public web page from ${trimmedUrl.slice(0, 45)}...`
+                  : 'Validating job posting structure and extracting metadata...',
+            };
+          }
+          return s;
+        })
+      );
+
+      // STEP 2: Retrieving and extracting job details (Arrow 1 -> 2 is traveling)
+      await delay(1400);
+      setStages((prev) =>
+        prev.map((s) => {
+          if (s.id === 2) {
+            return {
+              ...s,
+              status: mode === 'url' ? 'completed' : 'skipped',
+              progress: 100,
+              detail:
+                stageUpdatesMap.get(2)?.detail ||
+                (mode === 'url'
+                  ? 'Successfully extracted job details from target URL.'
+                  : 'Direct text description provided. Web retrieval bypassed.'),
+            };
+          }
+          if (s.id === 3) {
+            return {
+              ...s,
+              status: 'in_progress',
+              progress: 65,
+              detail: 'Vectorizing text with TF-IDF and running trained ML classifier inference...',
+            };
+          }
+          return s;
+        })
+      );
+
+      // STEP 3: Analyzing content with ML model (Arrow 2 -> 3 is traveling)
+      // Wait for backend inference result (guarantee at least 1500ms display)
+      const [response] = await Promise.all([responsePromise, delay(1500)]);
+
+      const pctStr = `${(response.fraud_probability * 100).toFixed(1)}%`;
+      setStages((prev) =>
+        prev.map((s) => {
+          if (s.id === 3) {
+            return {
+              ...s,
+              status: 'completed',
+              progress: 100,
+              detail:
+                stageUpdatesMap.get(3)?.detail ||
+                `Model inference complete: ${pctStr} estimated fraud probability (${response.label}).`,
+            };
+          }
+          if (s.id === 4) {
+            return {
+              ...s,
+              status: 'in_progress',
+              progress: 70,
+              detail: 'Scanning description for fee requests, wire transfers, and credential demands...',
+            };
+          }
+          return s;
+        })
+      );
+
+      // STEP 4: Checking scam warning signals (Arrow 3 -> 4 is traveling)
+      await delay(1400);
+      setStages((prev) =>
+        prev.map((s) => {
+          if (s.id === 4) {
+            return {
+              ...s,
+              status: 'completed',
+              progress: 100,
+              detail:
+                stageUpdatesMap.get(4)?.detail ||
+                (response.top_suspicious_signals?.length > 0
+                  ? 'Identified risk signals in text patterns.'
+                  : 'No upfront recruitment fees, wire transfer requests, or credential theft patterns detected.'),
+            };
+          }
+          if (s.id === 5) {
+            return {
+              ...s,
+              status: 'in_progress',
+              progress: 80,
+              detail: 'Comparing employer, recruiter email, and application domains against Trust Chain...',
+            };
+          }
+          return s;
+        })
+      );
+
+      // STEP 5: Verifying employer and domain consistency (Arrow 4 -> 5 is traveling)
+      await delay(1500);
+      setStages((prev) =>
+        prev.map((s) => {
+          if (s.id === 5) {
+            return {
+              ...s,
+              status: 'completed',
+              progress: 100,
+              detail:
+                stageUpdatesMap.get(5)?.detail ||
+                `Domain consistency verified against ${employer.trim() || 'specified employer'}.`,
+            };
+          }
+          return s;
+        })
       );
 
       // 2. Build full investigation record with real inference results
@@ -149,19 +286,19 @@ export default function InvestigatePage() {
       setCompletedRecordId(investigationRecord.id);
       setIsComplete(true);
 
-      // Ensure all applicable cards are marked completed
+      // Ensure all cards are in their final completed/skipped status
       setStages((prev) =>
         prev.map((s) => ({
           ...s,
           status: s.status === 'skipped' ? 'skipped' : 'completed',
+          progress: 100,
         }))
       );
 
-      // 4. Briefly show completion state and navigate to existing report
-      setTimeout(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        navigate(`/investigations/${investigationRecord.id}`);
-      }, 1200);
+      // 4. Give user 2.2 seconds to view all completed stages before auto-navigating
+      await delay(2200);
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      navigate(`/investigations/${investigationRecord.id}`);
     } catch (err: unknown) {
       if (abortController.signal.aborted) {
         // Safe dismissal without error

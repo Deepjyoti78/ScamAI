@@ -13,6 +13,8 @@ import {
   CheckSquare,
   ArrowRight,
   RefreshCw,
+  ArrowDown,
+  ChevronDown,
 } from 'lucide-react';
 import type { InvestigationStageState } from '../types/investigation';
 
@@ -165,29 +167,63 @@ export default function InvestigationModal({
             const isSkipped = stage.status === 'skipped';
             const isFailed = stage.status === 'failed';
             const isPending = stage.status === 'pending';
-
-            // Connecting line color: green if completed, gray otherwise
-            const lineColor = isCompleted ? 'bg-[#137333]' : 'bg-[#e4e4e0]';
+            const nextStage = stages[index + 1];
 
             // Box container styling (sharp square)
             let circleStyle = 'bg-[#fafaf9] text-[#767672] border-[#e4e4e0]';
             if (isCompleted) {
-              circleStyle = 'bg-[#e6f4ea] text-[#137333] border-[#ceead6]';
+              circleStyle = 'bg-[#e6f4ea] text-[#137333] border-[#ceead6] animate-check-pop';
             } else if (isInProgress) {
-              circleStyle = 'bg-[#e8f0fe] text-[#1a73e8] border-[#d2e3fc] ring-2 ring-[#e8f0fe]';
+              circleStyle = 'bg-[#e8f0fe] text-[#1a73e8] border-[#1a73e8] ring-2 ring-[#e8f0fe] animate-active-pulse';
             } else if (isSkipped) {
               circleStyle = 'bg-[#f0efed] text-[#9a9a9a] border-[#e4e4e0]';
             } else if (isFailed) {
               circleStyle = 'bg-[#fef2f2] text-[#c5291e] border-[#fcc9c6]';
             }
 
+            const isLineActive = isCompleted || isSkipped;
+            const isFlowingToNext = isLineActive && nextStage?.status === 'in_progress';
+            const isBothCompleted = isLineActive && nextStage && (nextStage.status === 'completed' || nextStage.status === 'skipped');
+
             return (
               <div key={stage.id} className="relative flex items-start gap-4 py-3.5 group">
                 {/* Vertical timeline connecting line */}
                 {!isLast && (
-                  <div
-                    className={`absolute left-[19px] md:left-[21px] top-[46px] bottom-[-2px] w-[2px] ${lineColor} transition-colors duration-300 z-0`}
-                  />
+                  <div className="absolute left-[19px] md:left-[21px] top-[44px] bottom-[-2px] w-[2px] z-0">
+                    {/* Background track line */}
+                    <div className="absolute inset-0 bg-[#e4e4e0]" />
+
+                    {/* Filled progress track */}
+                    <div
+                      className={`absolute top-0 left-0 w-full transition-all duration-500 ease-out ${
+                        isBothCompleted
+                          ? 'h-full bg-[#137333]'
+                          : isFlowingToNext
+                          ? 'h-full bg-gradient-to-b from-[#137333] via-[#1a73e8] to-[#1a73e8]'
+                          : isLineActive
+                          ? 'h-full bg-[#137333]'
+                          : 'h-0'
+                      }`}
+                    />
+
+                    {/* Animated downward arrow going from this step to the next in-progress step */}
+                    {isFlowingToNext && (
+                      <div className="absolute left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-arrow-down pointer-events-none">
+                        <div className="w-5 h-5 rounded-none bg-[#111110] text-white border border-[#111110] shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                          <ArrowDown size={11} className="stroke-[2.8]" />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Subtle static downward chevron when both stages are completed */}
+                    {isBothCompleted && (
+                      <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+                        <div className="w-4 h-4 rounded-none bg-[#e6f4ea] text-[#137333] border border-[#ceead6] flex items-center justify-center shadow-xs">
+                          <ChevronDown size={10} className="stroke-[2.5]" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {/* Square Stage Icon */}
