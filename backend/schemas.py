@@ -141,8 +141,36 @@ class TrustChainSummary(BaseModel):
     overall_trust_recommendation: str
 
 
+class WebResearchFinding(BaseModel):
+    """Structured evidence finding from external web search corroboration."""
+
+    query_performed: str = Field(description="Search query executed.")
+    source_title: str = Field(description="Title of the search result.")
+    source_url: str = Field(description="URL of the search result.")
+    source_domain: str = Field(description="Domain name of the search result.")
+    snippet: str = Field(description="Text snippet returned by search provider.")
+    retrieved_at: str = Field(description="ISO timestamp of when the search was executed.")
+    evidence_status: str = Field(
+        description="'official_vacancy_match_found', 'possible_vacancy_match', 'potential_domain_inconsistency', 'no_matching_vacancy_found_in_search', 'insufficient_evidence', 'not_configured', or 'search_unavailable'."
+    )
+    explanation: str = Field(description="Relevance explanation in relation to the claimed employer and vacancy.")
+    limitations: str = Field(description="Epistemic limitations of this evidence finding.")
+    comparison_detail: Optional[Dict[str, Any]] = Field(default=None, description="Details of comparisons performed.")
+
+
+class WebResearchSummary(BaseModel):
+    """Summary of external web research and employer corroboration."""
+
+    status: str = Field(description="'completed', 'not_configured', 'insufficient_evidence', or 'search_unavailable'.")
+    provider: str = Field(default="Brave Search API", description="Search provider name.")
+    total_queries_executed: int = Field(default=0)
+    findings_count: int = Field(default=0)
+    overall_evidence_assessment: str = Field(description="High-level synthesis of external web research.")
+    limitations_disclaimer: str = Field(description="Disclaimer regarding the nature and boundaries of web search snippets.")
+
+
 class JobAnalysisResponse(BaseModel):
-    """Response returned after ML inference and Trust Chain investigation."""
+    """Response returned after ML inference, Trust Chain investigation, and external web research."""
 
     prediction: int = Field(description="0 for Legitimate, 1 for Fraudulent based on 0.50 threshold.")
     label: str = Field(description="'Legitimate' or 'Fraudulent'.")
@@ -193,6 +221,16 @@ class JobAnalysisResponse(BaseModel):
     trust_chain_summary: Optional[TrustChainSummary] = Field(
         default=None,
         description="Summary metrics and recommendations across all trust chain checks.",
+    )
+
+    # External Web Research Evidence
+    web_research_findings: List[WebResearchFinding] = Field(
+        default_factory=list,
+        description="Live web search evidence findings on claimed employer and vacancy.",
+    )
+    web_research_summary: Optional[WebResearchSummary] = Field(
+        default=None,
+        description="Summary of external web research and corroboration.",
     )
 
 

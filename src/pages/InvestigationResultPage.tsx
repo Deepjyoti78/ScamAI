@@ -10,6 +10,9 @@ import {
   Sparkles,
   Link2,
   FileText,
+  Globe,
+  ExternalLink,
+  Search,
 } from 'lucide-react';
 import Header from '../components/Header';
 import Button from '../components/Button';
@@ -19,6 +22,7 @@ import type {
   Investigation,
   RiskLevel,
   TrustChainStatus,
+  WebResearchStatus,
 } from '../types/investigation';
 
 function TrustChainStatusBadge({ status }: { status: TrustChainStatus }) {
@@ -50,6 +54,61 @@ function TrustChainStatusBadge({ status }: { status: TrustChainStatus }) {
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
           <Info size={11} strokeWidth={2} />
           Not Checked
+        </span>
+      );
+  }
+}
+
+function WebResearchStatusBadge({ status }: { status: WebResearchStatus }) {
+  switch (status) {
+    case 'official_vacancy_match_found':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#c8e6c9] bg-[#f1f8f1] text-[#2e7d32] text-[11px] font-medium uppercase tracking-wider">
+          <CheckCircle size={11} strokeWidth={2} />
+          Official Vacancy Match
+        </span>
+      );
+    case 'possible_vacancy_match':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#d2e3fc] bg-[#e8f0fe] text-[#1a73e8] text-[11px] font-medium uppercase tracking-wider">
+          <Search size={11} strokeWidth={2} />
+          Possible Vacancy Match
+        </span>
+      );
+    case 'potential_domain_inconsistency':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#fcc9c6] bg-[#fef2f2] text-[#c5291e] text-[11px] font-medium uppercase tracking-wider">
+          <AlertTriangle size={11} strokeWidth={2} />
+          Potential Domain Inconsistency
+        </span>
+      );
+    case 'no_matching_vacancy_found_in_search':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
+          <Info size={11} strokeWidth={2} />
+          No Vacancy Match In Search
+        </span>
+      );
+    case 'not_configured':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#f5d5a0] bg-[#fdf3e7] text-[#b5640c] text-[11px] font-medium uppercase tracking-wider">
+          <AlertCircle size={11} strokeWidth={2} />
+          Search Not Configured
+        </span>
+      );
+    case 'search_unavailable':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#f5d5a0] bg-[#fdf3e7] text-[#b5640c] text-[11px] font-medium uppercase tracking-wider">
+          <AlertCircle size={11} strokeWidth={2} />
+          Search Unavailable
+        </span>
+      );
+    case 'insufficient_evidence':
+    default:
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
+          <Info size={11} strokeWidth={2} />
+          Insufficient Details for Search
         </span>
       );
   }
@@ -450,6 +509,139 @@ export default function InvestigationResultPage() {
               </div>
             )}
 
+            {/* Live Web Research & Employer Evidence Section */}
+            {(inv.webResearchSummary || (inv.webResearchFindings && inv.webResearchFindings.length > 0)) && (
+              <div className="mb-8 border border-[#e4e4e0] rounded-[4px] p-5 bg-white">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-[#e4e4e0]">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Globe size={15} className="text-[#111110]" />
+                      <h2 className="text-[13px] font-semibold text-[#111110] uppercase tracking-wider">
+                        Live Web Research & Employer Evidence
+                      </h2>
+                    </div>
+                    <p className="text-[12px] text-[#767672] mt-0.5">
+                      Independent web search via Brave Search API cross-referencing employer careers pages and vacancies.
+                    </p>
+                  </div>
+
+                  {inv.webResearchSummary && (
+                    <span className="text-[11px] font-mono text-[#555552] bg-[#fafaf9] border border-[#e4e4e0] px-2.5 py-1 rounded-[3px] self-start sm:self-auto">
+                      {inv.webResearchSummary.provider} · {inv.webResearchSummary.total_queries_executed} {inv.webResearchSummary.total_queries_executed === 1 ? 'query' : 'queries'}
+                    </span>
+                  )}
+                </div>
+
+                {/* Overall Evidence Assessment Callout */}
+                {inv.webResearchSummary && (
+                  <div className="mb-4 p-3.5 rounded-[3px] bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex flex-col gap-1.5">
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold text-[#111110] uppercase text-[10px] tracking-wider pt-0.5 flex-shrink-0">
+                        Assessment:
+                      </span>
+                      <span className="text-[#222220] leading-snug">
+                        {inv.webResearchSummary.overall_evidence_assessment}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#767672] leading-relaxed pt-1.5 border-t border-[#ebeae6]">
+                      ✦ <strong>Epistemic Separation Notice:</strong> {inv.webResearchSummary.limitations_disclaimer}
+                    </p>
+                  </div>
+                )}
+
+                {/* Findings List or Status State */}
+                {inv.webResearchFindings && inv.webResearchFindings.length > 0 ? (
+                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-[4px] overflow-hidden">
+                    {inv.webResearchFindings.map((finding, idx) => (
+                      <div key={idx} className="p-4 bg-white hover:bg-[#fafaf9] transition-colors">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <h3 className="text-[13px] font-semibold text-[#111110]">
+                                {finding.source_title || 'Web Search Result'}
+                              </h3>
+                              {finding.source_url && (
+                                <a
+                                  href={finding.source_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-0.5 text-[11px] text-[#1a73e8] hover:underline"
+                                  title="Open external source"
+                                >
+                                  <ExternalLink size={11} />
+                                </a>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 mt-1 text-[11px] font-mono text-[#767672] flex-wrap">
+                              {finding.source_domain && (
+                                <span className="bg-[#f0efed] text-[#333330] px-1.5 py-0.5 rounded text-[10px]">
+                                  domain: {finding.source_domain}
+                                </span>
+                              )}
+                              {finding.query_performed && (
+                                <span className="text-[#888884] truncate max-w-xs" title={finding.query_performed}>
+                                  query: &ldquo;{finding.query_performed}&rdquo;
+                                </span>
+                              )}
+                              {finding.retrieved_at && (
+                                <span className="text-[#9a9a9a]">
+                                  {new Date(finding.retrieved_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex-shrink-0">
+                            <WebResearchStatusBadge status={finding.evidence_status} />
+                          </div>
+                        </div>
+
+                        {/* Search Result Snippet */}
+                        {finding.snippet && (
+                          <div className="my-2.5 p-2.5 rounded-[3px] bg-[#f9f9f8] border border-[#e8e8e5] text-[12px] text-[#444440] font-sans leading-relaxed italic">
+                            &ldquo;{finding.snippet}&rdquo;
+                          </div>
+                        )}
+
+                        {/* Relevance & Findings */}
+                        <p className="text-[12px] text-[#222220] mb-2 leading-relaxed">
+                          <strong className="text-[#111110] font-medium">Observed Relevance:</strong> {finding.explanation}
+                        </p>
+
+                        {/* Epistemic Limitations & Guardrails */}
+                        {finding.limitations && (
+                          <div className="pt-2 border-t border-[#f0efed] text-[11px] text-[#767672] leading-relaxed">
+                            <strong className="text-[#555552] font-medium">Scope & Limitations:</strong>{' '}
+                            {finding.limitations}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Informational box when no queries executed or search unconfigured */
+                  <div className="p-4 rounded-[4px] border border-[#e4e4e0] bg-[#fafaf9] text-[12px] text-[#555552] leading-relaxed">
+                    {inv.webResearchSummary?.status === 'not_configured' && (
+                      <p>
+                        <strong>Provider Not Configured:</strong> The backend environment variable{' '}
+                        <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded border border-[#e4e4e0]">BRAVE_SEARCH_API_KEY</code>{' '}
+                        is not set. Live external corroboration was honestly reported as skipped. No artificial results were generated.
+                      </p>
+                    )}
+                    {inv.webResearchSummary?.status === 'insufficient_evidence' && (
+                      <p>
+                        <strong>Search Bypassed:</strong> No claimed employer name or official website was provided in the submission. Web search requires an employer name or domain to formulate targeted queries.
+                      </p>
+                    )}
+                    {inv.webResearchSummary?.status === 'search_unavailable' && (
+                      <p>
+                        <strong>Provider Temporarily Unavailable:</strong> The web research provider returned a rate limit, timeout, or service error. Fraud prediction and Trust Chain rules completed independently.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Evidence Signals */}
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
@@ -677,6 +869,21 @@ export default function InvestigationResultPage() {
                         {
                           label: 'ML Compute Latency',
                           value: `⚡ ${inv.inferenceTimeMs} ms (${(inv.inferenceTimeMs / 1000).toFixed(3)}s)`,
+                        },
+                      ]
+                    : []),
+                  ...(inv.webResearchSummary
+                    ? [
+                        {
+                          label: 'External Web Research',
+                          value:
+                            inv.webResearchSummary.status === 'completed'
+                              ? `Completed (${inv.webResearchSummary.total_queries_executed} queries via Brave Search)`
+                              : inv.webResearchSummary.status === 'not_configured'
+                              ? 'Not Configured (BRAVE_SEARCH_API_KEY missing)'
+                              : inv.webResearchSummary.status === 'insufficient_evidence'
+                              ? 'Bypassed (Insufficient employer data)'
+                              : 'Unavailable (Provider error or rate limit)',
                         },
                       ]
                     : []),

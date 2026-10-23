@@ -750,6 +750,10 @@ export function buildInvestigationRecord(
     trustChainFindings: response.trust_chain_findings,
     trustChainSummary: response.trust_chain_summary,
 
+    // External Web Research Evidence
+    webResearchFindings: response.web_research_findings,
+    webResearchSummary: response.web_research_summary,
+
     // Real ML model fields
     isRealAnalysis: true,
     prediction: response.prediction,

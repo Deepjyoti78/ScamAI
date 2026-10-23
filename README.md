@@ -23,10 +23,13 @@ college project/
 │   ├── evaluate.py              # Minority-class evaluation, PR-AUC, confusion matrix
 │   └── explain.py               # Linear feature attribution & signal ranking
 ├── backend/                     # FastAPI Backend Application
-│   ├── main.py                  # API endpoints (/health, /model/status, /api/investigations/analyze)
+│   ├── main.py                  # API endpoints (/health, /model/status, /api/investigations/analyze, streaming SSE)
 │   ├── schemas.py               # Pydantic request and response schemas
 │   └── services/
-│       └── prediction.py        # Model loading, inference, and attribution service
+│       ├── prediction.py        # Model loading, inference, and attribution service
+│       ├── trust_chain.py       # Deterministic rule checks and cross-domain alignment
+│       ├── url_extractor.py     # Safe SSR-resistant public job URL text extraction
+│       └── web_research.py      # Brave Search API live external corroboration service
 ├── models/                      # Trained model artifacts (.joblib)
 │   └── .gitkeep
 ├── reports/                     # Model evaluation reports and metrics
@@ -134,8 +137,43 @@ pytest -v
 
 ---
 
-## 8. Current Scope & Intentional Limitations
+## 8. Live Web Research & Employer Evidence Enrichment (Brave Search API)
+
+ScamShield AI enriches investigation reports with external web evidence corroboration using the Brave Search API:
+- **Official Documentation**: [https://api-dashboard.search.brave.com/documentation](https://api-dashboard.search.brave.com/documentation)
+- **API Endpoint**: `https://api.search.brave.com/res/v1/web/search`
+- **Backend Service**: `backend/services/web_research.py`
+- **Search Strategy**: Executes targeted, length-clamped queries (<=120 characters) targeting official employer careers pages (`"<employer>" "<title>" careers`, `site:<domain> careers`).
+- **Epistemic Restraint & Ethics**:
+  - Vacancy matches on an employer website corroborate that a role was publicly advertised; they do *not* verify recruiter identity, message authenticity, or deposit safety.
+  - Absence of a search result is *not* proof of fraud.
+  - Search evidence is maintained in a dedicated evidence section and is *never* averaged into the ML model's text fraud probability.
+  - ScamShield AI never invents, simulates, or fabricates search results when external research is unconfigured or unavailable.
+
+### Configuring `BRAVE_SEARCH_API_KEY`
+
+#### Local Development
+1. Obtain an API key from the [Brave Search API Dashboard](https://api-dashboard.search.brave.com/).
+2. Set the key in your local PowerShell session or backend `.env`:
+   ```powershell
+   $env:BRAVE_SEARCH_API_KEY="your-brave-search-key"
+   ```
+3. If omitted or empty, the backend operates normally with web research marked as `not_configured`.
+
+#### Render Production Deployment
+1. Navigate to your Web Service on [Render](https://dashboard.render.com).
+2. Go to **Environment** > **Environment Variables**.
+3. Add a secret:
+   - Key: `BRAVE_SEARCH_API_KEY`
+   - Value: `your-brave-search-key`
+4. Click **Save Changes**. Render redeploys the service automatically.
+
+> **Security Reminder**: Never expose `BRAVE_SEARCH_API_KEY` in Vite frontend environments, client-side bundles, or git repositories. The React frontend interacts with the backend solely via `/api/investigations/analyze` or `/api/investigations/stream`.
+
+---
+
+## 9. Current Scope & Intentional Limitations
 
 - **No Synthetic Data**: The system does not fabricate artificial model weights or mock training data. Model inference requires training on the genuine EMSCAD dataset.
-- **Explainability**: Explanations use exact linear feature attribution ($x_i \cdot w_i$) from the TF-IDF and Logistic Regression weights. SHAP integration is reserved for future non-linear models.
-- **External Services**: Web scraping, live recruiter email MX record verification, and database storage are deliberately excluded from this initial baseline setup.
+- **Explainability**: Explanations use exact linear feature attribution ($x_i \cdot w_i$) from the TF-IDF and Logistic Regression weights.
+- **Search Scope**: Web research uses search result snippets and titles to corroborate public vacancy presence; it does not crawl entire corporate networks or execute client-side scripts. Absence of search results is explicitly disclaimed as insufficient evidence of fraud.

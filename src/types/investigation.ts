@@ -55,6 +55,37 @@ export interface BackendJobAnalysisRequest {
   recruiter_message?: string;
 }
 
+export type WebResearchStatus =
+  | 'official_vacancy_match_found'
+  | 'possible_vacancy_match'
+  | 'potential_domain_inconsistency'
+  | 'no_matching_vacancy_found_in_search'
+  | 'insufficient_evidence'
+  | 'not_configured'
+  | 'search_unavailable';
+
+export interface WebResearchFinding {
+  query_performed: string;
+  source_title: string;
+  source_url: string;
+  source_domain: string;
+  snippet: string;
+  retrieved_at: string;
+  evidence_status: WebResearchStatus;
+  explanation: string;
+  limitations: string;
+  comparison_detail?: Record<string, unknown>;
+}
+
+export interface WebResearchSummary {
+  status: 'completed' | 'not_configured' | 'insufficient_evidence' | 'search_unavailable';
+  provider: string;
+  total_queries_executed: number;
+  findings_count: number;
+  overall_evidence_assessment: string;
+  limitations_disclaimer: string;
+}
+
 export interface BackendJobAnalysisResponse {
   prediction: number;
   label: string;
@@ -79,6 +110,10 @@ export interface BackendJobAnalysisResponse {
   // Trust Chain Evidence Checks
   trust_chain_findings?: TrustChainFinding[];
   trust_chain_summary?: TrustChainSummary;
+
+  // External Web Research Evidence
+  web_research_findings?: WebResearchFinding[];
+  web_research_summary?: WebResearchSummary;
 }
 
 export interface EvidenceSignal {
@@ -122,6 +157,10 @@ export interface Investigation {
   recruiterMessage?: string;
   trustChainFindings?: TrustChainFinding[];
   trustChainSummary?: TrustChainSummary;
+
+  // External Web Research metadata
+  webResearchFindings?: WebResearchFinding[];
+  webResearchSummary?: WebResearchSummary;
 
   // Real ML inference metadata
   isRealAnalysis?: boolean;

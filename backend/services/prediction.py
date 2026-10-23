@@ -16,6 +16,7 @@ import joblib
 from backend.schemas import JobAnalysisRequest, JobAnalysisResponse, SignalAttribution
 from backend.services.trust_chain import execute_trust_chain_investigation
 from backend.services.url_extractor import extract_job_posting_from_url
+from backend.services.web_research import execute_web_research
 from ml.explain import explain_prediction
 from ml.preprocess import extract_combined_text_from_dict
 
@@ -325,6 +326,27 @@ class PredictionService:
                 "Manual identity verification is recommended before sharing applicant details."
             )
 
+        # Execute external web research (Brave Search API)
+        web_findings, web_summary = execute_web_research(
+            employer_name=req.employer_name,
+            job_title=effective_title or req.title,
+            company_website=req.company_website,
+            recruiter_email=req.recruiter_email,
+            application_url=req.application_url or (req.job_url if source_type == "pasted_text" else None),
+        )
+
+        # Flag domain inconsistency from web research if ML model was auto-cleared
+        web_inconsistencies = [
+            f for f in web_findings if f.get("evidence_status") == "potential_domain_inconsistency"
+        ]
+        if web_inconsistencies and review_decision == "auto_cleared":
+            review_decision = "review_recommended"
+            risk_level = "medium"
+            decision_rationale += (
+                " Additionally, external web research identified an apparent domain inconsistency "
+                "with the claimed employer's web presence. Verify official communication channels before proceeding."
+            )
+
         # Calculate exact model compute time in milliseconds
         inference_time_ms = round((time.perf_counter() - start_time) * 1000, 2)
 
@@ -348,6 +370,8 @@ class PredictionService:
             final_url=final_url,
             trust_chain_findings=trust_findings,
             trust_chain_summary=trust_summary,
+            web_research_findings=web_findings,
+            web_research_summary=web_summary,
         )
 
     async def stream_analyze_job(self, req: JobAnalysisRequest) -> AsyncGenerator[str, None]:
@@ -799,10 +823,20 @@ class PredictionService:
                 "card_id": 5,
                 "key": "trust_chain",
                 "title": "Verifying employer and domain consistency",
-                "description": "Comparing employer, recruiter, and application details.",
+                "description": "Comparing employer, recruiter, and application details with external web corroboration.",
                 "status": "in_progress",
-                "detail": "Cross-checking employer domain, recruiter email, and application destination...",
+                "detail": "Cross-checking employer domain, recruiter email, and running live web corroboration...",
             },
+        )
+
+        # Run external web research concurrently with thread pool
+        web_findings, web_summary = await asyncio.to_thread(
+            execute_web_research,
+            employer_name=req.employer_name,
+            job_title=effective_title,
+            company_website=req.company_website,
+            recruiter_email=req.recruiter_email,
+            application_url=req.application_url or (req.job_url if source_type == "pasted_text" else None),
         )
 
         domain_findings = [f for f in trust_findings if f["check_id"] in ("recruiter_email_domain", "application_destination", "data_completeness")]
@@ -816,11 +850,32 @@ class PredictionService:
         else:
             domain_detail = "Domain consistency verified across supplied employer, email, and application channels."
 
+        # Web research detail snippet for Card 5
+        web_status = web_summary.get("status")
+        if web_status == "completed":
+            official_matches = [f for f in web_findings if f.get("evidence_status") == "official_vacancy_match_found"]
+            inconsistencies = [f for f in web_findings if f.get("evidence_status") == "potential_domain_inconsistency"]
+            if official_matches:
+                web_note = f"External web search: Official match corroborated ({official_matches[0].get('source_domain')})."
+            elif inconsistencies:
+                web_note = f"External web search: Domain inconsistency noted ({inconsistencies[0].get('source_domain')})."
+            else:
+                web_note = "External web search: Completed (no direct matching vacancy found)."
+        elif web_status == "not_configured":
+            web_note = "External web research skipped (BRAVE_SEARCH_API_KEY not configured)."
+        elif web_status == "insufficient_evidence":
+            web_note = "External web research skipped (insufficient employer details provided)."
+        else:
+            web_note = f"External web research: {web_summary.get('overall_evidence_assessment', 'Unavailable')}."
+
         critical_trust_concerns = [
             f for f in trust_findings if f["status"] == "concern_observed" and f["severity"] == "critical"
         ]
         warning_trust_concerns_all = [
             f for f in trust_findings if f["status"] == "concern_observed" and f["severity"] == "warning"
+        ]
+        web_inconsistencies_all = [
+            f for f in web_findings if f.get("evidence_status") == "potential_domain_inconsistency"
         ]
 
         if critical_trust_concerns and review_decision != "flagged_suspicious":
@@ -836,15 +891,22 @@ class PredictionService:
                 f"High-risk factual demand detected ({concerned_titles}). Even though NLP textual patterns yielded a {pct_str} "
                 f"fraud score ({label}), direct requests for upfront payment or credentials violate safety standards. Do not comply with these requests."
             )
-        elif warning_trust_concerns_all and review_decision == "auto_cleared":
+        elif (warning_trust_concerns_all or web_inconsistencies_all) and review_decision == "auto_cleared":
             review_decision = "review_recommended"
             risk_level = "medium"
-            concerned_titles = ", ".join([w["title"] for w in warning_trust_concerns_all])
-            decision_rationale = (
-                f"The ML text model evaluated the description as Legitimate ({pct_str} fraud probability), "
-                f"but an independent Trust Chain check observed cross-source domain inconsistency ({concerned_titles}). "
-                "Manual identity verification is recommended before sharing applicant details."
-            )
+            if warning_trust_concerns_all:
+                concerned_titles = ", ".join([w["title"] for w in warning_trust_concerns_all])
+                decision_rationale = (
+                    f"The ML text model evaluated the description as Legitimate ({pct_str} fraud probability), "
+                    f"but an independent Trust Chain check observed cross-source domain inconsistency ({concerned_titles}). "
+                    "Manual identity verification is recommended before sharing applicant details."
+                )
+            else:
+                decision_rationale = (
+                    f"The ML text model evaluated the description as Legitimate ({pct_str} fraud probability), "
+                    "but external web research observed an apparent domain inconsistency with the claimed employer. "
+                    "Manual identity verification is recommended before sharing applicant details."
+                )
 
         yield sse(
             "stage_update",
@@ -852,9 +914,9 @@ class PredictionService:
                 "card_id": 5,
                 "key": "trust_chain",
                 "title": "Verifying employer and domain consistency",
-                "description": "Comparing employer, recruiter, and application details.",
+                "description": "Comparing employer, recruiter, and application details with external web corroboration.",
                 "status": "completed",
-                "detail": domain_detail,
+                "detail": f"{domain_detail} {web_note}".strip(),
             },
         )
         await asyncio.sleep(0.04)
@@ -883,6 +945,8 @@ class PredictionService:
             final_url=final_url,
             trust_chain_findings=trust_findings,
             trust_chain_summary=trust_summary,
+            web_research_findings=web_findings,
+            web_research_summary=web_summary,
         )
 
         yield sse("complete", final_response.model_dump())
