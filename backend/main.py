@@ -32,22 +32,34 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Enable CORS for React frontend (Vite default is http://localhost:5173 or http://127.0.0.1:5173)
+# Enable CORS for React frontend (Vercel production/preview deployments & local development)
+ALLOWED_ORIGINS = [
+    # Production and preview Vercel deployments
+    "https://scamai.vercel.app",
+    "https://scamai-mljh22p4w-deepjyotis-projects-29b71e0c.vercel.app",
+    "https://scam-shield-ai.vercel.app",
+    # Local development origins
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
+
+# Narrowly scoped regex for Vercel HTTPS preview domains (scamai-*.vercel.app) and local development
+CORS_ORIGIN_REGEX = (
+    r"^(https:\/\/(scamai|scamai-[a-zA-Z0-9_-]+)\.vercel\.app|"
+    r"http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$"
+)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
-    ],
-    allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:[0-9]+)?",
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=CORS_ORIGIN_REGEX,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS", "HEAD"],
     allow_headers=["*"],
-    allow_private_network=True,
 )
 
 
