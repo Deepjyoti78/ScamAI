@@ -1,0 +1,68 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node dependencies & builds
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Python Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+
+# Raw Data (EMSCAD Dataset)
+data/*.csv
+data/*.zip
+data/*.tar.gz
+!data/README.md
+
+# Generated ML Artifacts
+models/*.pkl
+models/*.onnx
+!models/baseline_model.joblib
+!models/.gitkeep
+
+# Generated Reports
+!reports/*.json
+reports/*.txt
+reports/*.png
+!reports/.gitkeep
+
+# Playwright Test Artifacts
+.playwright-mcp/

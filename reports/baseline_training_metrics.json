@@ -1,0 +1,19 @@
+{
+  "dataset_rows": 17880,
+  "train_samples": 14304,
+  "test_samples": 3576,
+  "test_fraud_actual": 173,
+  "test_legit_actual": 3403,
+  "confusion_matrix": {
+    "true_negatives": 3341,
+    "false_positives": 62,
+    "false_negatives": 15,
+    "true_positives": 158
+  },
+  "overall_accuracy": 0.9784675615212528,
+  "fraud_precision": 0.7181818181818181,
+  "fraud_recall": 0.9132947976878613,
+  "fraud_f1": 0.8040712468193384,
+  "roc_auc": 0.9895179194148651,
+  "pr_auc_average_precision": 0.9279323602665298
+}
