@@ -1,44 +1,37 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, MapPin, Clock, Sparkles } from 'lucide-react';
+import { ArrowRight, MapPin, FileText, Sparkles } from 'lucide-react';
 import { demoInvestigations } from '../data/demoInvestigations';
 import type { Investigation, RiskLevel } from '../types/investigation';
 
 function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
-  const styles: Record<RiskLevel, { badge: string; dot: string }> = {
-    low: {
-      badge: 'text-[#2e7d32] bg-[#f1f8f1] border-[#c8e6c9]',
-      dot: 'bg-[#2e7d32]',
-    },
-    medium: {
-      badge: 'text-[#b5640c] bg-[#fdf3e7] border-[#f5d5a0]',
-      dot: 'bg-[#b5640c]',
-    },
-    high: {
-      badge: 'text-[#c5291e] bg-[#fef2f2] border-[#fcc9c6]',
-      dot: 'bg-[#c5291e]',
-    },
-    unknown: {
-      badge: 'text-[#6b6b6b] bg-[#f7f7f6] border-[#e4e4e0]',
-      dot: 'bg-[#9a9a9a]',
-    },
+  // Normalize badge text to match reference image conventions (LOWER RISK, SUSPICIOUS, NEEDS REVIEW)
+  let text = label.toUpperCase();
+  if (level === 'low' && !text.includes('RISK')) text = 'LOWER RISK';
+  if (level === 'high' && !text.includes('SUSPICIOUS')) text = 'SUSPICIOUS';
+  if (level === 'medium' && !text.includes('REVIEW')) text = 'NEEDS REVIEW';
+
+  const styles: Record<RiskLevel, string> = {
+    low: 'text-[#16a34a] bg-[#f0fdf4] border-[#86efac]',
+    medium: 'text-[#d97706] bg-[#fffbeb] border-[#fed7aa]',
+    high: 'text-[#dc2626] bg-[#fef2f2] border-[#fca5a5]',
+    unknown: 'text-neutral-600 bg-neutral-50 border-neutral-200',
   };
 
   const style = styles[level] || styles.unknown;
 
   return (
     <span
-      className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-[3px] tracking-wider uppercase border inline-flex items-center gap-1.5 flex-shrink-0 ${style.badge}`}
+      className={`text-[11px] font-bold px-3.5 py-1 rounded-lg tracking-wider uppercase border text-center whitespace-nowrap min-w-[105px] sm:min-w-[115px] ${style}`}
     >
-      <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-      {label}
+      {text}
     </span>
   );
 }
 
 export default function RecentInvestigations() {
   const navigate = useNavigate();
-  const [displayList, setDisplayList] = useState<Investigation[]>(demoInvestigations.slice(0, 4));
+  const [displayList, setDisplayList] = useState<Investigation[]>(demoInvestigations.slice(0, 3));
   const [hasRealRecord, setHasRealRecord] = useState(false);
 
   useEffect(() => {
@@ -48,11 +41,11 @@ export default function RecentInvestigations() {
         const real: Investigation[] = JSON.parse(stored);
         if (real.length > 0) {
           setHasRealRecord(true);
-          // Combine live investigations with demo records, max 4 total
+          // Combine live investigations with demo records, max 3 total
           const remainingDemo = demoInvestigations.filter(
             (demo) => !real.some((r) => r.id === demo.id)
           );
-          setDisplayList([...real.slice(0, 3), ...remainingDemo].slice(0, 4));
+          setDisplayList([...real.slice(0, 3), ...remainingDemo].slice(0, 3));
         }
       }
     } catch {
@@ -61,105 +54,91 @@ export default function RecentInvestigations() {
   }, []);
 
   return (
-    <section className="w-full px-6 lg:px-10 py-14 md:py-16 border-t border-[#e4e4e0]">
+    <section className="w-full px-6 lg:px-10 py-12 md:py-16 border-t border-[#e4e4e0]">
       {/* Header row */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-6">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-[11px] font-mono uppercase tracking-widest text-[#767672]">
-              Case Records
+          <div className="flex flex-wrap items-baseline gap-2.5 sm:gap-3">
+            <h2 className="text-[28px] sm:text-[34px] font-serif font-normal text-neutral-900 tracking-tight leading-none">
+              Recent investigations
+            </h2>
+            <span className="text-[13px] sm:text-[14px] text-neutral-500 font-sans font-normal">
+              {displayList.length} sample cases
             </span>
             {hasRealRecord && (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-[#f1f8f1] text-[#2e7d32] border border-[#c8e6c9]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2e7d32]" />
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a]" />
                 Live Session Active
               </span>
             )}
           </div>
-          <h2 className="text-[20px] sm:text-[22px] font-semibold text-[#111110] tracking-tight">
-            Recent investigations
-          </h2>
-          <p className="text-[12px] sm:text-[13px] text-[#767672] mt-0.5">
-            Verified benchmark scenarios and live fraud risk assessments
+          <p className="text-[13px] sm:text-[14px] text-neutral-500 font-sans mt-2">
+            Illustrative demo data — not real employer records.
           </p>
         </div>
 
         <button
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#555552] hover:text-[#111110] transition-colors cursor-pointer group self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 text-[14px] font-medium text-neutral-900 hover:text-neutral-600 transition-colors cursor-pointer group self-start sm:self-auto"
           onClick={() => navigate('/investigations')}
         >
-          View all records
+          View all
           <ArrowRight
-            size={13}
+            size={14}
             className="group-hover:translate-x-0.5 transition-transform"
           />
         </button>
       </div>
 
-      {/* Structured investigations table card */}
-      <div className="border border-[#e4e4e0] rounded-[6px] bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-        {/* Table column headers (strictly aligned) */}
-        <div className="hidden sm:grid grid-cols-12 items-center gap-4 px-4 py-2.5 bg-[#fafaf9] border-b border-[#e4e4e0] text-[11px] font-semibold tracking-[0.06em] uppercase text-[#767672]">
-          <div className="sm:col-span-5 md:col-span-5">Role & Employer</div>
-          <div className="sm:col-span-3 md:col-span-3">Location</div>
-          <div className="hidden md:block md:col-span-2">Date</div>
-          <div className="sm:col-span-4 md:col-span-2 text-right">Assessment</div>
-        </div>
-
-        {/* Rows */}
-        <div className="divide-y divide-[#e4e4e0]">
+      {/* Card container matching reference design */}
+      <div className="border border-neutral-200/90 rounded-2xl bg-white overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+        <div className="divide-y divide-neutral-100">
           {displayList.map((inv) => (
             <div
               key={inv.id}
-              className="grid grid-cols-12 items-center gap-3 sm:gap-4 py-3.5 px-4 cursor-pointer group transition-colors duration-150 hover:bg-[#fafaf9]"
+              className="grid grid-cols-12 items-center px-5 sm:px-7 py-4.5 sm:py-5 gap-3 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-neutral-50/60"
               onClick={() => navigate(`/investigations/${inv.id}`)}
             >
-              {/* Column 1: Role & Employer */}
-              <div className="col-span-8 sm:col-span-5 md:col-span-5 flex flex-col min-w-0 pr-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-[13.5px] font-medium text-[#111110] leading-tight truncate group-hover:text-black transition-colors">
-                    {inv.jobTitle}
-                  </span>
-                  {inv.isRealAnalysis && (
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-[2px] text-[9.5px] font-mono uppercase bg-[#e8f0fe] text-[#1a73e8] border border-[#d2e3fc] flex-shrink-0">
-                      <Sparkles size={9} />
-                      Live ML
-                    </span>
-                  )}
+              {/* Column 1: Document Icon + Job Title & Employer */}
+              <div className="col-span-8 sm:col-span-6 flex items-center gap-3.5 sm:gap-4 min-w-0 pr-2">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white border border-neutral-200/90 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-center justify-center text-neutral-700 shrink-0">
+                  <FileText className="w-5 h-5 text-neutral-700" strokeWidth={1.5} />
                 </div>
-                {/* Desktop subtitle */}
-                <span className="hidden sm:block text-[12px] text-[#767672] mt-0.5 truncate">
-                  {inv.employer}
-                </span>
-                {/* Mobile combined subtitle */}
-                <span className="sm:hidden text-[11.5px] text-[#767672] mt-0.5 truncate">
-                  {inv.employer} · {inv.location || 'Remote'}
-                </span>
+                <div className="min-w-0 flex flex-col justify-center">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[15px] sm:text-[16px] font-semibold text-neutral-900 leading-snug group-hover:text-black transition-colors truncate">
+                      {inv.jobTitle}
+                    </span>
+                    {inv.isRealAnalysis && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono uppercase bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                        <Sparkles size={10} />
+                        Live ML
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[13px] text-neutral-500 mt-0.5 truncate">
+                    {inv.employer}
+                  </span>
+                  {/* Mobile-only location subtitle */}
+                  <div className="sm:hidden flex items-center gap-1.5 text-[12px] text-neutral-500 mt-1">
+                    <MapPin size={12} className="text-neutral-400 shrink-0" />
+                    <span className="truncate">{inv.location || 'Remote'}</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Column 2: Location (Strictly locked to column 2 on sm and above) */}
-              <div className="hidden sm:flex sm:col-span-3 md:col-span-3 items-center gap-1.5 text-[12px] text-[#555552] truncate">
-                <MapPin size={13} className="text-[#9a9a9a] flex-shrink-0" />
+              {/* Column 2: Location (Desktop column aligned) */}
+              <div className="hidden sm:flex sm:col-span-3 items-center gap-2 text-[13.5px] text-neutral-600 font-normal truncate">
+                <MapPin size={15} className="text-neutral-400 shrink-0" strokeWidth={1.75} />
                 <span className="truncate">{inv.location || 'Remote'}</span>
               </div>
 
-              {/* Column 3: Date Analyzed */}
-              <div className="hidden md:flex md:col-span-2 items-center gap-1.5 text-[11.5px] text-[#767672]">
-                <Clock size={12} className="text-[#a0a09c] flex-shrink-0" />
-                <span>
-                  {new Date(inv.submittedAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </span>
-              </div>
-
-              {/* Column 4: Assessment Badge + Action Arrow */}
-              <div className="col-span-4 sm:col-span-4 md:col-span-2 flex items-center justify-end gap-2.5 sm:gap-3 flex-shrink-0">
+              {/* Column 3: Assessment Badge + Action Arrow */}
+              <div className="col-span-4 sm:col-span-3 flex items-center justify-end gap-3 sm:gap-4 shrink-0">
                 <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />
                 <ArrowRight
-                  size={14}
-                  className="text-[#c5c5c1] group-hover:text-[#111110] group-hover:translate-x-0.5 transition-all flex-shrink-0"
+                  size={16}
+                  className="text-neutral-400 group-hover:text-neutral-900 group-hover:translate-x-0.5 transition-all shrink-0"
+                  strokeWidth={1.75}
                 />
               </div>
             </div>
