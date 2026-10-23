@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link2, FileText, ArrowRight, Loader2, AlertCircle, RefreshCw, Eye, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
-import InvestigationModal from '../components/InvestigationModal';
+import InvestigationModal, { type InvestigationModalResult } from '../components/InvestigationModal';
 import {
   analyzeJobPostingWithStream,
   getInitialInvestigationStages,
@@ -34,6 +34,7 @@ export default function InvestigatePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stages, setStages] = useState<InvestigationStageState[]>(getInitialInvestigationStages());
   const [isComplete, setIsComplete] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<InvestigationModalResult | null>(null);
   const [modalError, setModalError] = useState<{
     message: string;
     detail?: string;
@@ -52,6 +53,7 @@ export default function InvestigatePage() {
     setErrorDetail(null);
     setModalError(null);
     setIsComplete(false);
+    setAnalysisResult(null);
     setCompletedRecordId(null);
 
     const trimmedDescription = jobDescription.trim();
@@ -284,6 +286,18 @@ export default function InvestigatePage() {
       // 3. Persist record in application state
       persistInvestigation(investigationRecord);
       setCompletedRecordId(investigationRecord.id);
+
+      // Populate completed analysis result for the modal
+      setAnalysisResult({
+        id: investigationRecord.id,
+        fraudProbability: response.fraud_probability,
+        riskLevel: response.risk_level,
+        label: response.label,
+        assessmentSummary: response.assessment_summary,
+        topSuspiciousSignals: response.top_suspicious_signals?.map((s) => s.term) || [],
+        topLegitimateSignals: response.top_legitimate_signals?.map((s) => s.term) || [],
+      });
+
       setIsComplete(true);
 
       // Ensure all cards are in their final completed/skipped status
@@ -295,10 +309,8 @@ export default function InvestigatePage() {
         }))
       );
 
-      // 4. Give user 2.2 seconds to view all completed stages before auto-navigating
-      await delay(2200);
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      navigate(`/investigations/${investigationRecord.id}`);
+      // Modal stays open so the user can inspect the percentage and info in the popup itself!
+      // To see the full report, the user clicks "Show full investigation".
     } catch (err: unknown) {
       if (abortController.signal.aborted) {
         // Safe dismissal without error
@@ -658,6 +670,7 @@ export default function InvestigatePage() {
         onClose={() => setIsModalOpen(false)}
         stages={stages}
         isComplete={isComplete}
+        result={analysisResult}
         error={modalError}
         onRetry={handleRetry}
         onViewReport={handleViewReport}

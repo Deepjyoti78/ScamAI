@@ -19,12 +19,23 @@ import {
 } from 'lucide-react';
 import type { InvestigationStageState } from '../types/investigation';
 
+export interface InvestigationModalResult {
+  id?: string;
+  fraudProbability: number;
+  riskLevel: 'low' | 'medium' | 'high' | 'unknown';
+  label: string;
+  assessmentSummary: string;
+  topSuspiciousSignals?: string[];
+  topLegitimateSignals?: string[];
+}
+
 export interface InvestigationModalProps {
   isOpen: boolean;
   onClose: () => void;
   stages: InvestigationStageState[];
   currentStageId?: number;
   isComplete: boolean;
+  result?: InvestigationModalResult | null;
   error: {
     message: string;
     detail?: string;
@@ -41,6 +52,7 @@ export default function InvestigationModal({
   onClose,
   stages,
   isComplete,
+  result,
   error,
   onRetry,
   onViewReport,
@@ -130,26 +142,41 @@ export default function InvestigationModal({
         {/* Modal Header */}
         <div className="px-6 md:px-8 pt-5 md:pt-6 pb-4 md:pb-5 border-b border-[#e4e4e0] flex items-start justify-between gap-4 bg-white flex-shrink-0 z-20">
           <div className="flex items-start gap-3.5">
-            <div className="w-11 h-11 md:w-12 md:h-12 rounded-none bg-[#f7f7f6] border border-[#e4e4e0] flex items-center justify-center flex-shrink-0 text-[#111110]">
-              <Shield size={21} className="stroke-[1.8]" />
+            <div
+              className={`w-11 h-11 md:w-12 md:h-12 rounded-none border flex items-center justify-center flex-shrink-0 transition-colors ${
+                isComplete
+                  ? 'bg-[#e6f4ea] text-[#137333] border-[#ceead6]'
+                  : 'bg-[#f7f7f6] text-[#111110] border-[#e4e4e0]'
+              }`}
+            >
+              {isComplete ? <Check size={22} className="stroke-[2.5]" /> : <Shield size={21} className="stroke-[1.8]" />}
             </div>
             <div>
               <h2
                 id="investigation-modal-title"
                 className="font-serif text-[23px] md:text-[27px] font-normal tracking-[-0.01em] text-[#111110] leading-tight"
               >
-                Running Investigation
+                {isComplete ? 'Investigation Complete' : 'Running Investigation'}
               </h2>
               <p className="text-[12px] md:text-[13px] text-[#6b6b6b] mt-0.5">
-                Please wait while we analyze this job posting.
+                {isComplete
+                  ? 'Analysis finished • Risk score and evidence dossier compiled.'
+                  : 'Please wait while we analyze this job posting.'}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 flex-shrink-0 pt-1">
-            <span className="text-[11px] font-mono text-[#9a9a9a] hidden sm:inline-block">
-              ~ 20–60 seconds
-            </span>
+            {isComplete ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
+                <Check size={11} className="stroke-[2.5]" />
+                Completed
+              </span>
+            ) : (
+              <span className="text-[11px] font-mono text-[#9a9a9a] hidden sm:inline-block">
+                ~ 20–60 seconds
+              </span>
+            )}
             <button
               type="button"
               onClick={onClose}
@@ -161,8 +188,93 @@ export default function InvestigationModal({
           </div>
         </div>
 
-        {/* 5-Card Progress Timeline List */}
+        {/* 5-Card Progress Timeline List & Results */}
         <div className="px-6 md:px-8 py-5 overflow-y-auto flex-1 flex flex-col gap-0 divide-y-0">
+          {/* Result Summary Box when complete */}
+          {isComplete && result && (
+            <div className="mb-6 p-4 sm:p-5 border rounded-none bg-[#fafaf9] border-[#e4e4e0] animate-page-enter">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e4e4e0]">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    {result.riskLevel === 'high' ? (
+                      <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#fef2f2] text-[#c5291e] border border-[#fcc9c6]">
+                        High Risk Listing
+                      </span>
+                    ) : result.riskLevel === 'medium' ? (
+                      <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#fffbeb] text-[#b45309] border border-[#fed7aa]">
+                        Review Recommended
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
+                        Low Risk Listing
+                      </span>
+                    )}
+                    <span className="text-[12px] font-mono text-[#767672]">
+                      Verdict: <strong className="text-[#111110] font-semibold">{result.label}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2.5">
+                    <span
+                      className={`font-serif text-[34px] sm:text-[38px] font-normal leading-none ${
+                        result.riskLevel === 'high'
+                          ? 'text-[#c5291e]'
+                          : result.riskLevel === 'medium'
+                          ? 'text-[#b45309]'
+                          : 'text-[#137333]'
+                      }`}
+                    >
+                      {(result.fraudProbability * 100).toFixed(1)}%
+                    </span>
+                    <span className="text-[13px] text-[#6b6b6b]">
+                      Estimated Fraud Probability
+                    </span>
+                  </div>
+                </div>
+
+                {onViewReport && (
+                  <button
+                    type="button"
+                    onClick={onViewReport}
+                    className="self-start sm:self-center px-4 py-2.5 bg-[#111110] text-white hover:bg-[#282826] text-[13px] font-medium rounded-none flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm whitespace-nowrap"
+                  >
+                    Show full investigation <ArrowRight size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Assessment Summary / Info */}
+              <div className="pt-3.5">
+                <p className="text-[12px] sm:text-[13px] text-[#444441] leading-relaxed">
+                  {result.assessmentSummary}
+                </p>
+
+                {/* Detected Signals Pills */}
+                {result.topSuspiciousSignals && result.topSuspiciousSignals.length > 0 && (
+                  <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] font-mono font-medium text-[#767672] mr-1">
+                      Key warning indicators:
+                    </span>
+                    {result.topSuspiciousSignals.slice(0, 4).map((signal, idx) => (
+                      <span
+                        key={idx}
+                        className="text-[11px] font-mono px-2 py-0.5 bg-white border border-[#e4e4e0] text-[#111110] rounded-none shadow-2xs"
+                      >
+                        ⚠ {signal}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {isComplete && (
+            <div className="flex items-center gap-2 pb-3 mb-2 border-b border-[#e4e4e0]">
+              <span className="text-[11px] font-mono font-medium text-[#767672] uppercase tracking-wider">
+                Completed Verification Stages
+              </span>
+            </div>
+          )}
           {stages.map((stage, index) => {
             const isLast = index === stages.length - 1;
             const isCompleted = stage.status === 'completed';
@@ -359,18 +471,29 @@ export default function InvestigationModal({
               <div className="flex items-center gap-2 text-[#137333]">
                 <Check size={16} className="stroke-[2.5]" />
                 <span className="text-[13px] font-medium">
-                  Investigation complete. Navigating to report...
+                  {result
+                    ? `Analysis complete • ${(result.fraudProbability * 100).toFixed(1)}% estimated fraud probability`
+                    : 'Investigation complete. Ready to view report.'}
                 </span>
               </div>
-              {onViewReport && (
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
                 <button
                   type="button"
-                  onClick={onViewReport}
-                  className="w-full sm:w-auto text-[12px] font-medium bg-[#111110] text-white hover:bg-[#2b2b28] px-4 py-2 rounded-none transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  onClick={onClose}
+                  className="px-3.5 py-2 text-[12px] text-[#767672] hover:text-[#111110] transition-colors cursor-pointer"
                 >
-                  View investigation report <ArrowRight size={13} />
+                  Close
                 </button>
-              )}
+                {onViewReport && (
+                  <button
+                    type="button"
+                    onClick={onViewReport}
+                    className="flex-1 sm:flex-none text-[13px] font-medium bg-[#111110] text-white hover:bg-[#282826] px-5 py-2.5 rounded-none transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                  >
+                    Show full investigation <ArrowRight size={14} />
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
             <div className="w-full flex items-center justify-between text-[11px] text-[#767672]">
