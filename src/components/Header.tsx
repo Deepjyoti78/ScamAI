@@ -29,16 +29,16 @@ export default function Header() {
   ];
 
   return (
-    <header className="w-full border-b border-[#e4e4e0] bg-white sticky top-0 z-50">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-[#e4e4e0]">
+    <header className="w-full border-b border-[#E0DED4] bg-[#FAF9F5] sticky top-0 z-50">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-[#E0DED4]">
         <div className="flex items-center justify-between h-[56px] md:h-[60px]">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-[28px] h-[28px] rounded-none border border-[#111110] flex items-center justify-center">
-              <Shield size={14} strokeWidth={2} className="text-[#111110]" />
+            <div className="w-[28px] h-[28px] rounded-none border border-[#141413] flex items-center justify-center">
+              <Shield size={14} strokeWidth={2} className="text-[#141413]" />
             </div>
-            <span className="text-[14px] font-semibold tracking-tight text-[#111110]">ScamShield AI</span>
+            <span className="text-[14px] font-semibold tracking-tight text-[#141413]">ScamShield AI</span>
           </Link>
 
           {/* Desktop center nav */}
@@ -47,7 +47,7 @@ export default function Header() {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-[14px] text-[#555552] hover:text-[#111110] transition-colors duration-150 font-normal"
+                className="text-[14px] text-[#625F58] hover:text-[#141413] transition-colors duration-150 font-normal"
               >
                 {link.label}
               </a>
@@ -58,7 +58,7 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-4">
             {apiConnected !== null && (
               <div
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[11px]"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[11px]"
                 title={apiConnected ? 'FastAPI ML backend is running and connected' : 'FastAPI backend is offline'}
               >
                 <span
@@ -66,7 +66,7 @@ export default function Header() {
                     apiConnected ? 'bg-[#2e7d32]' : 'bg-[#c5291e]'
                   }`}
                 />
-                <span className="text-[#6b6b6b] font-medium">
+                <span className="text-[#625F58] font-medium">
                   {apiConnected ? 'API connected' : 'API unavailable'}
                 </span>
               </div>
@@ -78,7 +78,7 @@ export default function Header() {
 
           {/* Mobile toggle */}
           <button
-            className="md:hidden p-1.5 rounded-none text-[#111110] hover:bg-[#f7f7f6] transition-colors"
+            className="md:hidden p-1.5 rounded-none text-[#141413] hover:bg-[#F0EEE6] transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle navigation"
           >
@@ -89,20 +89,20 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-[#e4e4e0] bg-white">
+        <div className="md:hidden border-t border-[#E0DED4] bg-[#FAF9F5]">
           <div className="max-w-[1200px] mx-auto px-6 py-5 flex flex-col gap-4">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="text-[14px] text-[#6b6b6b] hover:text-[#111110] transition-colors"
+                className="text-[14px] text-[#625F58] hover:text-[#141413] transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </a>
             ))}
             {apiConnected !== null && (
-              <div className="flex items-center gap-2 px-1 text-[12px] text-[#6b6b6b]">
+              <div className="flex items-center gap-2 px-1 text-[12px] text-[#625F58]">
                 <span
                   className={`w-2 h-2 rounded-none ${
                     apiConnected ? 'bg-[#2e7d32]' : 'bg-[#c5291e]'
@@ -111,7 +111,7 @@ export default function Header() {
                 <span>{apiConnected ? 'API connected (http://127.0.0.1:8000)' : 'API unavailable'}</span>
               </div>
             )}
-            <div className="pt-3 border-t border-[#e4e4e0]">
+            <div className="pt-3 border-t border-[#E0DED4]">
               <Button
                 variant="primary"
                 size="md"

@@ -11,7 +11,7 @@ function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
     low: 'text-[#2e7d32] bg-[#f1f8f1] border border-[#c8e6c9]',
     medium: 'text-[#b5640c] bg-[#fdf3e7] border border-[#f5d5a0]',
     high: 'text-[#c5291e] bg-[#fef2f2] border border-[#fcc9c6]',
-    unknown: 'text-[#6b6b6b] bg-[#f7f7f6] border border-[#e4e4e0]',
+    unknown: 'text-[#625F58] bg-[#F0EEE6] border border-[#E0DED4]',
   };
 
   return (
@@ -39,15 +39,15 @@ export default function InvestigationsListPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F0EEE6]">
       <Header />
-      <main className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#e4e4e0] min-h-[calc(100vh-60px)]">
+      <main className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-[#9a9a9a] mb-2">
+            <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-[#77746C] mb-2">
               All Records
             </p>
-            <h1 className="font-serif text-[32px] md:text-[38px] leading-[1.1] tracking-[-0.02em] text-[#111110]">
+            <h1 className="font-serif text-[32px] md:text-[38px] leading-[1.1] tracking-[-0.02em] text-[#141413]">
               Investigations
             </h1>
           </div>
@@ -61,26 +61,26 @@ export default function InvestigationsListPage() {
           <div className="mb-10">
             <div className="flex items-center gap-2 mb-3">
               <ShieldCheck size={14} className="text-[#2e7d32]" />
-              <h2 className="text-[12px] font-semibold uppercase tracking-wider text-[#111110]">
+              <h2 className="text-[12px] font-semibold uppercase tracking-wider text-[#141413]">
                 Live ML Investigations (This Session)
               </h2>
             </div>
-            <div className="flex flex-col border border-[#e4e4e0] rounded-none overflow-hidden divide-y divide-[#e4e4e0] mb-8">
+            <div className="flex flex-col border border-[#E0DED4] rounded-none overflow-hidden divide-y divide-[#E0DED4] mb-8">
               {realInvestigations.map((inv) => (
                 <div
                   key={inv.id}
-                  className="flex items-center justify-between gap-4 py-3.5 px-4 cursor-pointer group transition-colors hover:bg-[#fafaf9] bg-white"
+                  className="flex items-center justify-between gap-4 py-3.5 px-4 cursor-pointer group transition-colors hover:bg-[#F0EEE6] bg-[#FAF9F5]"
                   onClick={() => navigate(`/investigations/${inv.id}`)}
                 >
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[13px] font-medium text-[#111110] leading-tight truncate">
+                    <span className="text-[13px] font-medium text-[#141413] leading-tight truncate">
                       {inv.jobTitle}
                     </span>
-                    <span className="text-[11px] text-[#767672] mt-0.5 truncate">
+                    <span className="text-[11px] text-[#625F58] mt-0.5 truncate">
                       {inv.employer} · {inv.location}
                     </span>
                   </div>
-                  <div className="hidden sm:block text-[11px] text-[#767672] flex-shrink-0">
+                  <div className="hidden sm:block text-[11px] text-[#77746C] flex-shrink-0">
                     {new Date(inv.submittedAt).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -88,14 +88,14 @@ export default function InvestigationsListPage() {
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
                     {inv.fraudProbability !== undefined && (
-                      <span className="text-[11px] font-mono text-[#555552] hidden md:inline">
+                      <span className="text-[11px] font-mono text-[#625F58] hidden md:inline">
                         {(inv.fraudProbability * 100).toFixed(1)}% prob.
                       </span>
                     )}
                     <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />
                     <ArrowRight
                       size={14}
-                      className="text-[#d0d0cc] group-hover:text-[#6b6b6b] transition-colors"
+                      className="text-[#D7D4C9] group-hover:text-[#141413] transition-colors"
                     />
                   </div>
                 </div>
@@ -106,31 +106,31 @@ export default function InvestigationsListPage() {
 
         {/* Illustrative Demo Records */}
         <div>
-          <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#e4e4e0]">
-            <span className="text-[11px] uppercase tracking-wider font-semibold text-[#767672]">
+          <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#E0DED4]">
+            <span className="text-[11px] uppercase tracking-wider font-semibold text-[#77746C]">
               Illustrative Sample Records
             </span>
-            <span className="text-[11px] text-[#9a9a9a]">Demo benchmark scenarios</span>
+            <span className="text-[11px] text-[#77746C]">Demo benchmark scenarios</span>
           </div>
 
           <div className="flex flex-col">
             {demoInvestigations.map((inv, i) => (
               <div
                 key={inv.id}
-                className={`flex items-center justify-between gap-4 py-4 cursor-pointer group transition-colors hover:bg-[#f7f7f6] -mx-3 px-3 rounded-none ${
-                  i < demoInvestigations.length - 1 ? 'border-b border-[#e4e4e0]' : ''
+                className={`flex items-center justify-between gap-4 py-4 cursor-pointer group transition-colors hover:bg-[#F0EEE6] -mx-3 px-3 rounded-none ${
+                  i < demoInvestigations.length - 1 ? 'border-b border-[#E0DED4]' : ''
                 }`}
                 onClick={() => navigate(`/investigations/${inv.id}`)}
               >
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[13px] font-medium text-[#111110] leading-tight truncate">
+                  <span className="text-[13px] font-medium text-[#141413] leading-tight truncate">
                     {inv.jobTitle}
                   </span>
-                  <span className="text-[11px] text-[#9a9a9a] mt-0.5 truncate">
+                  <span className="text-[11px] text-[#625F58] mt-0.5 truncate">
                     {inv.employer} · {inv.location}
                   </span>
                 </div>
-                <div className="hidden sm:block text-[11px] text-[#9a9a9a] flex-shrink-0">
+                <div className="hidden sm:block text-[11px] text-[#77746C] flex-shrink-0">
                   {new Date(inv.submittedAt).toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'short',
@@ -141,7 +141,7 @@ export default function InvestigationsListPage() {
                   <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />
                   <ArrowRight
                     size={14}
-                    className="text-[#d0d0cc] group-hover:text-[#6b6b6b] transition-colors"
+                    className="text-[#D7D4C9] group-hover:text-[#141413] transition-colors"
                   />
                 </div>
               </div>

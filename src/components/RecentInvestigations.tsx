@@ -15,7 +15,7 @@ function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
     low: 'text-[#16a34a] bg-[#f0fdf4] border-[#86efac]',
     medium: 'text-[#d97706] bg-[#fffbeb] border-[#fed7aa]',
     high: 'text-[#dc2626] bg-[#fef2f2] border-[#fca5a5]',
-    unknown: 'text-neutral-600 bg-neutral-50 border-neutral-200',
+    unknown: 'text-[#625F58] bg-[#F0EEE6] border-[#E0DED4]',
   };
 
   const style = styles[level] || styles.unknown;
@@ -54,15 +54,15 @@ export default function RecentInvestigations() {
   }, []);
 
   return (
-    <section className="w-full px-6 lg:px-10 py-8 md:py-11 border-t border-[#e4e4e0]">
+    <section className="w-full px-6 lg:px-10 py-8 md:py-11 border-t border-[#E0DED4]">
       {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2.5 mb-4 sm:mb-5">
         <div>
           <div className="flex flex-wrap items-baseline gap-2.5">
-            <h2 className="text-[21px] sm:text-[24px] font-serif font-normal text-neutral-900 tracking-tight leading-none">
+            <h2 className="text-[21px] sm:text-[24px] font-serif font-normal text-[#141413] tracking-tight leading-none">
               Recent investigations
             </h2>
-            <span className="text-[12px] sm:text-[12.5px] text-neutral-400 font-sans font-normal">
+            <span className="text-[12px] sm:text-[12.5px] text-[#77746C] font-sans font-normal">
               {displayList.length} sample cases
             </span>
             {hasRealRecord && (
@@ -72,13 +72,13 @@ export default function RecentInvestigations() {
               </span>
             )}
           </div>
-          <p className="text-[12px] sm:text-[12.5px] text-neutral-500 font-sans mt-1">
+          <p className="text-[12px] sm:text-[12.5px] text-[#625F58] font-sans mt-1">
             Illustrative demo data — not real employer records.
           </p>
         </div>
 
         <button
-          className="inline-flex items-center gap-1 text-[13px] font-medium text-neutral-900 hover:text-neutral-600 transition-colors cursor-pointer group self-start sm:self-auto"
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-[#141413] hover:text-[#625F58] transition-colors cursor-pointer group self-start sm:self-auto"
           onClick={() => navigate('/investigations')}
         >
           View all
@@ -90,22 +90,22 @@ export default function RecentInvestigations() {
       </div>
 
       {/* Card container with sharp, square edges and compact content */}
-      <div className="border border-[#e4e4e0] rounded-none bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-        <div className="divide-y divide-[#f0f0ee]">
+      <div className="border border-[#E0DED4] rounded-none bg-[#FAF9F5] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+        <div className="divide-y divide-[#E0DED4]">
           {displayList.map((inv) => (
             <div
               key={inv.id}
-              className="grid grid-cols-12 items-center px-4 sm:px-5 py-3 sm:py-3.5 gap-3 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-[#fafaf9]"
+              className="grid grid-cols-12 items-center px-4 sm:px-5 py-3 sm:py-3.5 gap-3 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-[#F0EEE6]"
               onClick={() => navigate(`/investigations/${inv.id}`)}
             >
               {/* Column 1: Document Icon + Job Title & Employer */}
               <div className="col-span-8 sm:col-span-6 flex items-center gap-3 min-w-0 pr-2">
-                <div className="w-8 h-8 rounded-none bg-[#fafaf9] border border-[#e4e4e0] flex items-center justify-center text-neutral-700 shrink-0">
-                  <FileText className="w-4 h-4 text-neutral-700" strokeWidth={1.5} />
+                <div className="w-8 h-8 rounded-none bg-[#F0EEE6] border border-[#E0DED4] flex items-center justify-center text-[#141413] shrink-0">
+                  <FileText className="w-4 h-4 text-[#141413]" strokeWidth={1.5} />
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[13.5px] sm:text-[14px] font-semibold text-neutral-900 leading-snug group-hover:text-black transition-colors truncate">
+                    <span className="text-[13.5px] sm:text-[14px] font-semibold text-[#141413] leading-snug group-hover:text-[#141413] transition-colors truncate">
                       {inv.jobTitle}
                     </span>
                     {inv.isRealAnalysis && (
@@ -115,20 +115,20 @@ export default function RecentInvestigations() {
                       </span>
                     )}
                   </div>
-                  <span className="text-[11.5px] sm:text-[12px] text-neutral-500 mt-0.5 truncate">
+                  <span className="text-[11.5px] sm:text-[12px] text-[#625F58] mt-0.5 truncate">
                     {inv.employer}
                   </span>
                   {/* Mobile-only location subtitle */}
-                  <div className="sm:hidden flex items-center gap-1 text-[11px] text-neutral-500 mt-0.5">
-                    <MapPin size={11} className="text-neutral-400 shrink-0" />
+                  <div className="sm:hidden flex items-center gap-1 text-[11px] text-[#625F58] mt-0.5">
+                    <MapPin size={11} className="text-[#77746C] shrink-0" />
                     <span className="truncate">{inv.location || 'Remote'}</span>
                   </div>
                 </div>
               </div>
 
               {/* Column 2: Location (Desktop column aligned) */}
-              <div className="hidden sm:flex sm:col-span-3 items-center gap-1.5 text-[12px] text-neutral-500 font-normal truncate">
-                <MapPin size={13} className="text-neutral-400 shrink-0" strokeWidth={1.75} />
+              <div className="hidden sm:flex sm:col-span-3 items-center gap-1.5 text-[12px] text-[#625F58] font-normal truncate">
+                <MapPin size={13} className="text-[#77746C] shrink-0" strokeWidth={1.75} />
                 <span className="truncate">{inv.location || 'Remote'}</span>
               </div>
 
@@ -137,7 +137,7 @@ export default function RecentInvestigations() {
                 <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />
                 <ArrowRight
                   size={13}
-                  className="text-neutral-400 group-hover:text-neutral-900 group-hover:translate-x-0.5 transition-all shrink-0"
+                  className="text-[#77746C] group-hover:text-[#141413] group-hover:translate-x-0.5 transition-all shrink-0"
                   strokeWidth={1.75}
                 />
               </div>

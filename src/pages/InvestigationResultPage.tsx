@@ -52,7 +52,7 @@ function TrustChainStatusBadge({ status }: { status: TrustChainStatus }) {
     case 'not_checked':
     default:
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[#77746C] text-[11px] font-medium uppercase tracking-wider">
           <Info size={11} strokeWidth={2} />
           Not Checked
         </span>
@@ -100,7 +100,7 @@ function WebResearchStatusBadge({ status }: { status: WebResearchStatus }) {
       );
     case 'no_matching_vacancy_found_in_search':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[#77746C] text-[11px] font-medium uppercase tracking-wider">
           <Info size={11} strokeWidth={2} />
           No Vacancy Match In Search
         </span>
@@ -122,7 +122,7 @@ function WebResearchStatusBadge({ status }: { status: WebResearchStatus }) {
     case 'insufficient_evidence':
     default:
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[#77746C] text-[11px] font-medium uppercase tracking-wider">
           <Info size={11} strokeWidth={2} />
           Insufficient Details for Search
         </span>
@@ -157,10 +157,10 @@ function RiskIndicator({ level, label }: { level: RiskLevel; label: string }) {
       icon: <CheckCircle size={14} strokeWidth={1.75} />,
     },
     unknown: {
-      dot: 'bg-[#9a9a9a]',
-      text: 'text-[#9a9a9a]',
-      bg: 'bg-[#f7f7f6]',
-      border: 'border-[#e4e4e0]',
+      dot: 'bg-[#77746C]',
+      text: 'text-[#77746C]',
+      bg: 'bg-[#F0EEE6]',
+      border: 'border-[#E0DED4]',
       icon: <Info size={14} strokeWidth={1.75} />,
     },
   };
@@ -201,10 +201,10 @@ export default function InvestigationResultPage() {
 
   if (!investigation) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-[#F0EEE6]">
         <Header />
-        <main className="max-w-[1200px] mx-auto px-6 lg:px-10 py-20 text-center border-x border-[#e4e4e0] min-h-[calc(100vh-60px)]">
-          <p className="text-[#9a9a9a] text-sm mb-4">Investigation not found.</p>
+        <main className="max-w-[1200px] mx-auto px-6 lg:px-10 py-20 text-center border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
+          <p className="text-[#77746C] text-sm mb-4">Investigation not found.</p>
           <Button variant="secondary" size="sm" onClick={() => navigate('/')}>
             ← Back to home
           </Button>
@@ -228,13 +228,13 @@ export default function InvestigationResultPage() {
     typeof inv.confidence === 'number' ? (inv.confidence * 100).toFixed(2) : null;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F0EEE6]">
       <Header />
-      <main className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#e4e4e0] min-h-[calc(100vh-60px)]">
+      <main className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
         {/* Nav breadcrumb */}
         <button
           onClick={() => navigate(-1)}
-          className="text-[12px] text-[#9a9a9a] hover:text-[#111110] transition-colors mb-5 flex items-center gap-1 cursor-pointer"
+          className="text-[12px] text-[#77746C] hover:text-[#141413] transition-colors mb-5 flex items-center gap-1 cursor-pointer"
         >
           ← All investigations
         </button>
@@ -244,14 +244,14 @@ export default function InvestigationResultPage() {
           <div>
             {/* Header badges row: Eyebrow + Mode badge + Source badge */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-              <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-[#767672]">
+              <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-[#77746C]">
                 Investigation Report
               </p>
 
               <div className="flex flex-wrap items-center gap-2">
                 {/* Source Type Badge */}
                 {inv.sourceType === 'extracted_url' || inv.sourceUrl ? (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#111110] text-[11px] font-mono">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[#141413] text-[11px] font-mono">
                     <Link2 size={11} />
                     Extracted from URL
                     {inv.extractionStatus === 'success' && (
@@ -262,7 +262,7 @@ export default function InvestigationResultPage() {
                     )}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#555552] text-[11px]">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[#625F58] text-[11px]">
                     <FileText size={11} />
                     Pasted Description
                   </span>
@@ -276,7 +276,7 @@ export default function InvestigationResultPage() {
                     </span>
                     {typeof inv.inferenceTimeMs === 'number' && (
                       <span
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#111110] text-[11px] font-mono"
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[#141413] text-[11px] font-mono"
                         title={`Model executed inference and feature attribution in ${inv.inferenceTimeMs}ms`}
                       >
                         ⚡ {inv.inferenceTimeMs}ms inference
@@ -284,7 +284,7 @@ export default function InvestigationResultPage() {
                     )}
                   </>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px]">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[#77746C] text-[11px]">
                     <Sparkles size={11} />
                     Illustrative Simulation / Demo Record
                   </span>
@@ -293,16 +293,16 @@ export default function InvestigationResultPage() {
             </div>
 
             {/* Title */}
-            <h1 className="font-serif text-[32px] md:text-[40px] leading-[1.12] tracking-[-0.02em] text-[#111110] mb-2">
+            <h1 className="font-serif text-[32px] md:text-[40px] leading-[1.12] tracking-[-0.02em] text-[#141413] mb-2">
               {inv.jobTitle}
             </h1>
-            <p className="text-[14px] text-[#555552] mb-4">
+            <p className="text-[14px] text-[#625F58] mb-4">
               {inv.employer} · {inv.location}
             </p>
 
             {/* Extracted page title note if different */}
             {inv.extractedTitle && inv.extractedTitle !== inv.jobTitle && (
-              <p className="text-[11px] text-[#767672] mb-4 font-mono">
+              <p className="text-[11px] text-[#77746C] mb-4 font-mono">
                 Extracted HTML &lt;title&gt;: &ldquo;{inv.extractedTitle}&rdquo;
               </p>
             )}
@@ -316,10 +316,10 @@ export default function InvestigationResultPage() {
                     <p className="text-[12px] font-semibold text-[#b5640c] leading-snug">
                       Automated Public Job URL Extraction Incomplete
                     </p>
-                    <p className="text-[12px] text-[#555552] mt-1 leading-relaxed">
+                    <p className="text-[12px] text-[#625F58] mt-1 leading-relaxed">
                       {inv.extractionError || 'Unable to retrieve readable text from the submitted URL.'}
                     </p>
-                    <p className="text-[11px] text-[#767672] mt-2 leading-relaxed">
+                    <p className="text-[11px] text-[#77746C] mt-2 leading-relaxed">
                       ✦ <strong>Note:</strong> Anti-bot protection, JavaScript-heavy single-page applications, and login gates frequently prevent automated web fetching. <strong>An extraction failure does not mean this vacancy is fraudulent.</strong> The ML model cannot perform textual fraud classification without job text.
                     </p>
                     <div className="mt-3">
@@ -340,13 +340,13 @@ export default function InvestigationResultPage() {
             {/* Risk Indicator and Probabilities */}
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] uppercase tracking-wider text-[#767672] font-medium">Triage:</span>
+                <span className="text-[11px] uppercase tracking-wider text-[#77746C] font-medium">Triage:</span>
                 <RiskIndicator level={inv.riskLevel} label={inv.assessmentLabel} />
               </div>
 
               {isReal && inv.prediction !== undefined && (
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-none border border-[#e4e4e0] bg-white text-[12px] font-mono">
-                  <span className="text-[#767672]">Model Binary Classification:</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-none border border-[#E0DED4] bg-[#FAF9F5] text-[12px] font-mono">
+                  <span className="text-[#77746C]">Model Binary Classification:</span>
                   <span
                     className={`font-semibold ${
                       inv.prediction === 1 ? 'text-[#c5291e]' : 'text-[#2e7d32]'
@@ -360,11 +360,11 @@ export default function InvestigationResultPage() {
 
             {/* Application Review Decision Rationale */}
             {isReal && inv.decisionRationale && (
-              <div className="border border-[#e4e4e0] rounded-none p-4 mb-6 bg-white border-l-[3px] border-l-[#111110]">
-                <p className="text-[10px] font-semibold tracking-[0.16em] uppercase text-[#767672] mb-1">
+              <div className="border border-[#E0DED4] rounded-none p-4 mb-6 bg-[#FAF9F5] border-l-[3px] border-l-[#141413]">
+                <p className="text-[10px] font-semibold tracking-[0.16em] uppercase text-[#77746C] mb-1">
                   Triage Decision & Review Rationale
                 </p>
-                <p className="text-[13px] text-[#222220] leading-relaxed">
+                <p className="text-[13px] text-[#141413] leading-relaxed">
                   {inv.decisionRationale}
                 </p>
               </div>
@@ -372,30 +372,30 @@ export default function InvestigationResultPage() {
 
             {/* Dual Metric Cards: Fraud Probability vs Model Confidence */}
             {isReal && fraudProbabilityPct !== null && (
-              <div className="border border-[#e4e4e0] rounded-none p-5 mb-8 bg-[#fafaf9]">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-[#e4e4e0]">
+              <div className="border border-[#E0DED4] rounded-none p-5 mb-8 bg-[#F0EEE6]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-[#E0DED4]">
                   {/* Metric 1: Fraud Probability */}
                   <div className="flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-[#767672]">
+                        <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-[#77746C]">
                           Model-Estimated Fraud Probability
                         </p>
-                        <span className="text-[11px] font-mono text-[#555552] uppercase">
+                        <span className="text-[11px] font-mono text-[#625F58] uppercase">
                           P(Fraud | Text)
                         </span>
                       </div>
                       <div className="flex items-baseline gap-2 mb-2">
-                        <span className="font-serif text-[32px] md:text-[36px] font-semibold text-[#111110] leading-none">
+                        <span className="font-serif text-[32px] md:text-[36px] font-semibold text-[#141413] leading-none">
                           {fraudProbabilityPct}%
                         </span>
-                        <span className="text-[12px] text-[#767672]">
-                          (tier: <strong className="capitalize text-[#111110]">{inv.riskLevel}</strong>)
+                        <span className="text-[12px] text-[#77746C]">
+                          (tier: <strong className="capitalize text-[#141413]">{inv.riskLevel}</strong>)
                         </span>
                       </div>
                     </div>
                     {/* Progress bar */}
-                    <div className="h-2 w-full bg-[#e8e8e6] rounded-none overflow-hidden mb-2">
+                    <div className="h-2 w-full bg-[#E0DED4] rounded-none overflow-hidden mb-2">
                       <div
                         className={`h-full rounded-none transition-all duration-500 ${
                           inv.riskLevel === 'high'
@@ -407,43 +407,43 @@ export default function InvestigationResultPage() {
                         style={{ width: `${Math.min(100, Math.max(0, Number(fraudProbabilityPct)))}%` }}
                       />
                     </div>
-                    <p className="text-[11px] text-[#767672] leading-tight">
+                    <p className="text-[11px] text-[#77746C] leading-tight">
                       Probability that job text exhibits vocabulary patterns associated with fraudulent postings in the training corpus.
                     </p>
                   </div>
 
                   {/* Metric 2: Prediction Confidence */}
                   {confidencePct !== null && (
-                    <div className="flex flex-col justify-between border-t md:border-t-0 md:border-l border-[#e4e4e0] pt-4 md:pt-0 md:pl-6">
+                    <div className="flex flex-col justify-between border-t md:border-t-0 md:border-l border-[#E0DED4] pt-4 md:pt-0 md:pl-6">
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-[#767672]">
+                          <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-[#77746C]">
                             Prediction Confidence
                           </p>
-                          <span className="text-[11px] font-mono text-[#555552]">
+                          <span className="text-[11px] font-mono text-[#625F58]">
                             max(P₀, P₁)
                           </span>
                         </div>
                         <div className="flex items-baseline gap-2 mb-2">
-                          <span className="font-serif text-[32px] md:text-[36px] font-semibold text-[#111110] leading-none font-mono">
+                          <span className="font-serif text-[32px] md:text-[36px] font-semibold text-[#141413] leading-none font-mono">
                             {confidencePct}%
                           </span>
-                          <span className="text-[12px] text-[#767672]">
+                          <span className="text-[12px] text-[#77746C]">
                             (for{' '}
-                            <strong className="text-[#111110]">
+                            <strong className="text-[#141413]">
                               {inv.prediction === 1 ? 'Fraudulent' : 'Legitimate'}
                             </strong>
                             )
                           </span>
                         </div>
                       </div>
-                      <div className="h-2 w-full bg-[#e8e8e6] rounded-none overflow-hidden mb-2">
+                      <div className="h-2 w-full bg-[#E0DED4] rounded-none overflow-hidden mb-2">
                         <div
-                          className="h-full bg-[#111110] rounded-none transition-all duration-500"
+                          className="h-full bg-[#141413] rounded-none transition-all duration-500"
                           style={{ width: `${Math.min(100, Math.max(0, Number(confidencePct)))}%` }}
                         />
                       </div>
-                      <p className="text-[11px] text-[#767672] leading-tight">
+                      <p className="text-[11px] text-[#77746C] leading-tight">
                         Statistical certainty in the winning classification. Near 50% indicates a borderline boundary case.
                       </p>
                     </div>
@@ -451,7 +451,7 @@ export default function InvestigationResultPage() {
                 </div>
 
                 <div className="pt-3">
-                  <p className="text-[11px] text-[#767672] leading-relaxed">
+                  <p className="text-[11px] text-[#77746C] leading-relaxed">
                     ✦ <strong>Evaluation Notice:</strong> Neither probability nor prediction confidence constitutes a definitive real-world guarantee. Values reflect statistical lexical patterns learned from the EMSCAD training dataset.
                   </p>
                 </div>
@@ -459,72 +459,72 @@ export default function InvestigationResultPage() {
             )}
 
             {/* Assessment Summary */}
-            <div className="border border-[#e4e4e0] rounded-none p-5 mb-8 bg-[#f7f7f6]">
-              <p className="text-[11px] uppercase tracking-widest text-[#767672] mb-2 font-medium">
+            <div className="border border-[#E0DED4] rounded-none p-5 mb-8 bg-[#F0EEE6]">
+              <p className="text-[11px] uppercase tracking-widest text-[#77746C] mb-2 font-medium">
                 Assessment summary
               </p>
-              <p className="text-[14px] text-[#111110] leading-relaxed">{inv.assessmentSummary}</p>
+              <p className="text-[14px] text-[#141413] leading-relaxed">{inv.assessmentSummary}</p>
             </div>
 
             {/* Trust Chain & Evidence Consistency Checks Section */}
             {inv.trustChainFindings && inv.trustChainFindings.length > 0 && (
-              <div className="mb-8 border border-[#e4e4e0] rounded-none p-5 bg-white">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-[#e4e4e0]">
+              <div className="mb-8 border border-[#E0DED4] rounded-none p-5 bg-[#FAF9F5]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-[#E0DED4]">
                   <div>
                     <div className="flex items-center gap-2">
-                      <ShieldAlert size={15} className="text-[#111110]" />
-                      <h2 className="text-[13px] font-semibold text-[#111110] uppercase tracking-wider">
+                      <ShieldAlert size={15} className="text-[#141413]" />
+                      <h2 className="text-[13px] font-semibold text-[#141413] uppercase tracking-wider">
                         Trust Chain & Evidence Consistency Checks
                       </h2>
                     </div>
-                    <p className="text-[12px] text-[#767672] mt-0.5">
+                    <p className="text-[12px] text-[#77746C] mt-0.5">
                       Deterministic verification evaluating payment demands, credentials, and cross-domain alignment.
                     </p>
                   </div>
 
                   {inv.trustChainSummary && (
-                    <span className="text-[11px] font-mono text-[#555552] bg-[#fafaf9] border border-[#e4e4e0] px-2.5 py-1 rounded-none self-start sm:self-auto">
+                    <span className="text-[11px] font-mono text-[#625F58] bg-[#F0EEE6] border border-[#E0DED4] px-2.5 py-1 rounded-none self-start sm:self-auto">
                       {inv.trustChainSummary.executed_checks} of {inv.trustChainSummary.total_checks} checks executed
                     </span>
                   )}
                 </div>
 
                 {inv.trustChainSummary && (
-                  <div className="mb-4 p-3 rounded-none bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex items-start gap-2">
-                    <span className="font-semibold text-[#111110] uppercase text-[10px] tracking-wider pt-0.5">
+                  <div className="mb-4 p-3 rounded-none bg-[#F0EEE6] border border-[#E0DED4] text-[12px] flex items-start gap-2">
+                    <span className="font-semibold text-[#141413] uppercase text-[10px] tracking-wider pt-0.5">
                       Recommendation:
                     </span>
-                    <span className="text-[#333330] leading-snug">
+                    <span className="text-[#141413] leading-snug">
                       {inv.trustChainSummary.overall_trust_recommendation}
                     </span>
                   </div>
                 )}
 
                 {/* List of Trust Chain Checks */}
-                <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-none overflow-hidden">
+                <div className="flex flex-col divide-y divide-[#E0DED4] border border-[#E0DED4] rounded-none overflow-hidden">
                   {inv.trustChainFindings.map((finding) => (
-                    <div key={finding.check_id} className="p-4 bg-white hover:bg-[#fafaf9] transition-colors">
+                    <div key={finding.check_id} className="p-4 bg-[#FAF9F5] hover:bg-[#F0EEE6] transition-colors">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                        <h3 className="text-[13px] font-semibold text-[#111110]">
+                        <h3 className="text-[13px] font-semibold text-[#141413]">
                           {finding.title}
                         </h3>
                         <TrustChainStatusBadge status={finding.status} />
                       </div>
 
-                      <p className="text-[12px] text-[#222220] mb-1.5 leading-relaxed">
-                        <strong className="text-[#111110] font-medium">Observation:</strong>{' '}
-                        <span className="text-[#444440]">{finding.observation}</span>
+                      <p className="text-[12px] text-[#141413] mb-1.5 leading-relaxed">
+                        <strong className="text-[#141413] font-medium">Observation:</strong>{' '}
+                        <span className="text-[#625F58]">{finding.observation}</span>
                       </p>
 
-                      <p className="text-[12px] text-[#666662] mb-2 leading-relaxed">
+                      <p className="text-[12px] text-[#625F58] mb-2 leading-relaxed">
                         {finding.explanation}
                       </p>
 
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[#f0efed] text-[11px]">
-                        <p className="text-[#111110]">
-                          <strong className="text-[#767672]">Action:</strong> {finding.recommended_action}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[#E0DED4] text-[11px]">
+                        <p className="text-[#141413]">
+                          <strong className="text-[#77746C]">Action:</strong> {finding.recommended_action}
                         </p>
-                        <span className="text-[#9a9a9a] font-mono flex-shrink-0">
+                        <span className="text-[#77746C] font-mono flex-shrink-0">
                           Source: {finding.evidence_source}
                         </span>
                       </div>
@@ -536,22 +536,22 @@ export default function InvestigationResultPage() {
 
             {/* Live Web Research & Employer Evidence Section */}
             {(inv.webResearchSummary || (inv.webResearchFindings && inv.webResearchFindings.length > 0)) && (
-              <div className="mb-8 border border-[#e4e4e0] rounded-none p-5 bg-white">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-[#e4e4e0]">
+              <div className="mb-8 border border-[#E0DED4] rounded-none p-5 bg-[#FAF9F5]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-[#E0DED4]">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Globe size={15} className="text-[#111110]" />
-                      <h2 className="text-[13px] font-semibold text-[#111110] uppercase tracking-wider">
+                      <Globe size={15} className="text-[#141413]" />
+                      <h2 className="text-[13px] font-semibold text-[#141413] uppercase tracking-wider">
                         Live Web Research & Employer Evidence
                       </h2>
                     </div>
-                    <p className="text-[12px] text-[#767672] mt-0.5">
+                    <p className="text-[12px] text-[#77746C] mt-0.5">
                       Independent web search via {inv.webResearchSummary?.provider || 'external search API'} cross-referencing employer careers pages and vacancies.
                     </p>
                   </div>
 
                   {inv.webResearchSummary && (
-                    <span className="text-[11px] font-mono text-[#555552] bg-[#fafaf9] border border-[#e4e4e0] px-2.5 py-1 rounded-none self-start sm:self-auto">
+                    <span className="text-[11px] font-mono text-[#625F58] bg-[#F0EEE6] border border-[#E0DED4] px-2.5 py-1 rounded-none self-start sm:self-auto">
                       {inv.webResearchSummary.provider} · {inv.webResearchSummary.total_queries_executed} {inv.webResearchSummary.total_queries_executed === 1 ? 'query' : 'queries'}
                     </span>
                   )}
@@ -559,12 +559,12 @@ export default function InvestigationResultPage() {
 
                 {/* Overall Evidence Assessment Callout */}
                 {inv.webResearchSummary && (
-                  <div className="mb-4 p-3.5 rounded-none bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex flex-col gap-2">
+                  <div className="mb-4 p-3.5 rounded-none bg-[#F0EEE6] border border-[#E0DED4] text-[12px] flex flex-col gap-2">
                     <div className="flex items-start gap-2">
-                      <span className="font-semibold text-[#111110] uppercase text-[10px] tracking-wider pt-0.5 flex-shrink-0">
+                      <span className="font-semibold text-[#141413] uppercase text-[10px] tracking-wider pt-0.5 flex-shrink-0">
                         Assessment:
                       </span>
-                      <span className="text-[#222220] leading-snug">
+                      <span className="text-[#141413] leading-snug">
                         {inv.webResearchSummary.overall_evidence_assessment}
                       </span>
                     </div>
@@ -590,7 +590,7 @@ export default function InvestigationResultPage() {
                       </div>
                     )}
 
-                    <p className="text-[11px] text-[#767672] leading-relaxed pt-1.5 border-t border-[#ebeae6]">
+                    <p className="text-[11px] text-[#77746C] leading-relaxed pt-1.5 border-t border-[#E0DED4]">
                       ✦ <strong>Epistemic Separation Notice:</strong> {inv.webResearchSummary.limitations_disclaimer}
                     </p>
                   </div>
@@ -598,13 +598,13 @@ export default function InvestigationResultPage() {
 
                 {/* Findings List or Status State */}
                 {inv.webResearchFindings && inv.webResearchFindings.length > 0 ? (
-                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-none overflow-hidden">
+                  <div className="flex flex-col divide-y divide-[#E0DED4] border border-[#E0DED4] rounded-none overflow-hidden">
                     {inv.webResearchFindings.map((finding, idx) => (
-                      <div key={idx} className="p-4 bg-white hover:bg-[#fafaf9] transition-colors">
+                      <div key={idx} className="p-4 bg-[#FAF9F5] hover:bg-[#F0EEE6] transition-colors">
                         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5 flex-wrap">
-                              <h3 className="text-[13px] font-semibold text-[#111110]">
+                              <h3 className="text-[13px] font-semibold text-[#141413]">
                                 {finding.source_title || 'Web Search Result'}
                               </h3>
                               {finding.source_url && (
@@ -619,24 +619,24 @@ export default function InvestigationResultPage() {
                                 </a>
                               )}
                             </div>
-                            <div className="flex items-center gap-2 mt-1 text-[11px] font-mono text-[#767672] flex-wrap">
+                            <div className="flex items-center gap-2 mt-1 text-[11px] font-mono text-[#77746C] flex-wrap">
                               {finding.source_type && (
-                                <span className="bg-[#edece8] text-[#222220] px-1.5 py-0.5 rounded-none text-[10px] font-medium capitalize">
+                                <span className="bg-[#E0DED4] text-[#141413] px-1.5 py-0.5 rounded-none text-[10px] font-medium capitalize">
                                   {finding.source_type.replace(/_/g, ' ')}
                                 </span>
                               )}
                               {finding.source_domain && (
-                                <span className="bg-[#f0efed] text-[#333330] px-1.5 py-0.5 rounded-none text-[10px]">
+                                <span className="bg-[#F0EEE6] text-[#141413] px-1.5 py-0.5 rounded-none text-[10px]">
                                   domain: {finding.source_domain}
                                 </span>
                               )}
                               {finding.query_performed && (
-                                <span className="text-[#888884] truncate max-w-xs" title={finding.query_performed}>
+                                <span className="text-[#77746C] truncate max-w-xs" title={finding.query_performed}>
                                   query: &ldquo;{finding.query_performed}&rdquo;
                                 </span>
                               )}
                               {finding.retrieved_at && (
-                                <span className="text-[#9a9a9a]">
+                                <span className="text-[#77746C]">
                                   {new Date(finding.retrieved_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                               )}
@@ -649,20 +649,20 @@ export default function InvestigationResultPage() {
 
                         {/* Search Result Snippet */}
                         {finding.snippet && (
-                          <div className="my-2.5 p-2.5 rounded-none bg-[#f9f9f8] border border-[#e8e8e5] text-[12px] text-[#444440] font-sans leading-relaxed italic">
+                          <div className="my-2.5 p-2.5 rounded-none bg-[#F0EEE6] border border-[#E0DED4] text-[12px] text-[#625F58] font-sans leading-relaxed italic">
                             &ldquo;{finding.snippet}&rdquo;
                           </div>
                         )}
 
                         {/* Relevance & Findings */}
-                        <p className="text-[12px] text-[#222220] mb-2 leading-relaxed">
-                          <strong className="text-[#111110] font-medium">Observed Relevance:</strong> {finding.explanation}
+                        <p className="text-[12px] text-[#141413] mb-2 leading-relaxed">
+                          <strong className="text-[#141413] font-medium">Observed Relevance:</strong> {finding.explanation}
                         </p>
 
                         {/* Epistemic Limitations & Guardrails */}
                         {finding.limitations && (
-                          <div className="pt-2 border-t border-[#f0efed] text-[11px] text-[#767672] leading-relaxed">
-                            <strong className="text-[#555552] font-medium">Scope & Limitations:</strong>{' '}
+                          <div className="pt-2 border-t border-[#E0DED4] text-[11px] text-[#77746C] leading-relaxed">
+                            <strong className="text-[#625F58] font-medium">Scope & Limitations:</strong>{' '}
                             {finding.limitations}
                           </div>
                         )}
@@ -671,13 +671,13 @@ export default function InvestigationResultPage() {
                   </div>
                 ) : (
                   /* Informational box when no queries executed or search unconfigured */
-                  <div className="p-4 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[12px] text-[#555552] leading-relaxed">
+                  <div className="p-4 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[12px] text-[#625F58] leading-relaxed">
                     {inv.webResearchSummary?.status === 'not_configured' && (
                       <p>
                         <strong>Provider Not Configured:</strong> Neither{' '}
-                        <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded-none border border-[#e4e4e0]">TAVILY_API_KEY</code>{' '}
+                        <code className="text-[11px] font-mono bg-[#FAF9F5] px-1 py-0.5 rounded-none border border-[#E0DED4]">TAVILY_API_KEY</code>{' '}
                         nor{' '}
-                        <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded-none border border-[#e4e4e0]">BRAVE_SEARCH_API_KEY</code>{' '}
+                        <code className="text-[11px] font-mono bg-[#FAF9F5] px-1 py-0.5 rounded-none border border-[#E0DED4]">BRAVE_SEARCH_API_KEY</code>{' '}
                         is set in the backend environment. Live external corroboration was honestly reported as skipped. No artificial results were generated.
                       </p>
                     )}
@@ -699,18 +699,18 @@ export default function InvestigationResultPage() {
             {/* Evidence Signals */}
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
-                <h2 className="text-[13px] font-semibold text-[#111110] uppercase tracking-wider">
+                <h2 className="text-[13px] font-semibold text-[#141413] uppercase tracking-wider">
                   {isReal ? 'Key Predictive Text Signals' : 'Evidence signals'}
                 </h2>
                 {isReal && (
-                  <span className="text-[11px] text-[#767672]">
+                  <span className="text-[11px] text-[#77746C]">
                     Feature Impact = TF-IDF × Model Coefficient
                   </span>
                 )}
               </div>
 
               {isReal && (
-                <p className="text-[12px] text-[#767672] mb-4 leading-relaxed">
+                <p className="text-[12px] text-[#77746C] mb-4 leading-relaxed">
                   Attribution scores isolate the specific linear contribution to logistic regression log-odds for this posting. Terms represent statistical correlations in historical training data, not factual evidence of employer wrongdoing.
                 </p>
               )}
@@ -723,7 +723,7 @@ export default function InvestigationResultPage() {
                         ? 'text-[#c5291e]'
                         : inv.riskLevel === 'medium'
                         ? 'text-[#b5640c]'
-                        : 'text-[#767672]'
+                        : 'text-[#77746C]'
                     }`}
                   >
                     {isReal
@@ -734,9 +734,9 @@ export default function InvestigationResultPage() {
                         : 'Minor Risk-Correlated Vocabulary (Low Impact)'
                       : 'Warning signals'}
                   </p>
-                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-none overflow-hidden">
+                  <div className="flex flex-col divide-y divide-[#E0DED4] border border-[#E0DED4] rounded-none overflow-hidden">
                     {flaggedSignals.map((sig) => (
-                      <div key={sig.id} className="flex items-start gap-3 p-4 bg-white">
+                      <div key={sig.id} className="flex items-start gap-3 p-4 bg-[#FAF9F5]">
                         <AlertTriangle
                           size={13}
                           strokeWidth={1.75}
@@ -745,15 +745,15 @@ export default function InvestigationResultPage() {
                               ? 'text-[#c5291e]'
                               : inv.riskLevel === 'medium'
                               ? 'text-[#b5640c]'
-                              : 'text-[#9a9a9a]'
+                              : 'text-[#77746C]'
                           }`}
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2 mb-1">
-                            <span className="text-[13px] font-semibold text-[#111110]">
+                            <span className="text-[13px] font-semibold text-[#141413]">
                               {sig.label}
                             </span>
-                            <div className="text-[11px] font-mono text-[#767672] flex-shrink-0 text-right">
+                            <div className="text-[11px] font-mono text-[#77746C] flex-shrink-0 text-right">
                               {typeof sig.impact === 'number' ? (
                                 <span>
                                   impact:{' '}
@@ -763,13 +763,13 @@ export default function InvestigationResultPage() {
                                         ? 'text-[#c5291e]'
                                         : inv.riskLevel === 'medium'
                                         ? 'text-[#b5640c]'
-                                        : 'text-[#555552]'
+                                        : 'text-[#625F58]'
                                     }
                                   >
                                     +{sig.impact.toFixed(2)}
                                   </strong>
                                   {typeof sig.tfidfScore === 'number' && typeof sig.coefficient === 'number' && (
-                                    <span className="hidden sm:inline text-[#9a9a9a] text-[10px] ml-1.5">
+                                    <span className="hidden sm:inline text-[#77746C] text-[10px] ml-1.5">
                                       (tfidf: {sig.tfidfScore.toFixed(3)} · coef: +{sig.coefficient.toFixed(2)})
                                     </span>
                                   )}
@@ -779,16 +779,16 @@ export default function InvestigationResultPage() {
                               )}
                             </div>
                           </div>
-                          <p className="text-[12px] text-[#555552] leading-relaxed">{sig.description}</p>
+                          <p className="text-[12px] text-[#625F58] leading-relaxed">{sig.description}</p>
                           {/* Weight bar */}
-                          <div className="mt-2.5 h-1.5 bg-[#f0efed] rounded-none overflow-hidden">
+                          <div className="mt-2.5 h-1.5 bg-[#E0DED4] rounded-none overflow-hidden">
                             <div
                               className={`h-full rounded-none ${
                                 inv.riskLevel === 'high'
                                   ? 'bg-[#c5291e]'
                                   : inv.riskLevel === 'medium'
                                   ? 'bg-[#b5640c]'
-                                  : 'bg-[#9a9a9a]'
+                                  : 'bg-[#77746C]'
                               }`}
                               style={{ width: `${Math.round(sig.weight * 100)}%` }}
                             />
@@ -799,7 +799,7 @@ export default function InvestigationResultPage() {
                   </div>
                 </div>
               ) : isReal ? (
-                <div className="mb-5 p-4 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[12px] text-[#767672]">
+                <div className="mb-5 p-4 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[12px] text-[#77746C]">
                   No suspicious risk signals detected above the reporting threshold.
                 </div>
               ) : null}
@@ -809,9 +809,9 @@ export default function InvestigationResultPage() {
                   <p className="text-[11px] text-[#2e7d32] font-medium mb-2 uppercase tracking-wider">
                     {isReal ? 'Legitimate Associative Signals' : 'Positive signals'}
                   </p>
-                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-none overflow-hidden">
+                  <div className="flex flex-col divide-y divide-[#E0DED4] border border-[#E0DED4] rounded-none overflow-hidden">
                     {cleanSignals.map((sig) => (
-                      <div key={sig.id} className="flex items-start gap-3 p-4 bg-white">
+                      <div key={sig.id} className="flex items-start gap-3 p-4 bg-[#FAF9F5]">
                         <CheckCircle
                           size={13}
                           strokeWidth={1.75}
@@ -819,15 +819,15 @@ export default function InvestigationResultPage() {
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2 mb-1">
-                            <span className="text-[13px] font-semibold text-[#111110]">
+                            <span className="text-[13px] font-semibold text-[#141413]">
                               {sig.label}
                             </span>
-                            <div className="text-[11px] font-mono text-[#767672] flex-shrink-0 text-right">
+                            <div className="text-[11px] font-mono text-[#77746C] flex-shrink-0 text-right">
                               {typeof sig.impact === 'number' ? (
                                 <span>
                                   impact: <strong className="text-[#2e7d32]">{sig.impact.toFixed(2)}</strong>
                                   {typeof sig.tfidfScore === 'number' && typeof sig.coefficient === 'number' && (
-                                    <span className="hidden sm:inline text-[#9a9a9a] text-[10px] ml-1.5">
+                                    <span className="hidden sm:inline text-[#77746C] text-[10px] ml-1.5">
                                       (tfidf: {sig.tfidfScore.toFixed(3)} · coef: {sig.coefficient.toFixed(2)})
                                     </span>
                                   )}
@@ -837,9 +837,9 @@ export default function InvestigationResultPage() {
                               )}
                             </div>
                           </div>
-                          <p className="text-[12px] text-[#555552] leading-relaxed">{sig.description}</p>
+                          <p className="text-[12px] text-[#625F58] leading-relaxed">{sig.description}</p>
                           {typeof sig.impact === 'number' && (
-                            <div className="mt-2.5 h-1.5 bg-[#f0efed] rounded-none overflow-hidden">
+                            <div className="mt-2.5 h-1.5 bg-[#E0DED4] rounded-none overflow-hidden">
                               <div
                                 className="h-full bg-[#2e7d32] rounded-none"
                                 style={{ width: `${Math.round(sig.weight * 100)}%` }}
@@ -856,14 +856,14 @@ export default function InvestigationResultPage() {
 
             {/* Source text submitted */}
             {inv.sourceDescription && (
-              <div className="border-t border-[#e4e4e0] pt-6">
-                <p className="text-[11px] uppercase tracking-widest text-[#767672] mb-2 font-medium">
+              <div className="border-t border-[#E0DED4] pt-6">
+                <p className="text-[11px] uppercase tracking-widest text-[#77746C] mb-2 font-medium">
                   {inv.sourceType === 'extracted_url'
                     ? 'Extracted Job Posting Text (from URL)'
                     : 'Analyzed Job Posting Text (Pasted)'}
                 </p>
-                <div className="p-4 bg-[#fafaf9] border border-[#e4e4e0] rounded-none max-h-[220px] overflow-y-auto">
-                  <p className="text-[12px] text-[#555552] leading-relaxed whitespace-pre-wrap font-sans">
+                <div className="p-4 bg-[#F0EEE6] border border-[#E0DED4] rounded-none max-h-[220px] overflow-y-auto">
+                  <p className="text-[12px] text-[#625F58] leading-relaxed whitespace-pre-wrap font-sans">
                     {inv.sourceDescription}
                   </p>
                 </div>
@@ -874,12 +874,12 @@ export default function InvestigationResultPage() {
           {/* Sidebar Summary Card */}
           <div className="lg:sticky lg:top-[76px] flex flex-col gap-4">
             {/* Quick Details Box */}
-            <div className="border border-[#e4e4e0] rounded-none overflow-hidden bg-white">
-              <div className="px-4 py-3 border-b border-[#e4e4e0] bg-[#f7f7f6] flex items-center justify-between">
-                <p className="text-[11px] font-semibold text-[#555552] uppercase tracking-wider">
+            <div className="border border-[#E0DED4] rounded-none overflow-hidden bg-[#FAF9F5]">
+              <div className="px-4 py-3 border-b border-[#E0DED4] bg-[#F0EEE6] flex items-center justify-between">
+                <p className="text-[11px] font-semibold text-[#625F58] uppercase tracking-wider">
                   Investigation Details
                 </p>
-                <span className="text-[10px] text-[#9a9a9a]">
+                <span className="text-[10px] text-[#77746C]">
                   {new Date(inv.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
@@ -943,10 +943,10 @@ export default function InvestigationResultPage() {
                     : []),
                 ].map(({ label, value }) => (
                   <div key={label}>
-                    <p className="text-[10px] uppercase tracking-wider text-[#9a9a9a] mb-0.5">
+                    <p className="text-[10px] uppercase tracking-wider text-[#77746C] mb-0.5">
                       {label}
                     </p>
-                    <p className="text-[12px] text-[#111110] font-medium break-all">{value}</p>
+                    <p className="text-[12px] text-[#141413] font-medium break-all">{value}</p>
                   </div>
                 ))}
               </div>
@@ -970,7 +970,7 @@ export default function InvestigationResultPage() {
               ← Back to home
             </Button>
 
-            <p className="text-[10px] text-[#888884] leading-relaxed pt-2">
+            <p className="text-[10px] text-[#77746C] leading-relaxed pt-2">
               ✦ {isReal
                 ? 'Analysis generated directly by ScamShield AI FastAPI ML engine.'
                 : 'Illustrative demo data. Not a live investigation result.'}

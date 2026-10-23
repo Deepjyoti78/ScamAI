@@ -6,22 +6,22 @@ import AboutSection from '../components/AboutSection';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F0EEE6]">
       <Header />
-      <main className="max-w-[1200px] mx-auto border-x border-[#e4e4e0] bg-white">
+      <main className="max-w-[1200px] mx-auto border-x border-[#E0DED4] bg-[#FAF9F5]">
         <HeroSection />
         <WorkflowSection />
         <RecentInvestigations />
         <AboutSection />
       </main>
-      <footer className="border-t border-[#e4e4e0]">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-[#e4e4e0] py-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <p className="text-[12px] text-[#767672]">
+      <footer className="border-t border-[#E0DED4] bg-[#FAF9F5]">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 border-x border-[#E0DED4] py-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <p className="text-[12px] text-[#77746C]">
             © 2026 ScamShield AI. All results are illustrative. Verify independently.
           </p>
           <div className="flex items-center gap-6">
             {['Privacy', 'Terms', 'Contact'].map((l) => (
-              <a key={l} href="#" className="text-[12px] text-[#767672] hover:text-[#111110] transition-colors">
+              <a key={l} href="#" className="text-[12px] text-[#77746C] hover:text-[#141413] transition-colors">
                 {l}
               </a>
             ))}

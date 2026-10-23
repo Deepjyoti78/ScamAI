@@ -136,17 +136,17 @@ export default function InvestigationModal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="bg-white rounded-none shadow-[0_24px_70px_-15px_rgba(0,0,0,0.35)] border border-[#e4e4e0] w-full max-h-[86vh] sm:max-h-[88vh] overflow-hidden flex flex-col focus:outline-none animate-modal-enter my-auto flex-shrink-0"
+        className="bg-[#FAF9F5] rounded-none shadow-[0_24px_70px_-15px_rgba(0,0,0,0.35)] border border-[#E0DED4] w-full max-h-[86vh] sm:max-h-[88vh] overflow-hidden flex flex-col focus:outline-none animate-modal-enter my-auto flex-shrink-0"
         style={{ width: 'min(760px, calc(100vw - 32px))' }}
       >
         {/* Modal Header */}
-        <div className="px-6 md:px-8 pt-5 md:pt-6 pb-4 md:pb-5 border-b border-[#e4e4e0] flex items-start justify-between gap-4 bg-white flex-shrink-0 z-20">
+        <div className="px-6 md:px-8 pt-5 md:pt-6 pb-4 md:pb-5 border-b border-[#E0DED4] flex items-start justify-between gap-4 bg-[#FAF9F5] flex-shrink-0 z-20">
           <div className="flex items-start gap-3.5">
             <div
               className={`w-11 h-11 md:w-12 md:h-12 rounded-none border flex items-center justify-center flex-shrink-0 transition-colors ${
                 isComplete
                   ? 'bg-[#e6f4ea] text-[#137333] border-[#ceead6]'
-                  : 'bg-[#f7f7f6] text-[#111110] border-[#e4e4e0]'
+                  : 'bg-[#F0EEE6] text-[#141413] border-[#E0DED4]'
               }`}
             >
               {isComplete ? <Check size={22} className="stroke-[2.5]" /> : <Shield size={21} className="stroke-[1.8]" />}
@@ -154,11 +154,11 @@ export default function InvestigationModal({
             <div>
               <h2
                 id="investigation-modal-title"
-                className="font-serif text-[23px] md:text-[27px] font-normal tracking-[-0.01em] text-[#111110] leading-tight"
+                className="font-serif text-[23px] md:text-[27px] font-normal tracking-[-0.01em] text-[#141413] leading-tight"
               >
                 {isComplete ? 'Investigation Complete' : 'Running Investigation'}
               </h2>
-              <p className="text-[12px] md:text-[13px] text-[#6b6b6b] mt-0.5">
+              <p className="text-[12px] md:text-[13px] text-[#625F58] mt-0.5">
                 {isComplete
                   ? 'Analysis finished • Risk score and evidence dossier compiled.'
                   : 'Please wait while we analyze this job posting.'}
@@ -173,7 +173,7 @@ export default function InvestigationModal({
                 Completed
               </span>
             ) : (
-              <span className="text-[11px] font-mono text-[#9a9a9a] hidden sm:inline-block">
+              <span className="text-[11px] font-mono text-[#77746C] hidden sm:inline-block">
                 ~ 20–60 seconds
               </span>
             )}
@@ -181,7 +181,7 @@ export default function InvestigationModal({
               type="button"
               onClick={onClose}
               aria-label="Dismiss investigation overlay"
-              className="p-1.5 text-[#9a9a9a] hover:text-[#111110] hover:bg-[#f7f7f6] rounded-none transition-colors cursor-pointer"
+              className="p-1.5 text-[#77746C] hover:text-[#141413] hover:bg-[#F0EEE6] rounded-none transition-colors cursor-pointer"
             >
               <X size={17} />
             </button>
@@ -192,8 +192,8 @@ export default function InvestigationModal({
         <div className="px-6 md:px-8 py-5 overflow-y-auto flex-1 flex flex-col gap-0 divide-y-0">
           {/* Result Summary Box when complete */}
           {isComplete && result && (
-            <div className="mb-6 p-4 sm:p-5 border rounded-none bg-[#fafaf9] border-[#e4e4e0] animate-page-enter">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e4e4e0]">
+            <div className="mb-6 p-4 sm:p-5 border rounded-none bg-[#F0EEE6] border-[#E0DED4] animate-page-enter">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E0DED4]">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     {result.riskLevel === 'high' ? (
@@ -209,8 +209,8 @@ export default function InvestigationModal({
                         Low Risk Listing
                       </span>
                     )}
-                    <span className="text-[12px] font-mono text-[#767672]">
-                      Verdict: <strong className="text-[#111110] font-semibold">{result.label}</strong>
+                    <span className="text-[12px] font-mono text-[#77746C]">
+                      Verdict: <strong className="text-[#141413] font-semibold">{result.label}</strong>
                     </span>
                   </div>
                   <div className="flex items-baseline gap-2.5">
@@ -225,7 +225,7 @@ export default function InvestigationModal({
                     >
                       {(result.fraudProbability * 100).toFixed(1)}%
                     </span>
-                    <span className="text-[13px] text-[#6b6b6b]">
+                    <span className="text-[13px] text-[#625F58]">
                       Estimated Fraud Probability
                     </span>
                   </div>
@@ -235,7 +235,7 @@ export default function InvestigationModal({
                   <button
                     type="button"
                     onClick={onViewReport}
-                    className="self-start sm:self-center px-4 py-2.5 bg-[#111110] text-white hover:bg-[#282826] text-[13px] font-medium rounded-none flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm whitespace-nowrap"
+                    className="self-start sm:self-center px-4 py-2.5 bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] text-[13px] font-medium rounded-none flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm whitespace-nowrap"
                   >
                     Show full investigation <ArrowRight size={13} />
                   </button>
@@ -244,20 +244,20 @@ export default function InvestigationModal({
 
               {/* Assessment Summary / Info */}
               <div className="pt-3.5">
-                <p className="text-[12px] sm:text-[13px] text-[#444441] leading-relaxed">
+                <p className="text-[12px] sm:text-[13px] text-[#625F58] leading-relaxed">
                   {result.assessmentSummary}
                 </p>
 
                 {/* Detected Signals Pills */}
                 {result.topSuspiciousSignals && result.topSuspiciousSignals.length > 0 && (
                   <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] font-mono font-medium text-[#767672] mr-1">
+                    <span className="text-[11px] font-mono font-medium text-[#77746C] mr-1">
                       Key warning indicators:
                     </span>
                     {result.topSuspiciousSignals.slice(0, 4).map((signal, idx) => (
                       <span
                         key={idx}
-                        className="text-[11px] font-mono px-2 py-0.5 bg-white border border-[#e4e4e0] text-[#111110] rounded-none shadow-2xs"
+                        className="text-[11px] font-mono px-2 py-0.5 bg-[#FFFFFF] border border-[#E0DED4] text-[#141413] rounded-none shadow-2xs"
                       >
                         ⚠ {signal}
                       </span>
@@ -269,8 +269,8 @@ export default function InvestigationModal({
           )}
 
           {isComplete && (
-            <div className="flex items-center gap-2 pb-3 mb-2 border-b border-[#e4e4e0]">
-              <span className="text-[11px] font-mono font-medium text-[#767672] uppercase tracking-wider">
+            <div className="flex items-center gap-2 pb-3 mb-2 border-b border-[#E0DED4]">
+              <span className="text-[11px] font-mono font-medium text-[#77746C] uppercase tracking-wider">
                 Completed Verification Stages
               </span>
             </div>
@@ -285,13 +285,13 @@ export default function InvestigationModal({
             const nextStage = stages[index + 1];
 
             // Box container styling (sharp square)
-            let circleStyle = 'bg-[#fafaf9] text-[#767672] border-[#e4e4e0]';
+            let circleStyle = 'bg-[#F0EEE6] text-[#77746C] border-[#E0DED4]';
             if (isCompleted) {
               circleStyle = 'bg-[#e6f4ea] text-[#137333] border-[#ceead6] animate-check-pop';
             } else if (isInProgress) {
               circleStyle = 'bg-[#e8f0fe] text-[#1a73e8] border-[#1a73e8] ring-2 ring-[#e8f0fe] animate-active-pulse';
             } else if (isSkipped) {
-              circleStyle = 'bg-[#f0efed] text-[#9a9a9a] border-[#e4e4e0]';
+              circleStyle = 'bg-[#F0EEE6] text-[#77746C] border-[#E0DED4]';
             } else if (isFailed) {
               circleStyle = 'bg-[#fef2f2] text-[#c5291e] border-[#fcc9c6]';
             }
@@ -306,7 +306,7 @@ export default function InvestigationModal({
                 {!isLast && (
                   <div className="absolute left-[19px] md:left-[21px] top-[44px] bottom-[-2px] w-[2px] z-0">
                     {/* Background track line */}
-                    <div className="absolute inset-0 bg-[#e4e4e0]" />
+                    <div className="absolute inset-0 bg-[#E0DED4]" />
 
                     {/* Filled progress track */}
                     <div
@@ -324,7 +324,7 @@ export default function InvestigationModal({
                     {/* Animated downward arrow going from this step to the next in-progress step */}
                     {isFlowingToNext && (
                       <div className="absolute left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-arrow-down pointer-events-none">
-                        <div className="w-5 h-5 rounded-none bg-[#111110] text-white border border-[#111110] shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="w-5 h-5 rounded-none bg-[#141413] text-[#FAF9F5] border border-[#141413] shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center">
                           <ArrowDown size={11} className="stroke-[2.8]" />
                         </div>
                       </div>
@@ -352,12 +352,12 @@ export default function InvestigationModal({
                 <div className="flex-1 min-w-0 pt-0.5">
                   <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-mono text-[#9a9a9a] font-medium">
+                      <span className="text-[11px] font-mono text-[#77746C] font-medium">
                         {stage.stepNumber}
                       </span>
                       <h3
                         className={`text-[13px] md:text-[14px] font-semibold tracking-tight transition-colors ${
-                          isPending ? 'text-[#767672]' : 'text-[#111110]'
+                          isPending ? 'text-[#77746C]' : 'text-[#141413]'
                         }`}
                       >
                         {stage.title}
@@ -379,13 +379,13 @@ export default function InvestigationModal({
                         </span>
                       )}
                       {isPending && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#f7f7f6] text-[#767672] border border-[#e4e4e0]">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#F0EEE6] text-[#77746C] border border-[#E0DED4]">
                           <Clock size={10} />
                           Pending
                         </span>
                       )}
                       {isSkipped && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#f0efed] text-[#767672] border border-[#e4e4e0]">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#F0EEE6] text-[#77746C] border border-[#E0DED4]">
                           Skipped
                         </span>
                       )}
@@ -399,22 +399,22 @@ export default function InvestigationModal({
                   </div>
 
                   {/* Description */}
-                  <p className="text-[11px] md:text-[12px] text-[#6b6b6b] leading-relaxed">
+                  <p className="text-[11px] md:text-[12px] text-[#625F58] leading-relaxed">
                     {stage.description}
                   </p>
 
                   {/* Active In-Progress Bar (sharp square) */}
                   {isInProgress && (
                     <div className="mt-2.5 flex items-center gap-3 max-w-[480px]">
-                      <div className="h-1.5 flex-1 bg-[#f0efed] rounded-none overflow-hidden relative">
+                      <div className="h-1.5 flex-1 bg-[#E0DED4] rounded-none overflow-hidden relative">
                         <div
-                          className="h-full bg-[#111110] rounded-none transition-all duration-300 ease-out"
+                          className="h-full bg-[#141413] rounded-none transition-all duration-300 ease-out"
                           style={{
                             width: stage.progress ? `${stage.progress}%` : '60%',
                           }}
                         />
                       </div>
-                      <span className="text-[10px] font-mono font-medium text-[#767672]">
+                      <span className="text-[10px] font-mono font-medium text-[#77746C]">
                         {stage.progress ? `${stage.progress}%` : '60%'}
                       </span>
                     </div>
@@ -424,7 +424,7 @@ export default function InvestigationModal({
                   {stage.detail && !isPending && (
                     <p
                       className={`text-[11px] mt-1 font-mono break-words leading-tight ${
-                        isFailed ? 'text-[#c5291e]' : 'text-[#767672]'
+                        isFailed ? 'text-[#c5291e]' : 'text-[#77746C]'
                       }`}
                     >
                       ✦ {stage.detail}
@@ -437,7 +437,7 @@ export default function InvestigationModal({
         </div>
 
         {/* Modal Footer / Completion & Error States */}
-        <div className="px-6 md:px-8 py-3.5 sm:py-4 bg-[#fafaf9] border-t border-[#e4e4e0] flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+        <div className="px-6 md:px-8 py-3.5 sm:py-4 bg-[#FAF9F5] border-t border-[#E0DED4] flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
           {error ? (
             <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-[#c5291e]">
@@ -451,7 +451,7 @@ export default function InvestigationModal({
                   <button
                     type="button"
                     onClick={onRetry}
-                    className="flex-1 sm:flex-none text-[12px] font-medium bg-[#111110] text-white hover:bg-[#2b2b28] px-3 py-1.5 rounded-none transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 sm:flex-none text-[12px] font-medium bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] px-3 py-1.5 rounded-none transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <RefreshCw size={12} />
                     Retry investigation
@@ -460,7 +460,7 @@ export default function InvestigationModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="text-[12px] text-[#767672] hover:text-[#111110] px-2 py-1.5 transition-colors cursor-pointer"
+                  className="text-[12px] text-[#77746C] hover:text-[#141413] px-2 py-1.5 transition-colors cursor-pointer"
                 >
                   Dismiss
                 </button>
@@ -480,7 +480,7 @@ export default function InvestigationModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-3.5 py-2 text-[12px] text-[#767672] hover:text-[#111110] transition-colors cursor-pointer"
+                  className="px-3.5 py-2 text-[12px] text-[#77746C] hover:text-[#141413] transition-colors cursor-pointer"
                 >
                   Close
                 </button>
@@ -488,7 +488,7 @@ export default function InvestigationModal({
                   <button
                     type="button"
                     onClick={onViewReport}
-                    className="flex-1 sm:flex-none text-[13px] font-medium bg-[#111110] text-white hover:bg-[#282826] px-5 py-2.5 rounded-none transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                    className="flex-1 sm:flex-none text-[13px] font-medium bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] px-5 py-2.5 rounded-none transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                   >
                     Show full investigation <ArrowRight size={14} />
                   </button>
@@ -496,12 +496,12 @@ export default function InvestigationModal({
               </div>
             </div>
           ) : (
-            <div className="w-full flex items-center justify-between text-[11px] text-[#767672]">
+            <div className="w-full flex items-center justify-between text-[11px] text-[#77746C]">
               <span>Real-time evaluation against EMSCAD ML model and Trust Chain</span>
               <button
                 type="button"
                 onClick={onClose}
-                className="text-[#9a9a9a] hover:text-[#111110] underline cursor-pointer"
+                className="text-[#77746C] hover:text-[#141413] underline cursor-pointer"
               >
                 Hide overlay (keeps running)
               </button>

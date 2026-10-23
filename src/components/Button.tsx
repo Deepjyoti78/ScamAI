@@ -14,11 +14,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        'bg-[#111110] text-white hover:bg-[#282826] active:bg-[#000000] border border-[#111110] shadow-[0_1px_2px_rgba(0,0,0,0.06)]',
+        'bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] active:bg-[#141413] border border-[#141413] shadow-[0_1px_2px_rgba(20,20,19,0.06)]',
       secondary:
-        'bg-white text-[#111110] border border-[#d0d0cc] hover:bg-[#f7f7f6] active:bg-[#ededeb]',
+        'bg-[#FAF9F5] text-[#141413] border border-[#D7D4C9] hover:bg-[#F0EEE6] active:bg-[#E8E6DC]',
       ghost:
-        'bg-transparent text-[#555552] hover:text-[#111110] hover:bg-[#f7f7f6] border border-transparent',
+        'bg-transparent text-[#625F58] hover:text-[#141413] hover:bg-[#F0EEE6] border border-transparent',
     };
 
     const sizes = {
