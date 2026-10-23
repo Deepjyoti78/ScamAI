@@ -144,7 +144,7 @@ export default function InvestigationModal({
             <div
               className={`w-11 h-11 md:w-12 md:h-12 rounded-none border flex items-center justify-center flex-shrink-0 transition-colors ${
                 isComplete
-                  ? 'bg-[#e6f4ea] text-[#137333] border-[#ceead6]'
+                  ? 'bg-[#141413] text-[#FAF9F5] border-[#141413]'
                   : 'bg-[#F0EEE6] text-[#141413] border-[#E0DED4]'
               }`}
             >
@@ -167,7 +167,7 @@ export default function InvestigationModal({
 
           <div className="flex items-center gap-3 flex-shrink-0 pt-1">
             {isComplete ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#F0EEE6] text-[#141413] border border-[#D7D4C9]">
                 <Check size={11} className="stroke-[2.5]" />
                 Completed
               </span>
@@ -195,7 +195,7 @@ export default function InvestigationModal({
                       Review Recommended
                     </span>
                   ) : (
-                    <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
+                    <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#F0EEE6] text-[#141413] border border-[#D7D4C9]">
                       Low Risk Listing
                     </span>
                   )}
@@ -210,7 +210,7 @@ export default function InvestigationModal({
                         ? 'text-[#c5291e]'
                         : result.riskLevel === 'medium'
                         ? 'text-[#b45309]'
-                        : 'text-[#137333]'
+                        : 'text-[#141413]'
                     }`}
                   >
                     {(result.fraudProbability * 100).toFixed(1)}%
@@ -266,9 +266,9 @@ export default function InvestigationModal({
             // Box container styling (sharp square)
             let circleStyle = 'bg-[#F0EEE6] text-[#77746C] border-[#E0DED4]';
             if (isCompleted) {
-              circleStyle = 'bg-[#e6f4ea] text-[#137333] border-[#ceead6] animate-check-pop';
+              circleStyle = 'bg-[#141413] text-[#FAF9F5] border-[#141413] animate-check-pop';
             } else if (isInProgress) {
-              circleStyle = 'bg-[#e8f0fe] text-[#1a73e8] border-[#1a73e8] ring-2 ring-[#e8f0fe] animate-active-pulse';
+              circleStyle = 'bg-[#FAF9F5] text-[#141413] border-[#141413] ring-2 ring-[#E0DED4] animate-active-pulse';
             } else if (isSkipped) {
               circleStyle = 'bg-[#F0EEE6] text-[#77746C] border-[#E0DED4]';
             } else if (isFailed) {
@@ -291,11 +291,11 @@ export default function InvestigationModal({
                     <div
                       className={`absolute top-0 left-0 w-full transition-all duration-500 ease-out ${
                         isBothCompleted
-                          ? 'h-full bg-[#137333]'
+                          ? 'h-full bg-[#141413]'
                           : isFlowingToNext
-                          ? 'h-full bg-gradient-to-b from-[#137333] via-[#1a73e8] to-[#1a73e8]'
+                          ? 'h-full bg-[#141413]'
                           : isLineActive
-                          ? 'h-full bg-[#137333]'
+                          ? 'h-full bg-[#141413]'
                           : 'h-0'
                       }`}
                     />
@@ -312,7 +312,7 @@ export default function InvestigationModal({
                     {/* Subtle static downward chevron when both stages are completed */}
                     {isBothCompleted && (
                       <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
-                        <div className="w-4 h-4 rounded-none bg-[#e6f4ea] text-[#137333] border border-[#ceead6] flex items-center justify-center shadow-xs">
+                        <div className="w-4 h-4 rounded-none bg-[#FAF9F5] text-[#141413] border border-[#D7D4C9] flex items-center justify-center shadow-xs">
                           <ChevronDown size={10} className="stroke-[2.5]" />
                         </div>
                       </div>
@@ -346,7 +346,7 @@ export default function InvestigationModal({
                     {/* Status Pill Badge (sharp square) */}
                     <div className="self-start sm:self-auto flex-shrink-0">
                       {isCompleted && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#F0EEE6] text-[#141413] border border-[#D7D4C9]">
                           <Check size={11} className="stroke-[2.5]" />
                           Completed
                         </span>
@@ -447,7 +447,7 @@ export default function InvestigationModal({
             </div>
           ) : isComplete ? (
             <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-[#137333]">
+              <div className="flex items-center gap-2 text-[#141413]">
                 <Check size={16} className="stroke-[2.5]" />
                 <span className="text-[13px] font-medium">
                   {result
