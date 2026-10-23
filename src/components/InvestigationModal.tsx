@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Shield,
   Check,
@@ -105,9 +106,11 @@ export default function InvestigationModal({
     }
   };
 
-  return (
+  if (!isOpen) return null;
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-[3px] animate-backdrop-fade"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 bg-black/55 backdrop-blur-[4px] animate-backdrop-fade overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="investigation-modal-title"
@@ -121,11 +124,11 @@ export default function InvestigationModal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="bg-white rounded-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.25)] border border-[#e4e4e0] w-full max-h-[88vh] overflow-hidden flex flex-col focus:outline-none animate-modal-enter"
+        className="bg-white rounded-none shadow-[0_24px_70px_-15px_rgba(0,0,0,0.35)] border border-[#e4e4e0] w-full max-h-[86vh] sm:max-h-[88vh] overflow-hidden flex flex-col focus:outline-none animate-modal-enter my-auto flex-shrink-0"
         style={{ width: 'min(760px, calc(100vw - 32px))' }}
       >
         {/* Modal Header */}
-        <div className="px-6 md:px-8 pt-6 pb-5 border-b border-[#e4e4e0] flex items-start justify-between gap-4 bg-white sticky top-0 z-20">
+        <div className="px-6 md:px-8 pt-5 md:pt-6 pb-4 md:pb-5 border-b border-[#e4e4e0] flex items-start justify-between gap-4 bg-white flex-shrink-0 z-20">
           <div className="flex items-start gap-3.5">
             <div className="w-11 h-11 md:w-12 md:h-12 rounded-none bg-[#f7f7f6] border border-[#e4e4e0] flex items-center justify-center flex-shrink-0 text-[#111110]">
               <Shield size={21} className="stroke-[1.8]" />
@@ -322,7 +325,7 @@ export default function InvestigationModal({
         </div>
 
         {/* Modal Footer / Completion & Error States */}
-        <div className="px-6 md:px-8 py-4 bg-[#fafaf9] border-t border-[#e4e4e0] flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="px-6 md:px-8 py-3.5 sm:py-4 bg-[#fafaf9] border-t border-[#e4e4e0] flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
           {error ? (
             <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-[#c5291e]">
@@ -383,6 +386,7 @@ export default function InvestigationModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
