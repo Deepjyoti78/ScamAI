@@ -119,13 +119,13 @@ export default function InvestigationModal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="bg-white rounded-2xl md:rounded-[22px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.25)] border border-[#e4e4e0] w-full max-h-[88vh] overflow-hidden flex flex-col focus:outline-none transition-all duration-200"
+        className="bg-white rounded-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.25)] border border-[#e4e4e0] w-full max-h-[88vh] overflow-hidden flex flex-col focus:outline-none transition-all duration-200"
         style={{ width: 'min(760px, calc(100vw - 32px))' }}
       >
         {/* Modal Header */}
         <div className="px-6 md:px-8 pt-6 pb-5 border-b border-[#e4e4e0] flex items-start justify-between gap-4 bg-white sticky top-0 z-20">
           <div className="flex items-start gap-3.5">
-            <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-[#f7f7f6] border border-[#e4e4e0] flex items-center justify-center flex-shrink-0 text-[#111110]">
+            <div className="w-11 h-11 md:w-12 md:h-12 rounded-none bg-[#f7f7f6] border border-[#e4e4e0] flex items-center justify-center flex-shrink-0 text-[#111110]">
               <Shield size={21} className="stroke-[1.8]" />
             </div>
             <div>
@@ -149,7 +149,7 @@ export default function InvestigationModal({
               type="button"
               onClick={onClose}
               aria-label="Dismiss investigation overlay"
-              className="p-1.5 text-[#9a9a9a] hover:text-[#111110] hover:bg-[#f7f7f6] rounded-full transition-colors cursor-pointer"
+              className="p-1.5 text-[#9a9a9a] hover:text-[#111110] hover:bg-[#f7f7f6] rounded-none transition-colors cursor-pointer"
             >
               <X size={17} />
             </button>
@@ -169,7 +169,7 @@ export default function InvestigationModal({
             // Connecting line color: green if completed, gray otherwise
             const lineColor = isCompleted ? 'bg-[#137333]' : 'bg-[#e4e4e0]';
 
-            // Circle container styling
+            // Box container styling (sharp square)
             let circleStyle = 'bg-[#fafaf9] text-[#767672] border-[#e4e4e0]';
             if (isCompleted) {
               circleStyle = 'bg-[#e6f4ea] text-[#137333] border-[#ceead6]';
@@ -190,9 +190,9 @@ export default function InvestigationModal({
                   />
                 )}
 
-                {/* Circular Stage Icon */}
+                {/* Square Stage Icon */}
                 <div
-                  className={`relative z-10 w-10 h-10 md:w-11 md:h-11 rounded-full border flex items-center justify-center flex-shrink-0 transition-all duration-200 ${circleStyle}`}
+                  className={`relative z-10 w-10 h-10 md:w-11 md:h-11 rounded-none border flex items-center justify-center flex-shrink-0 transition-all duration-200 ${circleStyle}`}
                 >
                   {getCardIcon(stage.id, stage.status)}
                 </div>
@@ -213,33 +213,33 @@ export default function InvestigationModal({
                       </h3>
                     </div>
 
-                    {/* Status Pill Badge */}
+                    {/* Status Pill Badge (sharp square) */}
                     <div className="self-start sm:self-auto flex-shrink-0">
                       {isCompleted && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
                           <Check size={11} className="stroke-[2.5]" />
                           Completed
                         </span>
                       )}
                       {isInProgress && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8f0fe] text-[#1a73e8] border border-[#d2e3fc]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#e8f0fe] text-[#1a73e8] border border-[#d2e3fc]">
                           <Loader2 size={11} className="animate-spin text-[#1a73e8]" />
                           In progress
                         </span>
                       )}
                       {isPending && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#f7f7f6] text-[#767672] border border-[#e4e4e0]">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#f7f7f6] text-[#767672] border border-[#e4e4e0]">
                           <Clock size={10} />
                           Pending
                         </span>
                       )}
                       {isSkipped && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#f0efed] text-[#767672] border border-[#e4e4e0]">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#f0efed] text-[#767672] border border-[#e4e4e0]">
                           Skipped
                         </span>
                       )}
                       {isFailed && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#fef2f2] text-[#c5291e] border border-[#fcc9c6]">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none text-[11px] font-medium bg-[#fef2f2] text-[#c5291e] border border-[#fcc9c6]">
                           <AlertCircle size={11} />
                           Failed
                         </span>
@@ -252,12 +252,12 @@ export default function InvestigationModal({
                     {stage.description}
                   </p>
 
-                  {/* Active In-Progress Bar (matching reference layout for Card 02) */}
+                  {/* Active In-Progress Bar (sharp square) */}
                   {isInProgress && (
                     <div className="mt-2.5 flex items-center gap-3 max-w-[480px]">
-                      <div className="h-1.5 flex-1 bg-[#f0efed] rounded-full overflow-hidden relative">
+                      <div className="h-1.5 flex-1 bg-[#f0efed] rounded-none overflow-hidden relative">
                         <div
-                          className="h-full bg-[#111110] rounded-full transition-all duration-300 ease-out"
+                          className="h-full bg-[#111110] rounded-none transition-all duration-300 ease-out"
                           style={{
                             width: stage.progress ? `${stage.progress}%` : '60%',
                           }}
@@ -300,7 +300,7 @@ export default function InvestigationModal({
                   <button
                     type="button"
                     onClick={onRetry}
-                    className="flex-1 sm:flex-none text-[12px] font-medium bg-[#111110] text-white hover:bg-[#2b2b28] px-3 py-1.5 rounded-[4px] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 sm:flex-none text-[12px] font-medium bg-[#111110] text-white hover:bg-[#2b2b28] px-3 py-1.5 rounded-none transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <RefreshCw size={12} />
                     Retry investigation
@@ -327,7 +327,7 @@ export default function InvestigationModal({
                 <button
                   type="button"
                   onClick={onViewReport}
-                  className="w-full sm:w-auto text-[12px] font-medium bg-[#111110] text-white hover:bg-[#2b2b28] px-4 py-2 rounded-[4px] transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  className="w-full sm:w-auto text-[12px] font-medium bg-[#111110] text-white hover:bg-[#2b2b28] px-4 py-2 rounded-none transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                 >
                   View investigation report <ArrowRight size={13} />
                 </button>

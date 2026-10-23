@@ -35,7 +35,7 @@ export default function Header() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-[28px] h-[28px] rounded-[4px] border border-[#111110] flex items-center justify-center">
+            <div className="w-[28px] h-[28px] rounded-none border border-[#111110] flex items-center justify-center">
               <Shield size={14} strokeWidth={2} className="text-[#111110]" />
             </div>
             <span className="text-[14px] font-semibold tracking-tight text-[#111110]">ScamShield AI</span>
@@ -58,11 +58,11 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-4">
             {apiConnected !== null && (
               <div
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[11px]"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[11px]"
                 title={apiConnected ? 'FastAPI ML backend is running and connected' : 'FastAPI backend is offline'}
               >
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${
+                  className={`w-1.5 h-1.5 ${
                     apiConnected ? 'bg-[#2e7d32]' : 'bg-[#c5291e]'
                   }`}
                 />
@@ -78,7 +78,7 @@ export default function Header() {
 
           {/* Mobile toggle */}
           <button
-            className="md:hidden p-1.5 rounded-[3px] text-[#111110] hover:bg-[#f7f7f6] transition-colors"
+            className="md:hidden p-1.5 rounded-none text-[#111110] hover:bg-[#f7f7f6] transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle navigation"
           >
@@ -104,7 +104,7 @@ export default function Header() {
             {apiConnected !== null && (
               <div className="flex items-center gap-2 px-1 text-[12px] text-[#6b6b6b]">
                 <span
-                  className={`w-2 h-2 rounded-full ${
+                  className={`w-2 h-2 rounded-none ${
                     apiConnected ? 'bg-[#2e7d32]' : 'bg-[#c5291e]'
                   }`}
                 />

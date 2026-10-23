@@ -22,9 +22,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes = {
-      sm: 'text-[13px] px-3.5 py-1.5 gap-1.5 rounded-[4px] h-[34px]',
-      md: 'text-[14px] px-4 py-2 gap-2 rounded-[4px] h-[40px]',
-      lg: 'text-[14px] font-medium px-5 py-2.5 gap-2 rounded-[4px] h-[44px]',
+      sm: 'text-[13px] px-3.5 py-1.5 gap-1.5 rounded-none h-[34px]',
+      md: 'text-[14px] px-4 py-2 gap-2 rounded-none h-[40px]',
+      lg: 'text-[14px] font-medium px-5 py-2.5 gap-2 rounded-none h-[44px]',
     };
 
     return (

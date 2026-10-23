@@ -221,7 +221,7 @@ export default function InvestigatePage() {
     <div className="min-h-screen bg-[#f8f8f7]">
       <Header />
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-3 sm:pt-4 md:pt-5 pb-10 flex justify-center">
-        <div className="w-full max-w-[720px] bg-white border border-[#e4e4e0] rounded-[10px] p-6 sm:p-8 md:px-9 md:py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div className="w-full max-w-[720px] bg-white border border-[#e4e4e0] rounded-none p-6 sm:p-8 md:px-9 md:py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
           {/* Back button */}
           <button
             onClick={() => navigate(-1)}
@@ -242,14 +242,14 @@ export default function InvestigatePage() {
           </p>
 
           {/* Input mode toggle */}
-          <div className="inline-flex border border-[#e4e4e0] rounded-[7px] p-[3px] bg-[#f5f5f3] mb-6 gap-1">
+          <div className="inline-flex border border-[#e4e4e0] rounded-none p-[3px] bg-[#f5f5f3] mb-6 gap-1">
             <button
               type="button"
               onClick={() => {
                 setMode('text');
                 setError(null);
               }}
-              className={`flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-[5px] transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-none transition-all cursor-pointer ${
                 mode === 'text'
                   ? 'bg-[#141413] text-white shadow-sm'
                   : 'bg-transparent text-[#6b6b67] hover:text-[#111110]'
@@ -264,7 +264,7 @@ export default function InvestigatePage() {
                 setMode('url');
                 setError(null);
               }}
-              className={`flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-[5px] transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-none transition-all cursor-pointer ${
                 mode === 'url'
                   ? 'bg-[#141413] text-white shadow-sm'
                   : 'bg-transparent text-[#6b6b67] hover:text-[#111110]'
@@ -278,7 +278,7 @@ export default function InvestigatePage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* If URL Mode is active, render the Job URL field above */}
             {mode === 'url' && (
-              <div className="border border-[#e4e4e0] rounded-[6px] p-4 bg-[#fafaf9]">
+              <div className="border border-[#e4e4e0] rounded-none p-4 bg-[#fafaf9]">
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-[11px] font-semibold text-[#555552] uppercase tracking-[0.06em]">
                     JOB POSTING URL <span className="text-[#c5291e]">*</span>
@@ -290,7 +290,7 @@ export default function InvestigatePage() {
                   value={jobUrl}
                   onChange={(e) => setJobUrl(e.target.value)}
                   placeholder="https://boards.greenhouse.io/... or https://company.com/careers/..."
-                  className="w-full border border-[#e4e4e0] rounded-[6px] px-3.5 py-2.5 text-[13px] font-mono text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white mb-2"
+                  className="w-full border border-[#e4e4e0] rounded-none px-3.5 py-2.5 text-[13px] font-mono text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white mb-2"
                 />
                 <p className="text-[11px] text-[#767672] leading-relaxed">
                   ✦ ScamShield AI will fetch and extract readable job text for analysis. If the listing requires login or bot verification, paste the description below.
@@ -304,7 +304,7 @@ export default function InvestigatePage() {
                 <label className="block text-[11px] font-semibold text-[#555552] uppercase tracking-[0.06em]">
                   {mode === 'url' ? (
                     <>
-                      JOB POSTING CONTENT <span className="text-[#8e8e89] font-normal lowercase">(optional fallback)</span>
+                       JOB POSTING CONTENT <span className="text-[#8e8e89] font-normal lowercase">(optional fallback)</span>
                     </>
                   ) : (
                     <>
@@ -319,7 +319,7 @@ export default function InvestigatePage() {
                 placeholder="Paste the full job posting description, requirements, benefits, or recruiter message here..."
                 rows={mode === 'url' ? 4 : 5}
                 required={mode === 'text'}
-                className="w-full border border-[#e4e4e0] rounded-[6px] px-4 py-3 text-[13px] text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white resize-y leading-relaxed font-sans"
+                className="w-full border border-[#e4e4e0] rounded-none px-4 py-3 text-[13px] text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white resize-y leading-relaxed font-sans"
               />
               <div className="text-right text-[11px] text-[#8e8e89] mt-1 font-mono">
                 {jobDescription.length} / 5000
@@ -337,7 +337,7 @@ export default function InvestigatePage() {
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
                   placeholder="e.g. Data Entry Specialist"
-                  className="w-full border border-[#e4e4e0] rounded-[6px] px-3.5 py-2.5 text-[13px] text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
+                  className="w-full border border-[#e4e4e0] rounded-none px-3.5 py-2.5 text-[13px] text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
                 />
               </div>
 
@@ -350,7 +350,7 @@ export default function InvestigatePage() {
                   value={employer}
                   onChange={(e) => setEmployer(e.target.value)}
                   placeholder="e.g. Acme Logistics LLC"
-                  className="w-full border border-[#e4e4e0] rounded-[6px] px-3.5 py-2.5 text-[13px] text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
+                  className="w-full border border-[#e4e4e0] rounded-none px-3.5 py-2.5 text-[13px] text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
                 />
               </div>
             </div>
@@ -364,7 +364,7 @@ export default function InvestigatePage() {
                 <select
                   value={employmentType}
                   onChange={(e) => setEmploymentType(e.target.value)}
-                  className="w-full border border-[#e4e4e0] rounded-[6px] px-3.5 py-2.5 pr-10 text-[13px] text-[#111110] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white appearance-none cursor-pointer"
+                  className="w-full border border-[#e4e4e0] rounded-none px-3.5 py-2.5 pr-10 text-[13px] text-[#111110] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white appearance-none cursor-pointer"
                 >
                   <option value="Full-time">Full-time</option>
                   <option value="Part-time">Part-time</option>
@@ -378,7 +378,7 @@ export default function InvestigatePage() {
             </div>
 
             {/* 4. Trust Chain Cross-Check Fields (Optional) */}
-            <div className="border border-[#e4e4e0] rounded-[8px] p-4 sm:p-5 bg-[#fafaf9] flex flex-col gap-3.5">
+            <div className="border border-[#e4e4e0] rounded-none p-4 sm:p-5 bg-[#fafaf9] flex flex-col gap-3.5">
               <div className="flex items-center justify-between pb-1">
                 <p className="text-[11px] font-bold text-[#111110] uppercase tracking-[0.06em]">
                   TRUST CHAIN CROSS-CHECK <span className="text-[#8e8e89] font-normal lowercase">(optional)</span>
@@ -398,7 +398,7 @@ export default function InvestigatePage() {
                     value={companyWebsite}
                     onChange={(e) => setCompanyWebsite(e.target.value)}
                     placeholder="https://acmecorp.com"
-                    className="w-full border border-[#e4e4e0] rounded-[6px] px-3 py-2 text-[12px] font-mono text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
+                    className="w-full border border-[#e4e4e0] rounded-none px-3 py-2 text-[12px] font-mono text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
                   />
                 </div>
 
@@ -411,7 +411,7 @@ export default function InvestigatePage() {
                     value={recruiterEmail}
                     onChange={(e) => setRecruiterEmail(e.target.value)}
                     placeholder="recruitment@acmecorp.com"
-                    className="w-full border border-[#e4e4e0] rounded-[6px] px-3 py-2 text-[12px] font-mono text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
+                    className="w-full border border-[#e4e4e0] rounded-none px-3 py-2 text-[12px] font-mono text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
                   />
                 </div>
               </div>
@@ -426,7 +426,7 @@ export default function InvestigatePage() {
                     value={applicationUrl}
                     onChange={(e) => setApplicationUrl(e.target.value)}
                     placeholder="https://boards.greenhouse.io/acme/..."
-                    className="w-full border border-[#e4e4e0] rounded-[6px] px-3 py-2 text-[12px] font-mono text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
+                    className="w-full border border-[#e4e4e0] rounded-none px-3 py-2 text-[12px] font-mono text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
                   />
                 </div>
 
@@ -439,7 +439,7 @@ export default function InvestigatePage() {
                     value={recruiterMessage}
                     onChange={(e) => setRecruiterMessage(e.target.value)}
                     placeholder="Optional context..."
-                    className="w-full border border-[#e4e4e0] rounded-[6px] px-3 py-2 text-[12px] text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
+                    className="w-full border border-[#e4e4e0] rounded-none px-3 py-2 text-[12px] text-[#111110] placeholder:text-[#a8a8a4] focus:outline-none focus:border-[#111110] focus:ring-1 focus:ring-[#111110] transition-colors bg-white"
                   />
                 </div>
               </div>
@@ -447,7 +447,7 @@ export default function InvestigatePage() {
 
             {/* Error Message Banner */}
             {error && (
-              <div className="border border-[#fcc9c6] bg-[#fef2f2] rounded-[6px] p-4 flex flex-col gap-2">
+              <div className="border border-[#fcc9c6] bg-[#fef2f2] rounded-none p-4 flex flex-col gap-2">
                 <div className="flex items-start gap-2.5">
                   <AlertCircle size={15} className="text-[#c5291e] mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -478,7 +478,7 @@ export default function InvestigatePage() {
 
             {/* Running in background notice (if modal overlay was hidden) */}
             {loading && !isModalOpen && (
-              <div className="border border-[#e4e4e0] bg-[#fafaf9] rounded-[6px] p-3.5 flex items-center justify-between gap-3 animate-in fade-in duration-200">
+              <div className="border border-[#e4e4e0] bg-[#fafaf9] rounded-none p-3.5 flex items-center justify-between gap-3 animate-in fade-in duration-200">
                 <div className="flex items-center gap-2 text-[12px] text-[#111110]">
                   <Loader2 size={13} className="animate-spin text-[#111110] flex-shrink-0" />
                   <span className="font-medium">Investigation running in background...</span>
@@ -498,7 +498,7 @@ export default function InvestigatePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#111110] hover:bg-[#252522] active:bg-[#000000] text-white font-medium text-[13px] py-3.5 rounded-[6px] flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="w-full bg-[#111110] hover:bg-[#252522] active:bg-[#000000] text-white font-medium text-[13px] py-3.5 rounded-none flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
               {loading ? (
                 <>

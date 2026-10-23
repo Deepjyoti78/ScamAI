@@ -16,7 +16,7 @@ function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
 
   return (
     <span
-      className={`text-[10px] font-semibold px-2 py-0.5 rounded-[2px] tracking-wide uppercase ${styles[level]}`}
+      className={`text-[10px] font-semibold px-2 py-0.5 rounded-none tracking-wide uppercase ${styles[level]}`}
     >
       {label}
     </span>
@@ -65,7 +65,7 @@ export default function InvestigationsListPage() {
                 Live ML Investigations (This Session)
               </h2>
             </div>
-            <div className="flex flex-col border border-[#e4e4e0] rounded-[4px] overflow-hidden divide-y divide-[#e4e4e0] mb-8">
+            <div className="flex flex-col border border-[#e4e4e0] rounded-none overflow-hidden divide-y divide-[#e4e4e0] mb-8">
               {realInvestigations.map((inv) => (
                 <div
                   key={inv.id}
@@ -117,7 +117,7 @@ export default function InvestigationsListPage() {
             {demoInvestigations.map((inv, i) => (
               <div
                 key={inv.id}
-                className={`flex items-center justify-between gap-4 py-4 cursor-pointer group transition-colors hover:bg-[#f7f7f6] -mx-3 px-3 rounded-[3px] ${
+                className={`flex items-center justify-between gap-4 py-4 cursor-pointer group transition-colors hover:bg-[#f7f7f6] -mx-3 px-3 rounded-none ${
                   i < demoInvestigations.length - 1 ? 'border-b border-[#e4e4e0]' : ''
                 }`}
                 onClick={() => navigate(`/investigations/${inv.id}`)}

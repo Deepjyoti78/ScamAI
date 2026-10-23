@@ -30,21 +30,21 @@ function TrustChainStatusBadge({ status }: { status: TrustChainStatus }) {
   switch (status) {
     case 'concern_observed':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#fcc9c6] bg-[#fef2f2] text-[#c5291e] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#fcc9c6] bg-[#fef2f2] text-[#c5291e] text-[11px] font-medium uppercase tracking-wider">
           <AlertTriangle size={11} strokeWidth={2} />
           Concern Observed
         </span>
       );
     case 'no_mismatch_observed':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#c8e6c9] bg-[#f1f8f1] text-[#2e7d32] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#c8e6c9] bg-[#f1f8f1] text-[#2e7d32] text-[11px] font-medium uppercase tracking-wider">
           <CheckCircle size={11} strokeWidth={2} />
           No Mismatch Observed
         </span>
       );
     case 'unable_to_determine':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#f5d5a0] bg-[#fdf3e7] text-[#b5640c] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#f5d5a0] bg-[#fdf3e7] text-[#b5640c] text-[11px] font-medium uppercase tracking-wider">
           <Info size={11} strokeWidth={2} />
           Unable To Determine
         </span>
@@ -52,7 +52,7 @@ function TrustChainStatusBadge({ status }: { status: TrustChainStatus }) {
     case 'not_checked':
     default:
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
           <Info size={11} strokeWidth={2} />
           Not Checked
         </span>
@@ -65,56 +65,56 @@ function WebResearchStatusBadge({ status }: { status: WebResearchStatus }) {
     case 'exact_vacancy_match_found':
     case 'official_vacancy_match_found':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#c8e6c9] bg-[#f1f8f1] text-[#2e7d32] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#c8e6c9] bg-[#f1f8f1] text-[#2e7d32] text-[11px] font-medium uppercase tracking-wider">
           <CheckCircle size={11} strokeWidth={2} />
           Exact Vacancy Match
         </span>
       );
     case 'related_role_found':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#d2e3fc] bg-[#e8f0fe] text-[#1a73e8] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#d2e3fc] bg-[#e8f0fe] text-[#1a73e8] text-[11px] font-medium uppercase tracking-wider">
           <Search size={11} strokeWidth={2} />
           Related Role Found
         </span>
       );
     case 'employer_official_presence_found':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e1bee7] bg-[#f3e5f5] text-[#7b1fa2] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e1bee7] bg-[#f3e5f5] text-[#7b1fa2] text-[11px] font-medium uppercase tracking-wider">
           <CheckCircle size={11} strokeWidth={2} />
           Official Presence Confirmed
         </span>
       );
     case 'possible_vacancy_match':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#d2e3fc] bg-[#e8f0fe] text-[#1a73e8] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#d2e3fc] bg-[#e8f0fe] text-[#1a73e8] text-[11px] font-medium uppercase tracking-wider">
           <Search size={11} strokeWidth={2} />
           Possible Vacancy Match
         </span>
       );
     case 'potential_domain_inconsistency':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#fcc9c6] bg-[#fef2f2] text-[#c5291e] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#fcc9c6] bg-[#fef2f2] text-[#c5291e] text-[11px] font-medium uppercase tracking-wider">
           <AlertTriangle size={11} strokeWidth={2} />
           Potential Domain Inconsistency
         </span>
       );
     case 'no_matching_vacancy_found_in_search':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
           <Info size={11} strokeWidth={2} />
           No Vacancy Match In Search
         </span>
       );
     case 'not_configured':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#f5d5a0] bg-[#fdf3e7] text-[#b5640c] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#f5d5a0] bg-[#fdf3e7] text-[#b5640c] text-[11px] font-medium uppercase tracking-wider">
           <AlertCircle size={11} strokeWidth={2} />
           Search Not Configured
         </span>
       );
     case 'search_unavailable':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#f5d5a0] bg-[#fdf3e7] text-[#b5640c] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#f5d5a0] bg-[#fdf3e7] text-[#b5640c] text-[11px] font-medium uppercase tracking-wider">
           <AlertCircle size={11} strokeWidth={2} />
           Search Unavailable
         </span>
@@ -122,7 +122,7 @@ function WebResearchStatusBadge({ status }: { status: WebResearchStatus }) {
     case 'insufficient_evidence':
     default:
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px] font-medium uppercase tracking-wider">
           <Info size={11} strokeWidth={2} />
           Insufficient Details for Search
         </span>
@@ -169,7 +169,7 @@ function RiskIndicator({ level, label }: { level: RiskLevel; label: string }) {
 
   return (
     <div
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-[3px] border ${s.bg} ${s.border} ${s.text}`}
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-none border ${s.bg} ${s.border} ${s.text}`}
     >
       {s.icon}
       <span className="text-[12px] font-semibold uppercase tracking-wider">{label}</span>
@@ -251,7 +251,7 @@ export default function InvestigationResultPage() {
               <div className="flex flex-wrap items-center gap-2">
                 {/* Source Type Badge */}
                 {inv.sourceType === 'extracted_url' || inv.sourceUrl ? (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#111110] text-[11px] font-mono">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#111110] text-[11px] font-mono">
                     <Link2 size={11} />
                     Extracted from URL
                     {inv.extractionStatus === 'success' && (
@@ -262,7 +262,7 @@ export default function InvestigationResultPage() {
                     )}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#555552] text-[11px]">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#555552] text-[11px]">
                     <FileText size={11} />
                     Pasted Description
                   </span>
@@ -270,13 +270,13 @@ export default function InvestigationResultPage() {
 
                 {isReal ? (
                   <>
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#c8e6c9] bg-[#f1f8f1] text-[#2e7d32] text-[11px] font-medium">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#c8e6c9] bg-[#f1f8f1] text-[#2e7d32] text-[11px] font-medium">
                       <ShieldCheck size={12} strokeWidth={2} />
                       Real ML Model Prediction
                     </span>
                     {typeof inv.inferenceTimeMs === 'number' && (
                       <span
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#111110] text-[11px] font-mono"
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#111110] text-[11px] font-mono"
                         title={`Model executed inference and feature attribution in ${inv.inferenceTimeMs}ms`}
                       >
                         ⚡ {inv.inferenceTimeMs}ms inference
@@ -284,7 +284,7 @@ export default function InvestigationResultPage() {
                     )}
                   </>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px]">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[#767672] text-[11px]">
                     <Sparkles size={11} />
                     Illustrative Simulation / Demo Record
                   </span>
@@ -309,7 +309,7 @@ export default function InvestigationResultPage() {
 
             {/* Extraction Failure Warning Banner */}
             {(inv.extractionStatus === 'failed' || (inv.extractionError && inv.extractionStatus !== 'success')) && (
-              <div className="border border-[#f5d5a0] bg-[#fdf3e7] rounded-[4px] p-4 mb-6">
+              <div className="border border-[#f5d5a0] bg-[#fdf3e7] rounded-none p-4 mb-6">
                 <div className="flex items-start gap-2.5">
                   <AlertCircle size={15} className="text-[#b5640c] mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -345,7 +345,7 @@ export default function InvestigationResultPage() {
               </div>
 
               {isReal && inv.prediction !== undefined && (
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[3px] border border-[#e4e4e0] bg-white text-[12px] font-mono">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-none border border-[#e4e4e0] bg-white text-[12px] font-mono">
                   <span className="text-[#767672]">Model Binary Classification:</span>
                   <span
                     className={`font-semibold ${
@@ -360,7 +360,7 @@ export default function InvestigationResultPage() {
 
             {/* Application Review Decision Rationale */}
             {isReal && inv.decisionRationale && (
-              <div className="border border-[#e4e4e0] rounded-[4px] p-4 mb-6 bg-white border-l-[3px] border-l-[#111110]">
+              <div className="border border-[#e4e4e0] rounded-none p-4 mb-6 bg-white border-l-[3px] border-l-[#111110]">
                 <p className="text-[10px] font-semibold tracking-[0.16em] uppercase text-[#767672] mb-1">
                   Triage Decision & Review Rationale
                 </p>
@@ -372,7 +372,7 @@ export default function InvestigationResultPage() {
 
             {/* Dual Metric Cards: Fraud Probability vs Model Confidence */}
             {isReal && fraudProbabilityPct !== null && (
-              <div className="border border-[#e4e4e0] rounded-[4px] p-5 mb-8 bg-[#fafaf9]">
+              <div className="border border-[#e4e4e0] rounded-none p-5 mb-8 bg-[#fafaf9]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-[#e4e4e0]">
                   {/* Metric 1: Fraud Probability */}
                   <div className="flex flex-col justify-between">
@@ -395,9 +395,9 @@ export default function InvestigationResultPage() {
                       </div>
                     </div>
                     {/* Progress bar */}
-                    <div className="h-2 w-full bg-[#e8e8e6] rounded-full overflow-hidden mb-2">
+                    <div className="h-2 w-full bg-[#e8e8e6] rounded-none overflow-hidden mb-2">
                       <div
-                        className={`h-full rounded-full transition-all duration-500 ${
+                        className={`h-full rounded-none transition-all duration-500 ${
                           inv.riskLevel === 'high'
                             ? 'bg-[#c5291e]'
                             : inv.riskLevel === 'medium'
@@ -437,9 +437,9 @@ export default function InvestigationResultPage() {
                           </span>
                         </div>
                       </div>
-                      <div className="h-2 w-full bg-[#e8e8e6] rounded-full overflow-hidden mb-2">
+                      <div className="h-2 w-full bg-[#e8e8e6] rounded-none overflow-hidden mb-2">
                         <div
-                          className="h-full bg-[#111110] rounded-full transition-all duration-500"
+                          className="h-full bg-[#111110] rounded-none transition-all duration-500"
                           style={{ width: `${Math.min(100, Math.max(0, Number(confidencePct)))}%` }}
                         />
                       </div>
@@ -459,7 +459,7 @@ export default function InvestigationResultPage() {
             )}
 
             {/* Assessment Summary */}
-            <div className="border border-[#e4e4e0] rounded-[4px] p-5 mb-8 bg-[#f7f7f6]">
+            <div className="border border-[#e4e4e0] rounded-none p-5 mb-8 bg-[#f7f7f6]">
               <p className="text-[11px] uppercase tracking-widest text-[#767672] mb-2 font-medium">
                 Assessment summary
               </p>
@@ -468,7 +468,7 @@ export default function InvestigationResultPage() {
 
             {/* Trust Chain & Evidence Consistency Checks Section */}
             {inv.trustChainFindings && inv.trustChainFindings.length > 0 && (
-              <div className="mb-8 border border-[#e4e4e0] rounded-[4px] p-5 bg-white">
+              <div className="mb-8 border border-[#e4e4e0] rounded-none p-5 bg-white">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-[#e4e4e0]">
                   <div>
                     <div className="flex items-center gap-2">
@@ -483,14 +483,14 @@ export default function InvestigationResultPage() {
                   </div>
 
                   {inv.trustChainSummary && (
-                    <span className="text-[11px] font-mono text-[#555552] bg-[#fafaf9] border border-[#e4e4e0] px-2.5 py-1 rounded-[3px] self-start sm:self-auto">
+                    <span className="text-[11px] font-mono text-[#555552] bg-[#fafaf9] border border-[#e4e4e0] px-2.5 py-1 rounded-none self-start sm:self-auto">
                       {inv.trustChainSummary.executed_checks} of {inv.trustChainSummary.total_checks} checks executed
                     </span>
                   )}
                 </div>
 
                 {inv.trustChainSummary && (
-                  <div className="mb-4 p-3 rounded-[3px] bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex items-start gap-2">
+                  <div className="mb-4 p-3 rounded-none bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex items-start gap-2">
                     <span className="font-semibold text-[#111110] uppercase text-[10px] tracking-wider pt-0.5">
                       Recommendation:
                     </span>
@@ -501,7 +501,7 @@ export default function InvestigationResultPage() {
                 )}
 
                 {/* List of Trust Chain Checks */}
-                <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-[4px] overflow-hidden">
+                <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-none overflow-hidden">
                   {inv.trustChainFindings.map((finding) => (
                     <div key={finding.check_id} className="p-4 bg-white hover:bg-[#fafaf9] transition-colors">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
@@ -536,7 +536,7 @@ export default function InvestigationResultPage() {
 
             {/* Live Web Research & Employer Evidence Section */}
             {(inv.webResearchSummary || (inv.webResearchFindings && inv.webResearchFindings.length > 0)) && (
-              <div className="mb-8 border border-[#e4e4e0] rounded-[4px] p-5 bg-white">
+              <div className="mb-8 border border-[#e4e4e0] rounded-none p-5 bg-white">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-[#e4e4e0]">
                   <div>
                     <div className="flex items-center gap-2">
@@ -551,7 +551,7 @@ export default function InvestigationResultPage() {
                   </div>
 
                   {inv.webResearchSummary && (
-                    <span className="text-[11px] font-mono text-[#555552] bg-[#fafaf9] border border-[#e4e4e0] px-2.5 py-1 rounded-[3px] self-start sm:self-auto">
+                    <span className="text-[11px] font-mono text-[#555552] bg-[#fafaf9] border border-[#e4e4e0] px-2.5 py-1 rounded-none self-start sm:self-auto">
                       {inv.webResearchSummary.provider} · {inv.webResearchSummary.total_queries_executed} {inv.webResearchSummary.total_queries_executed === 1 ? 'query' : 'queries'}
                     </span>
                   )}
@@ -559,7 +559,7 @@ export default function InvestigationResultPage() {
 
                 {/* Overall Evidence Assessment Callout */}
                 {inv.webResearchSummary && (
-                  <div className="mb-4 p-3.5 rounded-[3px] bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex flex-col gap-2">
+                  <div className="mb-4 p-3.5 rounded-none bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex flex-col gap-2">
                     <div className="flex items-start gap-2">
                       <span className="font-semibold text-[#111110] uppercase text-[10px] tracking-wider pt-0.5 flex-shrink-0">
                         Assessment:
@@ -573,17 +573,17 @@ export default function InvestigationResultPage() {
                     {(inv.webResearchSummary.exact_matches_count !== undefined || inv.webResearchSummary.related_roles_count !== undefined) && (
                       <div className="flex items-center gap-2 flex-wrap pt-1 text-[11px]">
                         {inv.webResearchSummary.exact_matches_count !== undefined && inv.webResearchSummary.exact_matches_count > 0 && (
-                          <span className="inline-flex items-center gap-1 font-medium text-[#2e7d32] bg-[#f1f8f1] px-2 py-0.5 rounded border border-[#c8e6c9]">
+                          <span className="inline-flex items-center gap-1 font-medium text-[#2e7d32] bg-[#f1f8f1] px-2 py-0.5 rounded-none border border-[#c8e6c9]">
                             Exact matches: {inv.webResearchSummary.exact_matches_count}
                           </span>
                         )}
                         {inv.webResearchSummary.related_roles_count !== undefined && inv.webResearchSummary.related_roles_count > 0 && (
-                          <span className="inline-flex items-center gap-1 font-medium text-[#1a73e8] bg-[#e8f0fe] px-2 py-0.5 rounded border border-[#d2e3fc]">
+                          <span className="inline-flex items-center gap-1 font-medium text-[#1a73e8] bg-[#e8f0fe] px-2 py-0.5 rounded-none border border-[#d2e3fc]">
                             Related roles: {inv.webResearchSummary.related_roles_count}
                           </span>
                         )}
                         {inv.webResearchSummary.official_presence_count !== undefined && inv.webResearchSummary.official_presence_count > 0 && (
-                          <span className="inline-flex items-center gap-1 font-medium text-[#7b1fa2] bg-[#f3e5f5] px-2 py-0.5 rounded border border-[#e1bee7]">
+                          <span className="inline-flex items-center gap-1 font-medium text-[#7b1fa2] bg-[#f3e5f5] px-2 py-0.5 rounded-none border border-[#e1bee7]">
                             Official presence: {inv.webResearchSummary.official_presence_count}
                           </span>
                         )}
@@ -598,7 +598,7 @@ export default function InvestigationResultPage() {
 
                 {/* Findings List or Status State */}
                 {inv.webResearchFindings && inv.webResearchFindings.length > 0 ? (
-                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-[4px] overflow-hidden">
+                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-none overflow-hidden">
                     {inv.webResearchFindings.map((finding, idx) => (
                       <div key={idx} className="p-4 bg-white hover:bg-[#fafaf9] transition-colors">
                         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
@@ -621,12 +621,12 @@ export default function InvestigationResultPage() {
                             </div>
                             <div className="flex items-center gap-2 mt-1 text-[11px] font-mono text-[#767672] flex-wrap">
                               {finding.source_type && (
-                                <span className="bg-[#edece8] text-[#222220] px-1.5 py-0.5 rounded text-[10px] font-medium capitalize">
+                                <span className="bg-[#edece8] text-[#222220] px-1.5 py-0.5 rounded-none text-[10px] font-medium capitalize">
                                   {finding.source_type.replace(/_/g, ' ')}
                                 </span>
                               )}
                               {finding.source_domain && (
-                                <span className="bg-[#f0efed] text-[#333330] px-1.5 py-0.5 rounded text-[10px]">
+                                <span className="bg-[#f0efed] text-[#333330] px-1.5 py-0.5 rounded-none text-[10px]">
                                   domain: {finding.source_domain}
                                 </span>
                               )}
@@ -649,7 +649,7 @@ export default function InvestigationResultPage() {
 
                         {/* Search Result Snippet */}
                         {finding.snippet && (
-                          <div className="my-2.5 p-2.5 rounded-[3px] bg-[#f9f9f8] border border-[#e8e8e5] text-[12px] text-[#444440] font-sans leading-relaxed italic">
+                          <div className="my-2.5 p-2.5 rounded-none bg-[#f9f9f8] border border-[#e8e8e5] text-[12px] text-[#444440] font-sans leading-relaxed italic">
                             &ldquo;{finding.snippet}&rdquo;
                           </div>
                         )}
@@ -671,13 +671,13 @@ export default function InvestigationResultPage() {
                   </div>
                 ) : (
                   /* Informational box when no queries executed or search unconfigured */
-                  <div className="p-4 rounded-[4px] border border-[#e4e4e0] bg-[#fafaf9] text-[12px] text-[#555552] leading-relaxed">
+                  <div className="p-4 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[12px] text-[#555552] leading-relaxed">
                     {inv.webResearchSummary?.status === 'not_configured' && (
                       <p>
                         <strong>Provider Not Configured:</strong> Neither{' '}
-                        <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded border border-[#e4e4e0]">TAVILY_API_KEY</code>{' '}
+                        <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded-none border border-[#e4e4e0]">TAVILY_API_KEY</code>{' '}
                         nor{' '}
-                        <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded border border-[#e4e4e0]">BRAVE_SEARCH_API_KEY</code>{' '}
+                        <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded-none border border-[#e4e4e0]">BRAVE_SEARCH_API_KEY</code>{' '}
                         is set in the backend environment. Live external corroboration was honestly reported as skipped. No artificial results were generated.
                       </p>
                     )}
@@ -734,7 +734,7 @@ export default function InvestigationResultPage() {
                         : 'Minor Risk-Correlated Vocabulary (Low Impact)'
                       : 'Warning signals'}
                   </p>
-                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-[4px] overflow-hidden">
+                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-none overflow-hidden">
                     {flaggedSignals.map((sig) => (
                       <div key={sig.id} className="flex items-start gap-3 p-4 bg-white">
                         <AlertTriangle
@@ -781,9 +781,9 @@ export default function InvestigationResultPage() {
                           </div>
                           <p className="text-[12px] text-[#555552] leading-relaxed">{sig.description}</p>
                           {/* Weight bar */}
-                          <div className="mt-2.5 h-1.5 bg-[#f0efed] rounded-full overflow-hidden">
+                          <div className="mt-2.5 h-1.5 bg-[#f0efed] rounded-none overflow-hidden">
                             <div
-                              className={`h-full rounded-full ${
+                              className={`h-full rounded-none ${
                                 inv.riskLevel === 'high'
                                   ? 'bg-[#c5291e]'
                                   : inv.riskLevel === 'medium'
@@ -799,7 +799,7 @@ export default function InvestigationResultPage() {
                   </div>
                 </div>
               ) : isReal ? (
-                <div className="mb-5 p-4 rounded-[4px] border border-[#e4e4e0] bg-[#fafaf9] text-[12px] text-[#767672]">
+                <div className="mb-5 p-4 rounded-none border border-[#e4e4e0] bg-[#fafaf9] text-[12px] text-[#767672]">
                   No suspicious risk signals detected above the reporting threshold.
                 </div>
               ) : null}
@@ -809,7 +809,7 @@ export default function InvestigationResultPage() {
                   <p className="text-[11px] text-[#2e7d32] font-medium mb-2 uppercase tracking-wider">
                     {isReal ? 'Legitimate Associative Signals' : 'Positive signals'}
                   </p>
-                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-[4px] overflow-hidden">
+                  <div className="flex flex-col divide-y divide-[#e4e4e0] border border-[#e4e4e0] rounded-none overflow-hidden">
                     {cleanSignals.map((sig) => (
                       <div key={sig.id} className="flex items-start gap-3 p-4 bg-white">
                         <CheckCircle
@@ -839,9 +839,9 @@ export default function InvestigationResultPage() {
                           </div>
                           <p className="text-[12px] text-[#555552] leading-relaxed">{sig.description}</p>
                           {typeof sig.impact === 'number' && (
-                            <div className="mt-2.5 h-1.5 bg-[#f0efed] rounded-full overflow-hidden">
+                            <div className="mt-2.5 h-1.5 bg-[#f0efed] rounded-none overflow-hidden">
                               <div
-                                className="h-full bg-[#2e7d32] rounded-full"
+                                className="h-full bg-[#2e7d32] rounded-none"
                                 style={{ width: `${Math.round(sig.weight * 100)}%` }}
                               />
                             </div>
@@ -862,7 +862,7 @@ export default function InvestigationResultPage() {
                     ? 'Extracted Job Posting Text (from URL)'
                     : 'Analyzed Job Posting Text (Pasted)'}
                 </p>
-                <div className="p-4 bg-[#fafaf9] border border-[#e4e4e0] rounded-[4px] max-h-[220px] overflow-y-auto">
+                <div className="p-4 bg-[#fafaf9] border border-[#e4e4e0] rounded-none max-h-[220px] overflow-y-auto">
                   <p className="text-[12px] text-[#555552] leading-relaxed whitespace-pre-wrap font-sans">
                     {inv.sourceDescription}
                   </p>
@@ -874,7 +874,7 @@ export default function InvestigationResultPage() {
           {/* Sidebar Summary Card */}
           <div className="lg:sticky lg:top-[76px] flex flex-col gap-4">
             {/* Quick Details Box */}
-            <div className="border border-[#e4e4e0] rounded-[4px] overflow-hidden bg-white">
+            <div className="border border-[#e4e4e0] rounded-none overflow-hidden bg-white">
               <div className="px-4 py-3 border-b border-[#e4e4e0] bg-[#f7f7f6] flex items-center justify-between">
                 <p className="text-[11px] font-semibold text-[#555552] uppercase tracking-wider">
                   Investigation Details
