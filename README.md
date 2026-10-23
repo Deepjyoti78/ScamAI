@@ -137,11 +137,12 @@ pytest -v
 
 ---
 
-## 8. Live Web Research & Employer Evidence Enrichment (Brave Search API)
+## 8. Live Web Research & Employer Evidence Enrichment (Tavily & Brave Search)
 
-ScamShield AI enriches investigation reports with external web evidence corroboration using the Brave Search API:
-- **Official Documentation**: [https://api-dashboard.search.brave.com/documentation](https://api-dashboard.search.brave.com/documentation)
-- **API Endpoint**: `https://api.search.brave.com/res/v1/web/search`
+ScamShield AI enriches investigation reports with external web evidence corroboration using live search providers (supporting Tavily Search API and Brave Search API):
+- **Providers Supported**:
+  - **Tavily Search API**: `https://api.tavily.com/search` (optimized for LLM and agent search)
+  - **Brave Search API**: `https://api.search.brave.com/res/v1/web/search`
 - **Backend Service**: `backend/services/web_research.py`
 - **Search Strategy**: Executes targeted, length-clamped queries (<=120 characters) targeting official employer careers pages (`"<employer>" "<title>" careers`, `site:<domain> careers`).
 - **Epistemic Restraint & Ethics**:
@@ -150,25 +151,31 @@ ScamShield AI enriches investigation reports with external web evidence corrobor
   - Search evidence is maintained in a dedicated evidence section and is *never* averaged into the ML model's text fraud probability.
   - ScamShield AI never invents, simulates, or fabricates search results when external research is unconfigured or unavailable.
 
-### Configuring `BRAVE_SEARCH_API_KEY`
+### Configuring Search API Keys
 
-#### Local Development
-1. Obtain an API key from the [Brave Search API Dashboard](https://api-dashboard.search.brave.com/).
-2. Set the key in your local PowerShell session or backend `.env`:
+#### 1. Tavily Search API (`TAVILY_API_KEY`)
+1. Obtain an API key from [Tavily](https://tavily.com/).
+2. Set `TAVILY_API_KEY` in your backend `.env` file or environment:
    ```powershell
-   $env:BRAVE_SEARCH_API_KEY="your-brave-search-key"
+   $env:TAVILY_API_KEY="tvly-..."
    ```
-3. If omitted or empty, the backend operates normally with web research marked as `not_configured`.
+
+#### 2. Brave Search API (`BRAVE_SEARCH_API_KEY`)
+1. Obtain an API key from the [Brave Search API Dashboard](https://api-dashboard.search.brave.com/).
+2. Set `BRAVE_SEARCH_API_KEY` in your backend `.env` file or environment:
+   ```powershell
+   $env:BRAVE_SEARCH_API_KEY="your-brave-key"
+   ```
 
 #### Render Production Deployment
 1. Navigate to your Web Service on [Render](https://dashboard.render.com).
 2. Go to **Environment** > **Environment Variables**.
-3. Add a secret:
-   - Key: `BRAVE_SEARCH_API_KEY`
-   - Value: `your-brave-search-key`
+3. Add secret:
+   - Key: `TAVILY_API_KEY` (or `BRAVE_SEARCH_API_KEY`)
+   - Value: `your-api-key`
 4. Click **Save Changes**. Render redeploys the service automatically.
 
-> **Security Reminder**: Never expose `BRAVE_SEARCH_API_KEY` in Vite frontend environments, client-side bundles, or git repositories. The React frontend interacts with the backend solely via `/api/investigations/analyze` or `/api/investigations/stream`.
+> **Security Reminder**: Never expose `TAVILY_API_KEY` or `BRAVE_SEARCH_API_KEY` in Vite frontend environments, client-side bundles, or git repositories. The React frontend interacts with the backend solely via `/api/investigations/analyze` or `/api/investigations/stream`.
 
 ---
 

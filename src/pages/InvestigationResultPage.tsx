@@ -521,7 +521,7 @@ export default function InvestigationResultPage() {
                       </h2>
                     </div>
                     <p className="text-[12px] text-[#767672] mt-0.5">
-                      Independent web search via Brave Search API cross-referencing employer careers pages and vacancies.
+                      Independent web search via {inv.webResearchSummary?.provider || 'external search API'} cross-referencing employer careers pages and vacancies.
                     </p>
                   </div>
 
@@ -622,9 +622,11 @@ export default function InvestigationResultPage() {
                   <div className="p-4 rounded-[4px] border border-[#e4e4e0] bg-[#fafaf9] text-[12px] text-[#555552] leading-relaxed">
                     {inv.webResearchSummary?.status === 'not_configured' && (
                       <p>
-                        <strong>Provider Not Configured:</strong> The backend environment variable{' '}
+                        <strong>Provider Not Configured:</strong> Neither{' '}
+                        <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded border border-[#e4e4e0]">TAVILY_API_KEY</code>{' '}
+                        nor{' '}
                         <code className="text-[11px] font-mono bg-white px-1 py-0.5 rounded border border-[#e4e4e0]">BRAVE_SEARCH_API_KEY</code>{' '}
-                        is not set. Live external corroboration was honestly reported as skipped. No artificial results were generated.
+                        is set in the backend environment. Live external corroboration was honestly reported as skipped. No artificial results were generated.
                       </p>
                     )}
                     {inv.webResearchSummary?.status === 'insufficient_evidence' && (
@@ -878,9 +880,9 @@ export default function InvestigationResultPage() {
                           label: 'External Web Research',
                           value:
                             inv.webResearchSummary.status === 'completed'
-                              ? `Completed (${inv.webResearchSummary.total_queries_executed} queries via Brave Search)`
+                              ? `Completed (${inv.webResearchSummary.total_queries_executed} queries via ${inv.webResearchSummary.provider})`
                               : inv.webResearchSummary.status === 'not_configured'
-                              ? 'Not Configured (BRAVE_SEARCH_API_KEY missing)'
+                              ? 'Not Configured (TAVILY_API_KEY / BRAVE_SEARCH_API_KEY missing)'
                               : inv.webResearchSummary.status === 'insufficient_evidence'
                               ? 'Bypassed (Insufficient employer data)'
                               : 'Unavailable (Provider error or rate limit)',

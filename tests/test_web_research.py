@@ -42,6 +42,7 @@ from backend.services.web_research import (
     analyze_search_result,
     build_targeted_queries,
     execute_web_research,
+    resolve_search_provider,
     sanitize_search_query,
 )
 
@@ -139,7 +140,7 @@ def test_missing_api_key():
 
 def test_insufficient_evidence():
     """Verify insufficient_evidence status when no employer name or domain is provided."""
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         findings, summary = execute_web_research(
             employer_name="",
             job_title="Generic Developer",
@@ -169,7 +170,7 @@ def test_official_careers_page_match(mock_urlopen):
     }
     mock_urlopen.return_value = _make_mock_response(mock_data)
 
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         findings, summary = execute_web_research(
             employer_name="Stripe",
             job_title="Senior Backend Engineer",
@@ -209,7 +210,7 @@ def test_possible_match_third_party_recruitment_platform(mock_urlopen):
     }
     mock_urlopen.return_value = _make_mock_response(mock_data)
 
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         findings, summary = execute_web_research(
             employer_name="Acme Corp",
             job_title="Data Scientist",
@@ -242,7 +243,7 @@ def test_potential_domain_inconsistency_detection(mock_urlopen):
     }
     mock_urlopen.return_value = _make_mock_response(mock_data)
 
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         # User supplied a suspicious lookalike / unrelated domain
         findings, summary = execute_web_research(
             employer_name="Apex Global",
@@ -275,7 +276,7 @@ def test_no_matching_vacancy_found(mock_urlopen):
     }
     mock_urlopen.return_value = _make_mock_response(mock_data)
 
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         findings, summary = execute_web_research(
             employer_name="Mysterious Startup",
             job_title="Quantum Lead",
@@ -297,7 +298,7 @@ def test_empty_search_results_list(mock_urlopen):
     mock_data = {"web": {"results": []}}
     mock_urlopen.return_value = _make_mock_response(mock_data)
 
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         findings, summary = execute_web_research(
             employer_name="Obscure LLC",
             job_title="Rare Specialist",
@@ -320,7 +321,7 @@ def test_rate_limiting_429_handling(mock_urlopen):
         fp=BytesIO(b'{"message": "Rate limit exceeded"}'),
     )
 
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         findings, summary = execute_web_research(
             employer_name="Acme Corp",
             job_title="Engineer",
@@ -335,7 +336,7 @@ def test_provider_timeout_handling(mock_urlopen):
     """Verify graceful search_unavailable status when request times out."""
     mock_urlopen.side_effect = urllib.error.URLError("timed out")
 
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         findings, summary = execute_web_research(
             employer_name="Acme Corp",
             job_title="Engineer",
@@ -362,7 +363,7 @@ def test_gzip_compressed_response_handling(mock_urlopen):
     # Return gzipped response
     mock_urlopen.return_value = _make_mock_response(mock_data, is_gzipped=True)
 
-    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}):
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "test-key-12345"}, clear=True):
         findings, summary = execute_web_research(
             employer_name="Microsoft",
             job_title="Cloud Architect",
@@ -465,3 +466,69 @@ def test_prediction_service_triage_elevation_on_domain_inconsistency(mock_web_re
     # Even though text ML is low risk, triage decision must be elevated due to domain inconsistency
     assert response.review_decision in ("review_recommended", "flagged_suspicious")
     assert response.risk_level in ("medium", "high")
+
+
+def test_resolve_search_provider():
+    """Verify provider resolution logic between Tavily and Brave Search."""
+    # Tavily explicit key
+    p, name, k = resolve_search_provider("tvly-custom-key")
+    assert p == "tavily"
+    assert name == "Tavily Search API"
+    assert k == "tvly-custom-key"
+
+    # Brave explicit key
+    p, name, k = resolve_search_provider("BS-brave-key")
+    assert p == "brave"
+    assert name == "Brave Search API"
+
+    # Environment fallback
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-env-key"}, clear=True):
+        p, name, k = resolve_search_provider()
+        assert p == "tavily"
+        assert name == "Tavily Search API"
+
+    with patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "brave-env-key"}, clear=True):
+        p, name, k = resolve_search_provider()
+        assert p == "brave"
+        assert name == "Brave Search API"
+
+    with patch.dict(os.environ, {}, clear=True):
+        p, name, k = resolve_search_provider()
+        assert p == "none"
+        assert name == "Web Search API"
+
+
+@patch("urllib.request.urlopen")
+def test_tavily_search_provider_execution(mock_urlopen):
+    """Verify live-compatible execution using Tavily Search API payload and response format."""
+    mock_data = {
+        "query": '"Stripe" "Staff Engineer" careers',
+        "results": [
+            {
+                "title": "Staff Engineer - Stripe Careers",
+                "url": "https://stripe.com/jobs/listing/staff-engineer",
+                "content": "Stripe is seeking an experienced Staff Engineer to lead foundational infrastructure.",
+                "score": 0.98,
+            }
+        ],
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-mock-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Staff Engineer",
+            company_website="https://stripe.com",
+        )
+
+        assert summary["status"] == "completed"
+        assert summary["provider"] == "Tavily Search API"
+        assert summary["findings_count"] >= 1
+
+        first_finding = findings[0]
+        assert first_finding["evidence_status"] == "official_vacancy_match_found"
+        assert first_finding["source_domain"] == "stripe.com"
+        assert "Staff Engineer" in first_finding["source_title"]
+        # Confirms snippet was cleanly mapped from Tavily's 'content' field
+        assert "lead foundational infrastructure" in first_finding["snippet"]
+

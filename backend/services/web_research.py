@@ -22,11 +22,20 @@ import gzip
 import io
 import json
 import os
+from pathlib import Path
 import re
 from typing import Any, Dict, List, Optional, Tuple
 import urllib.error
 import urllib.parse
 import urllib.request
+
+try:
+    from dotenv import load_dotenv
+    # Look for .env in project root
+    project_root = Path(__file__).resolve().parent.parent.parent
+    load_dotenv(project_root / ".env")
+except ImportError:
+    pass
 
 from backend.services.trust_chain import (
     PUBLIC_EMAIL_PROVIDERS,
@@ -35,6 +44,7 @@ from backend.services.trust_chain import (
     normalize_domain,
 )
 
+TAVILY_SEARCH_ENDPOINT = "https://api.tavily.com/search"
 BRAVE_SEARCH_ENDPOINT = "https://api.search.brave.com/res/v1/web/search"
 DEFAULT_TIMEOUT_SECONDS = 6.0
 MAX_QUERY_LENGTH = 120
@@ -105,7 +115,7 @@ def analyze_search_result(
     """Analyze a single search result item against user-supplied listing details."""
     title = str(result.get("title") or "").strip()
     url = str(result.get("url") or "").strip()
-    snippet = str(result.get("description") or "").strip()
+    snippet = str(result.get("content") or result.get("description") or "").strip()
 
     _, result_domain = normalize_domain(url)
     _, supplied_domain = normalize_domain(supplied_company_website) if supplied_company_website else (None, None)
@@ -275,6 +285,33 @@ def analyze_search_result(
     }
 
 
+def resolve_search_provider(api_key: Optional[str] = None) -> Tuple[str, str, str]:
+    """Resolve the active search provider, display name, and API key.
+
+    Returns:
+      (provider_key, display_name, api_key)
+      where provider_key is 'tavily', 'brave', or 'none'.
+    """
+    if api_key and api_key.strip():
+        k = api_key.strip()
+        if k.startswith("tvly-") or "tvly" in k:
+            return "tavily", "Tavily Search API", k
+        elif k.startswith("BS") or "brave" in k.lower():
+            return "brave", "Brave Search API", k
+        return ("tavily", "Tavily Search API", k) if k.startswith("tvly") else ("brave", "Brave Search API", k)
+
+    # Check environment: Tavily takes priority when set, followed by Brave
+    tavily_key = os.getenv("TAVILY_API_KEY", "").strip()
+    if tavily_key:
+        return "tavily", "Tavily Search API", tavily_key
+
+    brave_key = os.getenv("BRAVE_SEARCH_API_KEY", "").strip()
+    if brave_key:
+        return "brave", "Brave Search API", brave_key
+
+    return "none", "Web Search API", ""
+
+
 def execute_web_research(
     employer_name: Optional[str] = None,
     job_title: Optional[str] = None,
@@ -285,27 +322,27 @@ def execute_web_research(
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
     max_results_to_analyze: int = MAX_RESULTS_TO_ANALYZE,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    """Execute live web search via Brave Search API and return structured evidence findings.
+    """Execute live web search via Tavily or Brave Search API and return structured evidence findings.
 
     Returns:
       (findings, summary)
     """
-    effective_api_key = (api_key or os.getenv("BRAVE_SEARCH_API_KEY", "")).strip()
+    provider, provider_name, effective_api_key = resolve_search_provider(api_key)
 
     # 1. Check if provider is configured
-    if not effective_api_key:
+    if provider == "none" or not effective_api_key:
         summary = {
             "status": "not_configured",
-            "provider": "Brave Search API",
+            "provider": provider_name,
             "total_queries_executed": 0,
             "findings_count": 0,
             "overall_evidence_assessment": (
-                "External web search is not configured. (BRAVE_SEARCH_API_KEY is not set in the backend environment). "
+                "External web search is not configured. (Neither TAVILY_API_KEY nor BRAVE_SEARCH_API_KEY is set in the backend environment). "
                 "Investigation proceeded using statistical NLP and local Trust Chain evidence checks."
             ),
             "limitations_disclaimer": (
                 "External web verification was bypassed. ScamShield AI did not claim that web research was conducted. "
-                "Set BRAVE_SEARCH_API_KEY to enable live employer and vacancy search corroboration."
+                "Set TAVILY_API_KEY or BRAVE_SEARCH_API_KEY to enable live employer and vacancy search corroboration."
             ),
         }
         return [], summary
@@ -318,7 +355,7 @@ def execute_web_research(
     if not clean_employer and not clean_website:
         summary = {
             "status": "insufficient_evidence",
-            "provider": "Brave Search API",
+            "provider": provider_name,
             "total_queries_executed": 0,
             "findings_count": 0,
             "overall_evidence_assessment": (
@@ -333,7 +370,7 @@ def execute_web_research(
     if not queries:
         summary = {
             "status": "insufficient_evidence",
-            "provider": "Brave Search API",
+            "provider": provider_name,
             "total_queries_executed": 0,
             "findings_count": 0,
             "overall_evidence_assessment": "Insufficient input details to construct targeted search queries.",
@@ -346,22 +383,43 @@ def execute_web_research(
     provider_error: Optional[str] = None
 
     for query in queries:
-        params = {
-            "q": query,
-            "count": max_results_to_analyze,
-            "text_decorations": "false",
-            "search_lang": "en",
-        }
-        req_url = f"{BRAVE_SEARCH_ENDPOINT}?{urllib.parse.urlencode(params)}"
+        if provider == "tavily":
+            payload = {
+                "query": query,
+                "search_depth": "basic",
+                "max_results": max_results_to_analyze,
+                "include_answer": False,
+                "include_raw_content": False,
+            }
+            body_bytes = json.dumps(payload).encode("utf-8")
+            headers = {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": f"Bearer {effective_api_key}",
+                "User-Agent": "ScamShieldAI-WebResearch/1.0",
+            }
+            req = urllib.request.Request(
+                TAVILY_SEARCH_ENDPOINT,
+                data=body_bytes,
+                headers=headers,
+                method="POST",
+            )
+        else:
+            params = {
+                "q": query,
+                "count": max_results_to_analyze,
+                "text_decorations": "false",
+                "search_lang": "en",
+            }
+            req_url = f"{BRAVE_SEARCH_ENDPOINT}?{urllib.parse.urlencode(params)}"
+            headers = {
+                "Accept": "application/json",
+                "Accept-Encoding": "gzip",
+                "X-Subscription-Token": effective_api_key,
+                "User-Agent": "ScamShieldAI-WebResearch/1.0",
+            }
+            req = urllib.request.Request(req_url, headers=headers, method="GET")
 
-        headers = {
-            "Accept": "application/json",
-            "Accept-Encoding": "gzip",
-            "X-Subscription-Token": effective_api_key,
-            "User-Agent": "ScamShieldAI-WebResearch/1.0",
-        }
-
-        req = urllib.request.Request(req_url, headers=headers)
         queries_executed += 1
 
         try:
@@ -383,7 +441,10 @@ def execute_web_research(
                         pass
 
                 data = json.loads(content.decode("utf-8", errors="replace"))
-                web_results = data.get("web", {}).get("results", [])
+                if "web" in data and isinstance(data["web"], dict):
+                    web_results = data["web"].get("results", [])
+                else:
+                    web_results = data.get("results", [])
 
                 for item in web_results[:max_results_to_analyze]:
                     finding = analyze_search_result(
@@ -399,11 +460,12 @@ def execute_web_research(
 
         except urllib.error.HTTPError as e:
             if e.code == 429:
-                provider_error = "Brave Search API rate limit exceeded (HTTP 429). Search temporarily unavailable."
+                provider_error = f"{provider_name} rate limit exceeded (HTTP 429). Search temporarily unavailable."
             elif e.code in (401, 403):
-                provider_error = f"Brave Search API authentication failed (HTTP {e.code}). Verify BRAVE_SEARCH_API_KEY."
+                key_env = "TAVILY_API_KEY" if provider == "tavily" else "BRAVE_SEARCH_API_KEY"
+                provider_error = f"{provider_name} authentication failed (HTTP {e.code}). Verify {key_env}."
             else:
-                provider_error = f"Brave Search API returned HTTP {e.code}: {e.reason}."
+                provider_error = f"{provider_name} returned HTTP {e.code}: {e.reason}."
             break
         except urllib.error.URLError as e:
             provider_error = f"External search connection error or timeout: {str(e.reason)}."
@@ -416,7 +478,7 @@ def execute_web_research(
     if provider_error and not findings:
         summary = {
             "status": "search_unavailable",
-            "provider": "Brave Search API",
+            "provider": provider_name,
             "total_queries_executed": queries_executed,
             "findings_count": 0,
             "overall_evidence_assessment": f"External search unavailable: {provider_error}",
@@ -444,7 +506,7 @@ def execute_web_research(
                 "The employer or vacancy was not identified in top search results."
             ),
             "limitations": (
-                "Absence of search results is NOT definitive evidence of fraud. "
+                "Absence of search results is NOT definitive evidence of fraud and does not prove that the vacancy does not exist. "
                 "Legitimate vacancies may be recently posted, internal, unindexed by search engines, "
                 "or managed under a parent corporate entity."
             ),
@@ -491,7 +553,7 @@ def execute_web_research(
 
     summary = {
         "status": "completed",
-        "provider": "Brave Search API",
+        "provider": provider_name,
         "total_queries_executed": queries_executed,
         "findings_count": len(findings),
         "overall_evidence_assessment": assessment,
