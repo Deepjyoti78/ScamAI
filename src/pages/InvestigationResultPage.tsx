@@ -62,11 +62,26 @@ function TrustChainStatusBadge({ status }: { status: TrustChainStatus }) {
 
 function WebResearchStatusBadge({ status }: { status: WebResearchStatus }) {
   switch (status) {
+    case 'exact_vacancy_match_found':
     case 'official_vacancy_match_found':
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#c8e6c9] bg-[#f1f8f1] text-[#2e7d32] text-[11px] font-medium uppercase tracking-wider">
           <CheckCircle size={11} strokeWidth={2} />
-          Official Vacancy Match
+          Exact Vacancy Match
+        </span>
+      );
+    case 'related_role_found':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#d2e3fc] bg-[#e8f0fe] text-[#1a73e8] text-[11px] font-medium uppercase tracking-wider">
+          <Search size={11} strokeWidth={2} />
+          Related Role Found
+        </span>
+      );
+    case 'employer_official_presence_found':
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[3px] border border-[#e1bee7] bg-[#f3e5f5] text-[#7b1fa2] text-[11px] font-medium uppercase tracking-wider">
+          <CheckCircle size={11} strokeWidth={2} />
+          Official Presence Confirmed
         </span>
       );
     case 'possible_vacancy_match':
@@ -544,7 +559,7 @@ export default function InvestigationResultPage() {
 
                 {/* Overall Evidence Assessment Callout */}
                 {inv.webResearchSummary && (
-                  <div className="mb-4 p-3.5 rounded-[3px] bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex flex-col gap-1.5">
+                  <div className="mb-4 p-3.5 rounded-[3px] bg-[#fafaf9] border border-[#e4e4e0] text-[12px] flex flex-col gap-2">
                     <div className="flex items-start gap-2">
                       <span className="font-semibold text-[#111110] uppercase text-[10px] tracking-wider pt-0.5 flex-shrink-0">
                         Assessment:
@@ -553,6 +568,28 @@ export default function InvestigationResultPage() {
                         {inv.webResearchSummary.overall_evidence_assessment}
                       </span>
                     </div>
+
+                    {/* Breakdown metrics if available */}
+                    {(inv.webResearchSummary.exact_matches_count !== undefined || inv.webResearchSummary.related_roles_count !== undefined) && (
+                      <div className="flex items-center gap-2 flex-wrap pt-1 text-[11px]">
+                        {inv.webResearchSummary.exact_matches_count !== undefined && inv.webResearchSummary.exact_matches_count > 0 && (
+                          <span className="inline-flex items-center gap-1 font-medium text-[#2e7d32] bg-[#f1f8f1] px-2 py-0.5 rounded border border-[#c8e6c9]">
+                            Exact matches: {inv.webResearchSummary.exact_matches_count}
+                          </span>
+                        )}
+                        {inv.webResearchSummary.related_roles_count !== undefined && inv.webResearchSummary.related_roles_count > 0 && (
+                          <span className="inline-flex items-center gap-1 font-medium text-[#1a73e8] bg-[#e8f0fe] px-2 py-0.5 rounded border border-[#d2e3fc]">
+                            Related roles: {inv.webResearchSummary.related_roles_count}
+                          </span>
+                        )}
+                        {inv.webResearchSummary.official_presence_count !== undefined && inv.webResearchSummary.official_presence_count > 0 && (
+                          <span className="inline-flex items-center gap-1 font-medium text-[#7b1fa2] bg-[#f3e5f5] px-2 py-0.5 rounded border border-[#e1bee7]">
+                            Official presence: {inv.webResearchSummary.official_presence_count}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     <p className="text-[11px] text-[#767672] leading-relaxed pt-1.5 border-t border-[#ebeae6]">
                       ✦ <strong>Epistemic Separation Notice:</strong> {inv.webResearchSummary.limitations_disclaimer}
                     </p>
@@ -583,6 +620,11 @@ export default function InvestigationResultPage() {
                               )}
                             </div>
                             <div className="flex items-center gap-2 mt-1 text-[11px] font-mono text-[#767672] flex-wrap">
+                              {finding.source_type && (
+                                <span className="bg-[#edece8] text-[#222220] px-1.5 py-0.5 rounded text-[10px] font-medium capitalize">
+                                  {finding.source_type.replace(/_/g, ' ')}
+                                </span>
+                              )}
                               {finding.source_domain && (
                                 <span className="bg-[#f0efed] text-[#333330] px-1.5 py-0.5 rounded text-[10px]">
                                   domain: {finding.source_domain}

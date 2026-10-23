@@ -152,11 +152,15 @@ class WebResearchFinding(BaseModel):
     retrieved_at: str = Field(description="ISO timestamp of when the search was executed.")
     published_date: Optional[str] = Field(default=None, description="Optional publication date or age returned by the search provider.")
     evidence_status: str = Field(
-        description="'official_vacancy_match_found', 'possible_vacancy_match', 'potential_domain_inconsistency', 'no_matching_vacancy_found_in_search', 'insufficient_evidence', 'not_configured', or 'search_unavailable'."
+        description="'employer_official_presence_found', 'related_role_found', 'exact_vacancy_match_found', 'potential_domain_inconsistency', 'no_matching_vacancy_found_in_search', 'insufficient_evidence', 'not_configured', or 'search_unavailable'."
     )
     explanation: str = Field(description="Relevance explanation in relation to the claimed employer and vacancy.")
     limitations: str = Field(description="Epistemic limitations of this evidence finding.")
     comparison_detail: Optional[Dict[str, Any]] = Field(default=None, description="Details of comparisons performed.")
+    source_type: Optional[str] = Field(
+        default=None,
+        description="'official_employer_domain', 'recognized_ats', 'third_party_job_board', or 'third_party_source'."
+    )
 
 
 class WebResearchSummary(BaseModel):
@@ -166,6 +170,10 @@ class WebResearchSummary(BaseModel):
     provider: str = Field(default="Brave Search API", description="Search provider name.")
     total_queries_executed: int = Field(default=0)
     findings_count: int = Field(default=0)
+    exact_matches_count: int = Field(default=0, description="Count of exact vacancy matches found.")
+    related_roles_count: int = Field(default=0, description="Count of related roles with distinct specializations.")
+    official_presence_count: int = Field(default=0, description="Count of official employer presence findings without vacancy match.")
+    inconsistencies_count: int = Field(default=0, description="Count of potential domain inconsistencies.")
     overall_evidence_assessment: str = Field(description="High-level synthesis of external web research.")
     limitations_disclaimer: str = Field(description="Disclaimer regarding the nature and boundaries of web search snippets.")
 

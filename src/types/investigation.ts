@@ -56,6 +56,9 @@ export interface BackendJobAnalysisRequest {
 }
 
 export type WebResearchStatus =
+  | 'exact_vacancy_match_found'
+  | 'related_role_found'
+  | 'employer_official_presence_found'
   | 'official_vacancy_match_found'
   | 'possible_vacancy_match'
   | 'potential_domain_inconsistency'
@@ -69,6 +72,7 @@ export interface WebResearchFinding {
   source_title: string;
   source_url: string;
   source_domain: string;
+  source_type?: string;
   snippet: string;
   retrieved_at: string;
   published_date?: string;
@@ -83,6 +87,10 @@ export interface WebResearchSummary {
   provider: string;
   total_queries_executed: number;
   findings_count: number;
+  exact_matches_count?: number;
+  related_roles_count?: number;
+  official_presence_count?: number;
+  inconsistencies_count?: number;
   overall_evidence_assessment: string;
   limitations_disclaimer: string;
 }

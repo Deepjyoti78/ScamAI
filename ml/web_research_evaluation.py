@@ -81,7 +81,7 @@ WEB_RESEARCH_BENCHMARK_SCENARIOS = [
             ]
         },
         "expected_summary_status": "completed",
-        "expected_evidence_status": "official_vacancy_match_found",
+        "expected_evidence_status": "exact_vacancy_match_found",
         "expected_domain": "stripe.com",
         "rationale": "Direct domain match with advertised role title in careers page snippet.",
     },
@@ -107,7 +107,7 @@ WEB_RESEARCH_BENCHMARK_SCENARIOS = [
             ]
         },
         "expected_summary_status": "completed",
-        "expected_evidence_status": "possible_vacancy_match",
+        "expected_evidence_status": "related_role_found",
         "expected_domain": "tech-digest.org",
         "rationale": "Mention of employer and role on third-party aggregator indicates plausible activity but lacks direct employer domain confirmation.",
     },
@@ -204,7 +204,7 @@ WEB_RESEARCH_BENCHMARK_SCENARIOS = [
             ]
         },
         "expected_summary_status": "completed",
-        "expected_evidence_status": "possible_vacancy_match",
+        "expected_evidence_status": "exact_vacancy_match_found",
         "expected_domain": "greenhouse.io",
         "rationale": "Recognized enterprise ATS platform hosting authentic vacancy for the employer.",
     },

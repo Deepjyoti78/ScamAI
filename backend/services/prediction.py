@@ -853,10 +853,18 @@ class PredictionService:
         # Web research detail snippet for Card 5
         web_status = web_summary.get("status")
         if web_status == "completed":
-            official_matches = [f for f in web_findings if f.get("evidence_status") == "official_vacancy_match_found"]
+            exact_matches = [
+                f for f in web_findings if f.get("evidence_status") in ("exact_vacancy_match_found", "official_vacancy_match_found")
+            ]
+            related_roles = [f for f in web_findings if f.get("evidence_status") == "related_role_found"]
+            presence_findings = [f for f in web_findings if f.get("evidence_status") == "employer_official_presence_found"]
             inconsistencies = [f for f in web_findings if f.get("evidence_status") == "potential_domain_inconsistency"]
-            if official_matches:
-                web_note = f"External web search: Official match corroborated ({official_matches[0].get('source_domain')})."
+            if exact_matches:
+                web_note = f"External web search: Exact match corroborated on {exact_matches[0].get('source_domain')}."
+            elif related_roles:
+                web_note = f"External web search: Related role observed ({related_roles[0].get('source_domain')})."
+            elif presence_findings:
+                web_note = f"External web search: Official presence confirmed ({presence_findings[0].get('source_domain')}), vacancy unverified."
             elif inconsistencies:
                 web_note = f"External web search: Domain inconsistency noted ({inconsistencies[0].get('source_domain')})."
             else:

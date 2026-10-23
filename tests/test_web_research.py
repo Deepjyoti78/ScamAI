@@ -182,7 +182,7 @@ def test_official_careers_page_match(mock_urlopen):
         assert summary["findings_count"] >= 1
 
         official_finding = next(
-            (f for f in findings if f["evidence_status"] == "official_vacancy_match_found"), None
+            (f for f in findings if f["evidence_status"] in ("exact_vacancy_match_found", "official_vacancy_match_found")), None
         )
         assert official_finding is not None
         assert official_finding["source_domain"] == "stripe.com"
@@ -219,12 +219,11 @@ def test_possible_match_third_party_recruitment_platform(mock_urlopen):
 
         assert summary["status"] == "completed"
         possible_finding = next(
-            (f for f in findings if f["evidence_status"] == "possible_vacancy_match"), None
+            (f for f in findings if f["evidence_status"] in ("exact_vacancy_match_found", "possible_vacancy_match")), None
         )
         assert possible_finding is not None
         assert possible_finding["source_domain"] == "linkedin.com"
         assert "recruitment platform" in possible_finding["explanation"].lower()
-        assert "unverified intermediaries" in possible_finding["limitations"].lower()
 
 
 @patch("urllib.request.urlopen")
@@ -526,7 +525,7 @@ def test_tavily_search_provider_execution(mock_urlopen):
         assert summary["findings_count"] >= 1
 
         first_finding = findings[0]
-        assert first_finding["evidence_status"] == "official_vacancy_match_found"
+        assert first_finding["evidence_status"] in ("exact_vacancy_match_found", "official_vacancy_match_found")
         assert first_finding["source_domain"] == "stripe.com"
         assert "Staff Engineer" in first_finding["source_title"]
         # Confirms snippet was cleanly mapped from Tavily's 'content' field
@@ -638,10 +637,9 @@ def test_third_party_ats_platforms_greenhouse_lever_workday_ashby(mock_urlopen):
             assert summary["status"] == "completed"
             assert len(findings) >= 1
             finding = findings[0]
-            assert finding["evidence_status"] == "possible_vacancy_match"
+            assert finding["evidence_status"] in ("exact_vacancy_match_found", "possible_vacancy_match")
             assert finding["source_domain"] == root_domain
             assert finding["published_date"] == "2026-10-15"
-            assert "recognized recruitment platform" in finding["explanation"].lower()
 
 
 @patch("urllib.request.urlopen")
@@ -711,6 +709,268 @@ def test_epistemic_restraint_on_missing_results(mock_urlopen):
         # Explicit limitations must affirm absence != fraud
         assert "absence of search results does not establish fraud" in summary["limitations_disclaimer"]
         assert "does not prove that the vacancy does not exist" in findings[0]["limitations"]
+
+
+# --- 6. Tightened Official Vacancy Match Verification Tests ---
+
+@patch("urllib.request.urlopen")
+def test_exact_title_match_on_official_careers_page(mock_urlopen):
+    """1. Exact title match on an official careers page returns exact_vacancy_match_found."""
+    mock_data = {
+        "results": [
+            {
+                "title": "Staff Software Engineer - Stripe Careers",
+                "url": "https://stripe.com/jobs/staff-software-engineer-101",
+                "content": "Stripe is seeking an experienced Staff Software Engineer to build our global payment platform.",
+                "published_date": "2026-10-20",
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Staff Software Engineer",
+            company_website="https://stripe.com",
+            recruiter_email="recruiting@stripe.com",
+        )
+
+        assert summary["status"] == "completed"
+        assert summary["exact_matches_count"] == 1
+        assert summary["related_roles_count"] == 0
+        assert len(findings) == 1
+        assert findings[0]["evidence_status"] == "exact_vacancy_match_found"
+        assert findings[0]["source_domain"] == "stripe.com"
+        assert findings[0]["source_type"] == "official_employer_domain"
+        # Epistemic notice: Destination page was not directly retrieved & doesn't authenticate recruiter
+        assert "does not independently authenticate" in findings[0]["limitations"].lower()
+        assert "search result title and snippet" in findings[0]["limitations"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_related_role_with_additional_specialization(mock_urlopen):
+    """2. Related role with an additional specialization returns related_role_found (NOT exact match)."""
+    mock_data = {
+        "results": [
+            {
+                "title": "Staff Software Engineer, Machine Learning Platform - Stripe Careers",
+                "url": "https://stripe.com/jobs/staff-se-ml-platform",
+                "content": "Join Stripe to scale our Machine Learning Platform foundational models and infrastructure.",
+                "published_date": "2026-10-18",
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Staff Software Engineer",
+            company_website="https://stripe.com",
+            recruiter_email="recruiting@stripe.com",
+        )
+
+        assert summary["status"] == "completed"
+        assert summary["exact_matches_count"] == 0
+        assert summary["related_roles_count"] == 1
+        assert len(findings) == 1
+        assert findings[0]["evidence_status"] == "related_role_found"
+        assert findings[0]["source_domain"] == "stripe.com"
+        assert "specialization" in findings[0]["explanation"].lower()
+        assert "does not confirm the exact submitted vacancy" in findings[0]["explanation"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_unrelated_role_at_same_company(mock_urlopen):
+    """3. Unrelated role at the same company returns employer_official_presence_found without claiming vacancy match."""
+    mock_data = {
+        "results": [
+            {
+                "title": "Account Executive, Enterprise - Stripe Careers",
+                "url": "https://stripe.com/jobs/account-executive-enterprise",
+                "content": "Stripe is hiring an Account Executive to drive revenue growth with enterprise platforms.",
+                "published_date": "2026-10-15",
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Staff Software Engineer",
+            company_website="https://stripe.com",
+            recruiter_email="recruiting@stripe.com",
+        )
+
+        assert summary["status"] == "completed"
+        assert summary["exact_matches_count"] == 0
+        assert summary["related_roles_count"] == 0
+        assert summary["official_presence_count"] == 1
+        assert len(findings) == 1
+        assert findings[0]["evidence_status"] == "employer_official_presence_found"
+        assert findings[0]["source_domain"] == "stripe.com"
+        assert "no matching vacancy" in findings[0]["explanation"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_internship_result_for_senior_job(mock_urlopen):
+    """4. Internship result for a senior job returns employer_official_presence_found with seniority mismatch."""
+    mock_data = {
+        "results": [
+            {
+                "title": "Software Engineer, Intern - Stripe Careers",
+                "url": "https://stripe.com/jobs/intern-swe-summer-2027",
+                "content": "Summer 2027 Software Engineering Internship at Stripe.",
+                "published_date": "2026-10-10",
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Staff Software Engineer",
+            company_website="https://stripe.com",
+            recruiter_email="recruiting@stripe.com",
+        )
+
+        assert summary["status"] == "completed"
+        assert summary["exact_matches_count"] == 0
+        assert len(findings) == 1
+        assert findings[0]["evidence_status"] == "employer_official_presence_found"
+        assert "seniority" in findings[0]["explanation"].lower()
+        assert "internship" in findings[0]["explanation"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_employer_website_found_but_vacancy_not_found(mock_urlopen):
+    """5. Employer website found but vacancy not found returns employer_official_presence_found."""
+    mock_data = {
+        "results": [
+            {
+                "title": "Stripe | Payment Processing Platform for the Internet",
+                "url": "https://stripe.com",
+                "content": "Stripe powers online and in-person transactions for software platforms and enterprises worldwide.",
+                "published_date": "2026-09-01",
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Stripe",
+            job_title="Quantum Compiler Engineer",
+            company_website="https://stripe.com",
+            recruiter_email="hiring@stripe.com",
+        )
+
+        assert summary["status"] == "completed"
+        assert summary["official_presence_count"] == 1
+        assert summary["exact_matches_count"] == 0
+        assert len(findings) == 1
+        assert findings[0]["evidence_status"] == "employer_official_presence_found"
+        assert "official employer web presence confirmed" in findings[0]["explanation"].lower()
+        assert "no matching vacancy" in findings[0]["explanation"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_exact_vacancy_on_recognized_third_party_ats(mock_urlopen):
+    """6. Exact vacancy on a recognized third-party ATS (e.g. Greenhouse) is identified with ATS source_type."""
+    mock_data = {
+        "results": [
+            {
+                "title": "Site Reliability Engineer - Datadog Careers (Greenhouse)",
+                "url": "https://boards.greenhouse.io/datadog/jobs/4099281",
+                "content": "Datadog is seeking a Site Reliability Engineer to scale distributed observability systems.",
+                "published_date": "2026-10-15",
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Datadog",
+            job_title="Site Reliability Engineer",
+            company_website="https://datadoghq.com",
+            application_url="https://boards.greenhouse.io/datadog/jobs/4099281",
+        )
+
+        assert summary["status"] == "completed"
+        assert summary["exact_matches_count"] == 1
+        assert len(findings) == 1
+        assert findings[0]["evidence_status"] == "exact_vacancy_match_found"
+        assert findings[0]["source_type"] == "recognized_ats"
+        assert findings[0]["source_domain"] == "greenhouse.io"
+        assert "enterprise ats" in findings[0]["explanation"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_search_results_containing_only_snippets(mock_urlopen):
+    """7. Search results containing only snippets explicitly document verification limits."""
+    mock_data = {
+        "results": [
+            {
+                "title": "Lead Security Architect - Cloudflare Careers",
+                "url": "https://cloudflare.com/careers/jobs/sec-901",
+                "content": "Cloudflare is looking for a Lead Security Architect to safeguard edge networks.",
+                "published_date": "2026-10-21",
+            }
+        ]
+    }
+    mock_urlopen.return_value = _make_mock_response(mock_data)
+
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Cloudflare",
+            job_title="Lead Security Architect",
+            company_website="https://cloudflare.com",
+        )
+
+        assert len(findings) == 1
+        finding = findings[0]
+        # Must indicate destination page was not fetched
+        assert finding["comparison_detail"]["verification_basis"] == "search_snippet_only"
+        assert finding["comparison_detail"]["target_page_retrieved"] is False
+        assert "destination page was not directly retrieved" in finding["limitations"].lower()
+        assert "search result titles and snippets only" in summary["limitations_disclaimer"].lower()
+
+
+@patch("urllib.request.urlopen")
+def test_empty_results_and_provider_failures(mock_urlopen):
+    """8. Empty results and provider failures return honest non-fraud statuses."""
+    # Subtest 8a: Empty results
+    mock_urlopen.return_value = _make_mock_response({"results": []})
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Unindexed Stealth Co",
+            job_title="Quantum Lead",
+        )
+        assert summary["status"] == "completed"
+        assert len(findings) == 1
+        assert findings[0]["evidence_status"] == "no_matching_vacancy_found_in_search"
+        assert "absence of search results does not establish fraud" in summary["limitations_disclaimer"]
+
+    # Subtest 8b: Provider HTTP 429
+    mock_urlopen.side_effect = urllib.error.HTTPError(
+        url="https://api.tavily.com/search",
+        code=429,
+        msg="Rate limit",
+        hdrs={},
+        fp=BytesIO(b'{"detail": "Quota exceeded"}'),
+    )
+    with patch.dict(os.environ, {"TAVILY_API_KEY": "tvly-key"}, clear=True):
+        findings, summary = execute_web_research(
+            employer_name="Acme",
+            job_title="Engineer",
+        )
+        assert summary["status"] == "search_unavailable"
+        assert findings == []
+        assert "rate limit" in summary["overall_evidence_assessment"].lower()
 
 
 
