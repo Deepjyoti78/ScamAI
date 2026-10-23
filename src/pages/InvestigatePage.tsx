@@ -220,12 +220,12 @@ export default function InvestigatePage() {
   return (
     <div className="min-h-screen bg-[#f8f8f7]">
       <Header />
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 md:py-12 flex justify-center">
-        <div className="w-full max-w-[720px] bg-white border border-[#e4e4e0] rounded-[10px] p-6 sm:p-9 md:p-10 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-3 sm:pt-4 md:pt-5 pb-10 flex justify-center">
+        <div className="w-full max-w-[720px] bg-white border border-[#e4e4e0] rounded-[10px] p-6 sm:p-8 md:px-9 md:py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
           {/* Back button */}
           <button
             onClick={() => navigate(-1)}
-            className="text-[12px] text-[#767672] hover:text-[#111110] transition-colors mb-5 flex items-center gap-1 cursor-pointer font-medium"
+            className="text-[12px] text-[#767672] hover:text-[#111110] transition-colors mb-3 flex items-center gap-1 cursor-pointer font-medium"
           >
             ← Back
           </button>
