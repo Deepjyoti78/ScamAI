@@ -6,7 +6,6 @@ import {
   Loader2,
   Clock,
   AlertCircle,
-  X,
   Globe,
   BrainCircuit,
   AlertTriangle,
@@ -177,14 +176,6 @@ export default function InvestigationModal({
                 ~ 20–60 seconds
               </span>
             )}
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Dismiss investigation overlay"
-              className="p-1.5 text-[#77746C] hover:text-[#141413] hover:bg-[#F0EEE6] rounded-none transition-colors cursor-pointer"
-            >
-              <X size={17} />
-            </button>
           </div>
         </div>
 
@@ -193,53 +184,41 @@ export default function InvestigationModal({
           {/* Result Summary Box when complete */}
           {isComplete && result && (
             <div className="mb-6 p-4 sm:p-5 border rounded-none bg-[#F0EEE6] border-[#E0DED4] animate-page-enter">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E0DED4]">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    {result.riskLevel === 'high' ? (
-                      <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#fef2f2] text-[#c5291e] border border-[#fcc9c6]">
-                        High Risk Listing
-                      </span>
-                    ) : result.riskLevel === 'medium' ? (
-                      <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#fffbeb] text-[#b45309] border border-[#fed7aa]">
-                        Review Recommended
-                      </span>
-                    ) : (
-                      <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
-                        Low Risk Listing
-                      </span>
-                    )}
-                    <span className="text-[12px] font-mono text-[#77746C]">
-                      Verdict: <strong className="text-[#141413] font-semibold">{result.label}</strong>
+              <div className="pb-4 border-b border-[#E0DED4]">
+                <div className="flex items-center gap-2 mb-2">
+                  {result.riskLevel === 'high' ? (
+                    <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#fef2f2] text-[#c5291e] border border-[#fcc9c6]">
+                      High Risk Listing
                     </span>
-                  </div>
-                  <div className="flex items-baseline gap-2.5">
-                    <span
-                      className={`font-serif text-[34px] sm:text-[38px] font-normal leading-none ${
-                        result.riskLevel === 'high'
-                          ? 'text-[#c5291e]'
-                          : result.riskLevel === 'medium'
-                          ? 'text-[#b45309]'
-                          : 'text-[#137333]'
-                      }`}
-                    >
-                      {(result.fraudProbability * 100).toFixed(1)}%
+                  ) : result.riskLevel === 'medium' ? (
+                    <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#fffbeb] text-[#b45309] border border-[#fed7aa]">
+                      Review Recommended
                     </span>
-                    <span className="text-[13px] text-[#625F58]">
-                      Estimated Fraud Probability
+                  ) : (
+                    <span className="px-2.5 py-0.5 rounded-none text-[11px] font-semibold tracking-wider uppercase bg-[#e6f4ea] text-[#137333] border border-[#ceead6]">
+                      Low Risk Listing
                     </span>
-                  </div>
+                  )}
+                  <span className="text-[12px] font-mono text-[#77746C]">
+                    Verdict: <strong className="text-[#141413] font-semibold">{result.label}</strong>
+                  </span>
                 </div>
-
-                {onViewReport && (
-                  <button
-                    type="button"
-                    onClick={onViewReport}
-                    className="self-start sm:self-center px-4 py-2.5 bg-[#141413] text-[#FAF9F5] hover:bg-[#30302D] text-[13px] font-medium rounded-none flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm whitespace-nowrap"
+                <div className="flex items-baseline gap-2.5">
+                  <span
+                    className={`font-serif text-[34px] sm:text-[38px] font-normal leading-none ${
+                      result.riskLevel === 'high'
+                        ? 'text-[#c5291e]'
+                        : result.riskLevel === 'medium'
+                        ? 'text-[#b45309]'
+                        : 'text-[#137333]'
+                    }`}
                   >
-                    Show full investigation <ArrowRight size={13} />
-                  </button>
-                )}
+                    {(result.fraudProbability * 100).toFixed(1)}%
+                  </span>
+                  <span className="text-[13px] text-[#625F58]">
+                    Estimated Fraud Probability
+                  </span>
+                </div>
               </div>
 
               {/* Assessment Summary / Info */}
@@ -477,13 +456,6 @@ export default function InvestigationModal({
                 </span>
               </div>
               <div className="flex items-center gap-2.5 w-full sm:w-auto">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-3.5 py-2 text-[12px] text-[#77746C] hover:text-[#141413] transition-colors cursor-pointer"
-                >
-                  Close
-                </button>
                 {onViewReport && (
                   <button
                     type="button"
