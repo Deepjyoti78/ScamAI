@@ -13,6 +13,7 @@ export const demoInvestigations: Investigation[] = [
     sourceDescription:
       'Full-stack Software Engineer role posted on a third-party job board. Requirements include 3+ years of React and Node.js experience.',
     submittedAt: '2026-10-20T10:32:00Z',
+    fraudProbability: 0.082,
     riskLevel: 'low',
     assessmentLabel: 'Lower Risk',
     assessmentSummary:
@@ -35,6 +36,7 @@ export const demoInvestigations: Investigation[] = [
     sourceDescription:
       'Product Designer role. Minimal job description. Requires payment of ₹2,000 as a "registration fee" before the interview.',
     submittedAt: '2026-10-19T14:15:00Z',
+    fraudProbability: 0.885,
     riskLevel: 'high',
     assessmentLabel: 'Suspicious',
     assessmentSummary:
@@ -57,6 +59,7 @@ export const demoInvestigations: Investigation[] = [
     sourceDescription:
       'Marketing internship. Company details partially verifiable. Recruiter email domain is different from company website.',
     submittedAt: '2026-10-18T09:00:00Z',
+    fraudProbability: 0.542,
     riskLevel: 'medium',
     assessmentLabel: 'Needs Review',
     assessmentSummary:
