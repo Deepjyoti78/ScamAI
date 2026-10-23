@@ -160,6 +160,7 @@ export default function InvestigatePage() {
 
       // 4. Briefly show completion state and navigate to existing report
       setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         navigate(`/investigations/${investigationRecord.id}`);
       }, 1200);
     } catch (err: unknown) {
@@ -212,6 +213,7 @@ export default function InvestigatePage() {
 
   const handleViewReport = () => {
     if (completedRecordId) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       navigate(`/investigations/${completedRecordId}`);
     }
   };

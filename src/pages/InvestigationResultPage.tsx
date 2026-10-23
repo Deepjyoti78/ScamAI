@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   AlertTriangle,
@@ -164,6 +165,15 @@ function RiskIndicator({ level, label }: { level: RiskLevel; label: string }) {
 export default function InvestigationResultPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
+  // Ensure view resets to top of the page when report opens
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant' as ScrollBehavior,
+    });
+  }, [id]);
 
   // Try real stored investigation first, then demo dataset
   let investigation: Investigation | undefined;
