@@ -43,14 +43,14 @@ export default function AboutSection() {
   return (
     <section id="about" className="w-full border-t border-[#E0DED4] px-6 lg:px-10 py-12 md:py-16 bg-[#FAF9F5]">
       {/* Section Header */}
-      <div className="max-w-[760px] mb-10 md:mb-12">
+      <div className="max-w-[1020px] mb-10 md:mb-12">
         <span className="text-[11px] font-mono text-[#77746C] uppercase tracking-wider block mb-2 font-medium">
           About ScamShield AI
         </span>
         <h2 className="font-serif text-[28px] sm:text-[34px] md:text-[38px] font-normal tracking-[-0.01em] text-[#141413] leading-[1.15] mb-3.5">
           Empowering job seekers with verifiable AI recruitment defense
         </h2>
-        <p className="text-[13px] sm:text-[14px] text-[#625F58] leading-relaxed">
+        <p className="text-[13px] sm:text-[14px] text-[#625F58] leading-relaxed max-w-[760px]">
           Recruitment fraud causes billions in losses each year through counterfeit interview portals, advance fee scams, and identity theft. ScamShield AI unites calibrated machine learning, cross-domain integrity audits, and real-time external web research to protect applicants before they share sensitive credentials or funds.
         </p>
       </div>

@@ -56,23 +56,23 @@ export default function RecentInvestigations() {
   return (
     <section className="w-full px-6 lg:px-10 py-8 md:py-11 border-t border-[#E0DED4]">
       {/* Header row */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2.5 mb-4 sm:mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2.5 mb-5 sm:mb-6">
         <div>
-          <div className="flex flex-wrap items-baseline gap-2.5">
-            <h2 className="text-[21px] sm:text-[24px] font-serif font-normal text-[#141413] tracking-tight leading-none">
+          <div className="flex flex-wrap items-baseline gap-2.5 sm:gap-3">
+            <h2 className="text-[28px] sm:text-[34px] md:text-[38px] font-serif font-normal text-[#141413] tracking-tight leading-[1.15]">
               Recent investigations
             </h2>
-            <span className="text-[12px] sm:text-[12.5px] text-[#77746C] font-sans font-normal">
+            <span className="text-[12px] sm:text-[13px] text-[#77746C] font-sans font-normal">
               {displayList.length} sample cases
             </span>
             {hasRealRecord && (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-none text-[10px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none text-[10px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
                 <span className="w-1.5 h-1.5 bg-[#16a34a]" />
                 Live Session Active
               </span>
             )}
           </div>
-          <p className="text-[12px] sm:text-[12.5px] text-[#625F58] font-sans mt-1">
+          <p className="text-[12.5px] sm:text-[13px] text-[#625F58] font-sans mt-1">
             Illustrative demo data — not real employer records.
           </p>
         </div>
