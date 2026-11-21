@@ -154,7 +154,7 @@ def test_insufficient_evidence():
 
 # --- 3. Search Matching & Epistemic Status Tests ---
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_official_careers_page_match(mock_urlopen):
     """Verify corroboration of an official vacancy on company's verified domain."""
     mock_data = {
@@ -194,7 +194,7 @@ def test_official_careers_page_match(mock_urlopen):
         assert "adversaries frequently copy" in official_finding["limitations"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_possible_match_third_party_recruitment_platform(mock_urlopen):
     """Verify detection of a possible match on reputable third-party platforms (LinkedIn, Greenhouse)."""
     mock_data = {
@@ -226,7 +226,7 @@ def test_possible_match_third_party_recruitment_platform(mock_urlopen):
         assert "recruitment platform" in possible_finding["explanation"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_potential_domain_inconsistency_detection(mock_urlopen):
     """Verify detection when user-supplied company domain conflicts with top search results."""
     mock_data = {
@@ -259,7 +259,7 @@ def test_potential_domain_inconsistency_detection(mock_urlopen):
         assert "differs from the user-supplied domain" in inconsistency_finding["explanation"]
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_no_matching_vacancy_found(mock_urlopen):
     """Verify that finding no matching vacancy does NOT claim fraud."""
     mock_data = {
@@ -291,7 +291,7 @@ def test_no_matching_vacancy_found(mock_urlopen):
         assert "does not prove that the vacancy does not exist" in no_match_finding["limitations"]
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_empty_search_results_list(mock_urlopen):
     """Verify handling when provider returns zero results."""
     mock_data = {"web": {"results": []}}
@@ -309,7 +309,7 @@ def test_empty_search_results_list(mock_urlopen):
 
 # --- 4. Provider Error, Timeout & Gzip Tests ---
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_rate_limiting_429_handling(mock_urlopen):
     """Verify graceful search_unavailable status on HTTP 429 Too Many Requests."""
     mock_urlopen.side_effect = urllib.error.HTTPError(
@@ -330,7 +330,7 @@ def test_rate_limiting_429_handling(mock_urlopen):
         assert "rate limit" in summary["overall_evidence_assessment"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_provider_timeout_handling(mock_urlopen):
     """Verify graceful search_unavailable status when request times out."""
     mock_urlopen.side_effect = urllib.error.URLError("timed out")
@@ -345,7 +345,7 @@ def test_provider_timeout_handling(mock_urlopen):
         assert "timed out" in summary["overall_evidence_assessment"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_gzip_compressed_response_handling(mock_urlopen):
     """Verify transparent decompression when Brave Search responds with gzip encoding."""
     mock_data = {
@@ -497,7 +497,7 @@ def test_resolve_search_provider():
         assert name == "Web Search API"
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_tavily_search_provider_execution(mock_urlopen):
     """Verify live-compatible execution using Tavily Search API payload and response format."""
     mock_data = {
@@ -532,7 +532,7 @@ def test_tavily_search_provider_execution(mock_urlopen):
         assert "lead foundational infrastructure" in first_finding["snippet"]
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_tavily_authentication_failure_401(mock_urlopen):
     """Verify that Tavily HTTP 401 returns honest search_unavailable status without asserting fraud."""
     mock_urlopen.side_effect = urllib.error.HTTPError(
@@ -554,11 +554,11 @@ def test_tavily_authentication_failure_401(mock_urlopen):
         assert summary["status"] == "search_unavailable"
         assert summary["provider"] == "Tavily Search API"
         assert "authentication failed" in summary["overall_evidence_assessment"].lower()
-        assert "TAVILY_API_KEY" in summary["overall_evidence_assessment"]
+        assert "TAVILY_API_KEY" not in summary["overall_evidence_assessment"]
         assert "External web corroboration could not complete" in summary["limitations_disclaimer"]
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_tavily_internal_server_error_500(mock_urlopen):
     """Verify that upstream 500 errors degrade gracefully to search_unavailable."""
     mock_urlopen.side_effect = urllib.error.HTTPError(
@@ -581,7 +581,7 @@ def test_tavily_internal_server_error_500(mock_urlopen):
         assert "HTTP 500" in summary["overall_evidence_assessment"]
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_tavily_malformed_json_response(mock_urlopen):
     """Verify that corrupt or malformed provider responses do not crash the investigation."""
     mock_resp = MagicMock()
@@ -604,7 +604,7 @@ def test_tavily_malformed_json_response(mock_urlopen):
         assert "error" in summary["overall_evidence_assessment"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_third_party_ats_platforms_greenhouse_lever_workday_ashby(mock_urlopen):
     """Verify that legitimate ATS listings (Greenhouse, Lever, Workday, Ashby) are recognized as possible_vacancy_match."""
     ats_scenarios = [
@@ -642,7 +642,7 @@ def test_third_party_ats_platforms_greenhouse_lever_workday_ashby(mock_urlopen):
             assert finding["published_date"] == "2026-10-15"
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_source_attribution_and_timestamp_propagation(mock_urlopen):
     """Verify that returned findings preserve exact title, source URL, snippet, retrieved_at, and published_date."""
     test_url = "https://stripe.com/jobs/staff-eng-999"
@@ -680,7 +680,7 @@ def test_source_attribution_and_timestamp_propagation(mock_urlopen):
         assert "T" in finding["retrieved_at"]  # Valid ISO timestamp
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_epistemic_restraint_on_missing_results(mock_urlopen):
     """Verify that when no search match is found, the system never fabricates claims or labels the job as fraud."""
     mock_data = {
@@ -713,7 +713,7 @@ def test_epistemic_restraint_on_missing_results(mock_urlopen):
 
 # --- 6. Tightened Official Vacancy Match Verification Tests ---
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_exact_title_match_on_official_careers_page(mock_urlopen):
     """1. Exact title match on an official careers page returns exact_vacancy_match_found."""
     mock_data = {
@@ -748,7 +748,7 @@ def test_exact_title_match_on_official_careers_page(mock_urlopen):
         assert "search result title and snippet" in findings[0]["limitations"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_related_role_with_additional_specialization(mock_urlopen):
     """2. Related role with an additional specialization returns related_role_found (NOT exact match)."""
     mock_data = {
@@ -781,7 +781,7 @@ def test_related_role_with_additional_specialization(mock_urlopen):
         assert "does not confirm the exact submitted vacancy" in findings[0]["explanation"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_unrelated_role_at_same_company(mock_urlopen):
     """3. Unrelated role at the same company returns employer_official_presence_found without claiming vacancy match."""
     mock_data = {
@@ -814,7 +814,7 @@ def test_unrelated_role_at_same_company(mock_urlopen):
         assert "no matching vacancy" in findings[0]["explanation"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_internship_result_for_senior_job(mock_urlopen):
     """4. Internship result for a senior job returns employer_official_presence_found with seniority mismatch."""
     mock_data = {
@@ -845,7 +845,7 @@ def test_internship_result_for_senior_job(mock_urlopen):
         assert "internship" in findings[0]["explanation"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_employer_website_found_but_vacancy_not_found(mock_urlopen):
     """5. Employer website found but vacancy not found returns employer_official_presence_found."""
     mock_data = {
@@ -877,7 +877,7 @@ def test_employer_website_found_but_vacancy_not_found(mock_urlopen):
         assert "no matching vacancy" in findings[0]["explanation"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_exact_vacancy_on_recognized_third_party_ats(mock_urlopen):
     """6. Exact vacancy on a recognized third-party ATS (e.g. Greenhouse) is identified with ATS source_type."""
     mock_data = {
@@ -909,7 +909,7 @@ def test_exact_vacancy_on_recognized_third_party_ats(mock_urlopen):
         assert "enterprise ats" in findings[0]["explanation"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_search_results_containing_only_snippets(mock_urlopen):
     """7. Search results containing only snippets explicitly document verification limits."""
     mock_data = {
@@ -940,7 +940,7 @@ def test_search_results_containing_only_snippets(mock_urlopen):
         assert "search result titles and snippets only" in summary["limitations_disclaimer"].lower()
 
 
-@patch("urllib.request.urlopen")
+@patch("backend.services.web_research._provider_open")
 def test_empty_results_and_provider_failures(mock_urlopen):
     """8. Empty results and provider failures return honest non-fraud statuses."""
     # Subtest 8a: Empty results

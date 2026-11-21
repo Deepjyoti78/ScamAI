@@ -215,17 +215,15 @@ export default function InvestigationResultPage() {
 
   const inv = investigation;
   const isReal = Boolean(inv.isRealAnalysis);
+  const notAssessed = isReal && inv.analysisStatus !== 'completed';
   const flaggedSignals = inv.signals.filter((s) => s.flagged);
   const cleanSignals = inv.signals.filter((s) => !s.flagged);
 
   // Fraud probability percentage formatting
   const fraudProbabilityPct =
-    typeof inv.fraudProbability === 'number'
+    !notAssessed && typeof inv.fraudProbability === 'number'
       ? (inv.fraudProbability * 100).toFixed(2)
       : null;
-
-  const confidencePct =
-    typeof inv.confidence === 'number' ? (inv.confidence * 100).toFixed(2) : null;
 
   return (
     <div className="min-h-screen bg-[#FAF9F5]">
@@ -242,6 +240,7 @@ export default function InvestigationResultPage() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_330px] gap-8 lg:gap-12 items-start">
           {/* Main Content Area */}
           <div>
+            {notAssessed && <div role="alert" className="border border-[#E0DED4] bg-[#F0EEE6] p-5 mb-5"><h2 className="text-lg">Unable to assess — not scored</h2><p>No fraud score or safety verdict is available. Retry or paste the job description manually.</p><Button onClick={() => navigate('/investigate')}>Start another analysis</Button></div>}
             {/* Header badges row: Eyebrow + Mode badge + Source badge */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
               <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-[#77746C]">
@@ -379,10 +378,10 @@ export default function InvestigationResultPage() {
                     <div>
                       <div className="flex items-center justify-between mb-1">
                         <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-[#77746C]">
-                          Model-Estimated Fraud Probability
+                          ML model score
                         </p>
                         <span className="text-[11px] font-mono text-[#625F58] uppercase">
-                          P(Fraud | Text)
+                          Uncalibrated
                         </span>
                       </div>
                       <div className="flex items-baseline gap-2 mb-2">
@@ -408,51 +407,17 @@ export default function InvestigationResultPage() {
                       />
                     </div>
                     <p className="text-[11px] text-[#77746C] leading-tight">
-                      Probability that job text exhibits vocabulary patterns associated with fraudulent postings in the training corpus.
+                      ML model score — not a verified probability of fraud. Learned from historical EMSCAD text patterns.
                     </p>
                   </div>
 
                   {/* Metric 2: Prediction Confidence */}
-                  {confidencePct !== null && (
-                    <div className="flex flex-col justify-between border-t md:border-t-0 md:border-l border-[#E0DED4] pt-4 md:pt-0 md:pl-6">
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-[#77746C]">
-                            Prediction Confidence
-                          </p>
-                          <span className="text-[11px] font-mono text-[#625F58]">
-                            max(P₀, P₁)
-                          </span>
-                        </div>
-                        <div className="flex items-baseline gap-2 mb-2">
-                          <span className="font-serif text-[32px] md:text-[36px] font-semibold text-[#141413] leading-none font-mono">
-                            {confidencePct}%
-                          </span>
-                          <span className="text-[12px] text-[#77746C]">
-                            (for{' '}
-                            <strong className="text-[#141413]">
-                              {inv.prediction === 1 ? 'Fraudulent' : 'Legitimate'}
-                            </strong>
-                            )
-                          </span>
-                        </div>
-                      </div>
-                      <div className="h-2 w-full bg-[#E0DED4] rounded-none overflow-hidden mb-2">
-                        <div
-                          className="h-full bg-[#141413] rounded-none transition-all duration-500"
-                          style={{ width: `${Math.min(100, Math.max(0, Number(confidencePct)))}%` }}
-                        />
-                      </div>
-                      <p className="text-[11px] text-[#77746C] leading-tight">
-                        Statistical certainty in the winning classification. Near 50% indicates a borderline boundary case.
-                      </p>
-                    </div>
-                  )}
+                  <div><p className="text-sm font-medium">Operational review tier</p><p className="capitalize">{inv.riskLevel}</p><p className="text-xs text-[#625F58]">Text score and rule indicators may both affect this tier. It does not establish whether the employer or recruiter is genuine.</p></div>
                 </div>
 
                 <div className="pt-3">
                   <p className="text-[11px] text-[#77746C] leading-relaxed">
-                    ✦ <strong>Evaluation Notice:</strong> Neither probability nor prediction confidence constitutes a definitive real-world guarantee. Values reflect statistical lexical patterns learned from the EMSCAD training dataset.
+                    ✦ <strong>Evaluation Notice:</strong> This score is not calibrated to real-world fraud prevalence and does not measure predictive reliability. Values reflect statistical lexical patterns learned from the EMSCAD training dataset.
                   </p>
                 </div>
               </div>
@@ -674,11 +639,8 @@ export default function InvestigationResultPage() {
                   <div className="p-4 rounded-none border border-[#E0DED4] bg-[#F0EEE6] text-[12px] text-[#625F58] leading-relaxed">
                     {inv.webResearchSummary?.status === 'not_configured' && (
                       <p>
-                        <strong>Provider Not Configured:</strong> Neither{' '}
-                        <code className="text-[11px] font-mono bg-[#FAF9F5] px-1 py-0.5 rounded-none border border-[#E0DED4]">TAVILY_API_KEY</code>{' '}
-                        nor{' '}
-                        <code className="text-[11px] font-mono bg-[#FAF9F5] px-1 py-0.5 rounded-none border border-[#E0DED4]">BRAVE_SEARCH_API_KEY</code>{' '}
-                        is set in the backend environment. Live external corroboration was honestly reported as skipped. No artificial results were generated.
+                        <strong>Optional web search:</strong> Search is unavailable on this server. No external search was performed.
+                        No artificial results were generated.
                       </p>
                     )}
                     {inv.webResearchSummary?.status === 'insufficient_evidence' && (
@@ -921,7 +883,7 @@ export default function InvestigationResultPage() {
                   ...(isReal && typeof inv.inferenceTimeMs === 'number'
                     ? [
                         {
-                          label: 'ML Compute Latency',
+                          label: 'Analysis elapsed time',
                           value: `⚡ ${inv.inferenceTimeMs} ms (${(inv.inferenceTimeMs / 1000).toFixed(3)}s)`,
                         },
                       ]
@@ -934,7 +896,7 @@ export default function InvestigationResultPage() {
                             inv.webResearchSummary.status === 'completed'
                               ? `Completed (${inv.webResearchSummary.total_queries_executed} queries via ${inv.webResearchSummary.provider})`
                               : inv.webResearchSummary.status === 'not_configured'
-                              ? 'Not Configured (TAVILY_API_KEY / BRAVE_SEARCH_API_KEY missing)'
+                              ? 'Not enabled on this server'
                               : inv.webResearchSummary.status === 'insufficient_evidence'
                               ? 'Bypassed (Insufficient employer data)'
                               : 'Unavailable (Provider error or rate limit)',

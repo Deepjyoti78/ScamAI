@@ -151,7 +151,7 @@ def normalize_domain(raw_url_or_domain: Optional[str]) -> Tuple[Optional[str], O
 
 def extract_sentences(text: str) -> List[str]:
     """Split text into sentences for context-aware grammatical inspection."""
-    raw_sentences = re.split(r"[.!?\n\r;]+", text)
+    raw_sentences = re.split(r"[.!?\n\r;]+|\b(?:but|however|instead|yet)\b|(?:,|\band\b)\s*(?=(?:please |you |we )?(?:must |need to )?(?:pay|send|share|provide|transfer|wire)\b)", text, flags=re.I)
     return [s.strip() for s in raw_sentences if s.strip()]
 
 
@@ -169,6 +169,8 @@ PAYMENT_DEMAND_PATTERNS = [
 # Negation and educational warning phrases
 # Negation and educational warning phrases
 DISCLAIMER_PATTERNS = [
+    r"\b(?:must|should)\s+not\s+(?:pay|send|wire|transfer|deposit)\b",
+    r"\bno\s+(?:upfront\s+)?(?:registration\s+|application\s+)?(?:fees?|deposit)\b",
     r"\b(?:never|do not|does not|will not|never ever)\s+(?:ask|charge|request|demand|require|accept|collect|solicit)\w*\b.*?\b(?:fee|fees|money|payment|deposit|charge|charges)\b",
     r"\b(?:never|do not|does not|will not|never ever)\s+(?:ask|request|demand|require)\w*\s+(?:candidates?|applicants?|you|anyone)?\s*(?:to\s+(?:pay|send|wire|transfer|deposit)|for\s+(?:any\s+)?(?:fees?|money|payment|deposit))\b",
     r"\b(?:not|never)\s+(?:required|asked)\s+to\s+(?:pay|send|transfer|wire|deposit)\b",
@@ -192,6 +194,8 @@ CREDENTIAL_DEMAND_PATTERNS = [
 ]
 
 CREDENTIAL_DISCLAIMER_PATTERNS = [
+    r"\b(?:must|should)\s+not\s+(?:share|send|provide|give|enter|submit)\b.*?\b(?:otp|password|pin|code|credentials)\b",
+    r"\b(?:do not|never)\s+(?:send|provide|give|enter|submit|confirm)\b.*?\b(?:otp|password|pin|code|credentials)\b",
     r"\b(?:never|do not|does not|will not)\s+(?:ask|request|demand)\w*\s+(?:candidates?|applicants?|you|anyone)?\s*(?:to\s+(?:share|send|provide|disclose)|for)\b.*?\b(?:otp|password|pin|code|credentials)\b",
     r"\b(?:never|do not|does not|will not)\s+(?:ask|request|demand)\s+(?:for\s+)?(?:the\s+|your\s+|any\s+)?(?:otp|password|pin|credentials)\b",
     r"\b(?:do\s+not|never)\s+share\s+(?:the\s+|your\s+|any\s+)?(?:otp|password|verification code|code|pin)\b",
@@ -202,7 +206,14 @@ CREDENTIAL_DISCLAIMER_PATTERNS = [
 
 def check_payment_demands(combined_text: str) -> Dict[str, Any]:
     """Check for explicit upfront recruitment fee demands while filtering out benign warnings."""
-    sentences = extract_sentences(combined_text)
+    if not combined_text or not combined_text.strip():
+        return {"check_id": "fee_payment_demand", "title": "Upfront payment indicators", "status": FindingStatus.NOT_CHECKED,
+                "severity": FindingSeverity.NEUTRAL, "observation": "No usable text was supplied.",
+                "explanation": "No positive or negative finding can be inferred without text.",
+                "recommended_action": "Provide the job description.", "evidence_source": "Applicant input"}
+    normalized = re.sub(r"\b(?:don't|don’t)\b", "do not", combined_text, flags=re.I)
+    normalized = re.sub(r"\b(?:won't|won’t)\b", "will not", normalized, flags=re.I)
+    sentences = extract_sentences(normalized)
     detected_phrases = []
     disclaimer_found = False
 
@@ -271,7 +282,14 @@ def check_payment_demands(combined_text: str) -> Dict[str, Any]:
 
 def check_credential_requests(combined_text: str) -> Dict[str, Any]:
     """Check for unauthorized requests for passwords, OTPs, or financial credentials."""
-    sentences = extract_sentences(combined_text)
+    if not combined_text or not combined_text.strip():
+        return {"check_id": "credential_otp_request", "title": "Credential request indicators", "status": FindingStatus.NOT_CHECKED,
+                "severity": FindingSeverity.NEUTRAL, "observation": "No usable text was supplied.",
+                "explanation": "No positive or negative finding can be inferred without text.",
+                "recommended_action": "Provide the job description.", "evidence_source": "Applicant input"}
+    normalized = re.sub(r"\b(?:don't|don’t)\b", "do not", combined_text, flags=re.I)
+    normalized = re.sub(r"\b(?:won't|won’t)\b", "will not", normalized, flags=re.I)
+    sentences = extract_sentences(normalized)
     detected_phrases = []
     disclaimer_found = False
 
@@ -329,7 +347,7 @@ def check_credential_requests(combined_text: str) -> Dict[str, Any]:
         "status": FindingStatus.NO_MISMATCH_OBSERVED,
         "severity": FindingSeverity.NEUTRAL,
         "observation": "No requests for passwords, OTP verification codes, or banking PINs were observed.",
-        "explanation": "The submitted job details do not show signs of account takeover or credential harvesting.",
+        "explanation": "No configured credential-request pattern matched the supplied text; this does not authenticate the recruiter.",
         "recommended_action": "Standard vigilance. Never share login tokens or 2FA codes.",
         "evidence_source": "Communication text inspection",
     }
@@ -446,7 +464,7 @@ def check_recruiter_email_domain(
             "observation": f"Recruiter domain (@{email_host}) does NOT match supplied company domain ({comp_reg}).",
             "explanation": (
                 f"The recruiter's email domain (@{email_host}) differs from the organization's stated official domain ({comp_reg}). "
-                "Impersonators often register lookalike domains or completely unrelated domains to deceive candidates."
+                "A staffing vendor or alternate company domain may explain this difference. It does not establish impersonation."
             ),
             "recommended_action": (
                 "Do not submit sensitive documents to this address. Cross-check the recruiter's name against the employer's official careers portal."
@@ -545,7 +563,7 @@ def check_application_destination(
             "observation": f"Application destination domain ({app_reg}) differs from official company domain ({comp_reg}) and is not a recognized ATS.",
             "explanation": (
                 f"The application links to an unverified third-party domain ({app_host}) rather than the employer's official website or a known ATS. "
-                "Fraudulent campaigns often use lookalike forms or generic data-collection pages to harvest applicant details."
+                "This may be a legitimate recruiting vendor; a domain difference is an indicator for review, not proof of fraud."
             ),
             "recommended_action": (
                 "Do not enter passwords or financial details on third-party forms. Apply directly through the employer's official careers site."

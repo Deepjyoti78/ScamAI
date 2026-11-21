@@ -128,151 +128,30 @@ export async function getModelStatus(): Promise<ModelStatusResponse> {
  * Send job description and metadata to FastAPI for genuine ML fraud inference.
  * Endpoint: POST /api/investigations/analyze
  */
-export async function analyzeJobPosting(
-  requestData: BackendJobAnalysisRequest
-): Promise<BackendJobAnalysisResponse> {
-  // Input validation
-  const trimmedDescription = (requestData.description || '').trim();
-  const trimmedUrl = (requestData.job_url || '').trim();
-
-  if (!trimmedDescription && !trimmedUrl) {
-    throw new ApiError('Please provide either a job posting URL or paste the job description text.', {
-      code: 'EMPTY_INPUT',
-      isRetryable: true,
-    });
+export function validateAnalysisResponse(raw: unknown): BackendJobAnalysisResponse {
+  if (!raw || typeof raw !== 'object') throw new ApiError('Invalid analysis response.');
+  const data = raw as BackendJobAnalysisResponse;
+  const validScore = typeof data.fraud_probability === 'number' && Number.isFinite(data.fraud_probability) && data.fraud_probability >= 0 && data.fraud_probability <= 1;
+  if (!['completed', 'unable_to_assess', 'not_scored'].includes(data.analysis_status) || !data.assessment_summary) throw new ApiError('The server did not provide a valid assessment state.');
+  if (data.analysis_status === 'completed') {
+    if (data.scoring_status !== 'scored' || !validScore || data.model_score !== data.fraud_probability || !data.label || ![0, 1].includes(data.prediction as number) || !['low', 'medium', 'high'].includes(data.risk_level)) throw new ApiError('The completed analysis is missing a valid model score.');
+  } else if (data.scoring_status !== 'not_scored' || data.fraud_probability !== null || data.model_score !== null || data.confidence !== null || data.prediction !== null || data.risk_level !== 'unknown' || data.label !== null) {
+    throw new ApiError('An unavailable analysis contained an invalid score or verdict.');
   }
-
-  if (trimmedDescription && trimmedDescription.length < 10) {
-    throw new ApiError(
-      'Job description is too brief for analysis. Please provide at least 10 characters of posting content.',
-      {
-        code: 'DESCRIPTION_TOO_SHORT',
-        statusCode: 422,
-        isRetryable: true,
-      }
-    );
-  }
-
-  if (!trimmedDescription && trimmedUrl) {
-    if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://')) {
-      throw new ApiError('Job URL must begin with http:// or https://.', {
-        code: 'INVALID_URL_SCHEME',
-        isRetryable: true,
-      });
-    }
-  }
-
-  // Construct valid backend payload matching Pydantic schema
-  const payload: BackendJobAnalysisRequest = {
-    description: trimmedDescription || undefined,
-    job_url: trimmedUrl || undefined,
-    title: requestData.title?.trim() || undefined,
-    employer_name: requestData.employer_name?.trim() || undefined,
-    company_profile: requestData.company_profile?.trim() || undefined,
-    requirements: requestData.requirements?.trim() || undefined,
-    benefits: requestData.benefits?.trim() || undefined,
-    employment_type: requestData.employment_type?.trim() || undefined,
-    company_website: requestData.company_website?.trim() || undefined,
-    recruiter_email: requestData.recruiter_email?.trim() || undefined,
-    application_url: requestData.application_url?.trim() || undefined,
-    recruiter_message: requestData.recruiter_message?.trim() || undefined,
-  };
-
-  let response: Response;
-  try {
-    response = await fetch(`${API_BASE_URL}/api/investigations/analyze`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-  } catch (networkErr: unknown) {
-    const msg = networkErr instanceof Error ? networkErr.message : 'Network error';
-    throw new ApiError(
-      `Cannot connect to ScamShield AI API at ${API_BASE_URL}. Please verify that the backend server is running (uvicorn backend.main:app).`,
-      {
-        code: 'API_UNAVAILABLE',
-        detail: msg,
-        isRetryable: true,
-      }
-    );
-  }
-
-  // Parse response
-  let rawJson: unknown;
-  try {
-    rawJson = await response.json();
-  } catch {
-    throw new ApiError(
-      `The server returned an invalid or non-JSON response (HTTP ${response.status}).`,
-      {
-        statusCode: response.status,
-        code: 'INVALID_JSON',
-        isRetryable: true,
-      }
-    );
-  }
-
-  // Handle non-200 responses
-  if (!response.ok) {
-    const errorBody = rawJson as { detail?: string | { error?: string; message?: string } };
-    let detailMessage = 'An unexpected error occurred during analysis.';
-
-    if (typeof errorBody?.detail === 'string') {
-      detailMessage = errorBody.detail;
-    } else if (typeof errorBody?.detail === 'object' && errorBody.detail?.message) {
-      detailMessage = errorBody.detail.message;
-    }
-
-    if (response.status === 503) {
-      throw new ApiError(
-        'Machine learning model is currently unavailable on the backend. Please train the baseline model by running "python ml/train.py".',
-        {
-          statusCode: 503,
-          code: 'MODEL_NOT_TRAINED',
-          detail: detailMessage,
-          isRetryable: true,
-        }
-      );
-    }
-
-    if (response.status === 422) {
-      throw new ApiError(
-        `Validation failed: ${detailMessage || 'Please verify the job posting text format.'}`,
-        {
-          statusCode: 422,
-          code: 'VALIDATION_ERROR',
-          detail: detailMessage,
-          isRetryable: true,
-        }
-      );
-    }
-
-    throw new ApiError(`Analysis request failed: ${detailMessage}`, {
-      statusCode: response.status,
-      code: `HTTP_${response.status}`,
-      detail: detailMessage,
-      isRetryable: true,
-    });
-  }
-
-  // Verify expected response fields
-  const data = rawJson as BackendJobAnalysisResponse;
-  if (
-    typeof data.prediction !== 'number' ||
-    typeof data.fraud_probability !== 'number' ||
-    !data.risk_level ||
-    !data.assessment_summary
-  ) {
-    throw new ApiError('The backend response did not contain the expected analysis fields.', {
-      code: 'MALFORMED_RESPONSE',
-      isRetryable: false,
-    });
-  }
-
   return data;
+}
+
+export async function analyzeJobPosting(requestData: BackendJobAnalysisRequest): Promise<BackendJobAnalysisResponse> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 45000);
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/investigations/analyze`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestData), signal: controller.signal,
+    });
+    if (!response.ok) throw new ApiError(`Analysis could not finish (HTTP ${response.status}). Please retry.`, { statusCode: response.status });
+    return validateAnalysisResponse(await response.json());
+  } finally { clearTimeout(timer); }
 }
 
 /**
@@ -340,305 +219,61 @@ export async function analyzeJobPostingWithStream(
   onStageUpdate: (update: InvestigationStageUpdate) => void,
   abortSignal?: AbortSignal
 ): Promise<BackendJobAnalysisResponse> {
-  const trimmedDescription = (requestData.description || '').trim();
-  const trimmedUrl = (requestData.job_url || '').trim();
-
-  // Local pre-validation
-  if (!trimmedDescription && !trimmedUrl) {
-    onStageUpdate({
-      card_id: 1,
-      key: 'validation',
-      title: 'Validating submitted information',
-      description: 'Checking input format, required fields, and URL safety.',
-      status: 'failed',
-      detail: 'Please provide either a job posting URL or paste the job description text.',
-      error: 'Empty input',
-    });
-    throw new ApiError('Please provide either a job posting URL or paste the job description text.', {
-      code: 'EMPTY_INPUT',
-      isRetryable: true,
-    });
-  }
-
-  if (trimmedDescription && trimmedDescription.length < 10) {
-    onStageUpdate({
-      card_id: 1,
-      key: 'validation',
-      title: 'Validating submitted information',
-      description: 'Checking input format, required fields, and URL safety.',
-      status: 'failed',
-      detail: 'Job description is too brief (minimum 10 characters required).',
-      error: 'Description too short',
-    });
-    throw new ApiError(
-      'Job description is too brief for analysis. Please provide at least 10 characters of posting content.',
-      {
-        code: 'DESCRIPTION_TOO_SHORT',
-        statusCode: 422,
-        isRetryable: true,
-      }
-    );
-  }
-
-  if (!trimmedDescription && trimmedUrl) {
-    if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://')) {
-      onStageUpdate({
-        card_id: 1,
-        key: 'validation',
-        title: 'Validating submitted information',
-        description: 'Checking input format, required fields, and URL safety.',
-        status: 'failed',
-        detail: 'Job URL must begin with http:// or https://.',
-        error: 'Invalid URL scheme',
-      });
-      throw new ApiError('Job URL must begin with http:// or https://.', {
-        code: 'INVALID_URL_SCHEME',
-        isRetryable: true,
-      });
-    }
-  }
-
-  onStageUpdate({
-    card_id: 1,
-    key: 'validation',
-    title: 'Validating submitted information',
-    description: 'Checking input format, required fields, and URL safety.',
-    status: 'in_progress',
-    detail: 'Connecting to analysis engine and verifying payload parameters...',
-  });
-
-  const payload: BackendJobAnalysisRequest = {
-    description: trimmedDescription || undefined,
-    job_url: trimmedUrl || undefined,
-    title: requestData.title?.trim() || undefined,
-    employer_name: requestData.employer_name?.trim() || undefined,
-    company_profile: requestData.company_profile?.trim() || undefined,
-    requirements: requestData.requirements?.trim() || undefined,
-    benefits: requestData.benefits?.trim() || undefined,
-    employment_type: requestData.employment_type?.trim() || undefined,
-    company_website: requestData.company_website?.trim() || undefined,
-    recruiter_email: requestData.recruiter_email?.trim() || undefined,
-    application_url: requestData.application_url?.trim() || undefined,
-    recruiter_message: requestData.recruiter_message?.trim() || undefined,
-  };
-
-  // Attempt Server-Sent Events stream first
-  let streamResponse: Response | null = null;
-  let useFallback = false;
-
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  abortSignal?.addEventListener('abort', abort, { once: true });
+  if (abortSignal?.aborted) controller.abort();
+  const timer = setTimeout(abort, 45000);
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
   try {
-    streamResponse = await fetch(`${API_BASE_URL}/api/investigations/analyze/stream`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'text/event-stream',
-      },
-      body: JSON.stringify(payload),
-      signal: abortSignal,
+    const response = await fetch(`${API_BASE_URL}/api/investigations/analyze/stream`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
+      body: JSON.stringify(requestData), signal: controller.signal,
     });
-
-    if (streamResponse.status === 404) {
-      useFallback = true;
-    } else if (!streamResponse.ok) {
-      let errorDetail = `HTTP ${streamResponse.status}`;
-      try {
-        const errJson = await streamResponse.json();
-        if (errJson?.detail) {
-          errorDetail = typeof errJson.detail === 'string' ? errJson.detail : JSON.stringify(errJson.detail);
-        }
-      } catch {
-        // use default errorDetail
-      }
-
-      onStageUpdate({
-        card_id: 1,
-        key: 'validation',
-        title: 'Validating submitted information',
-        description: 'Checking input format, required fields, and URL safety.',
-        status: 'failed',
-        detail: errorDetail,
-        error: errorDetail,
-      });
-
-      throw new ApiError(`Analysis request failed: ${errorDetail}`, {
-        statusCode: streamResponse.status,
-        code: `HTTP_${streamResponse.status}`,
-        detail: errorDetail,
-      });
-    }
-  } catch (netErr: unknown) {
-    if (abortSignal?.aborted) {
-      throw new ApiError('Investigation was safely dismissed.', { code: 'ABORTED', isRetryable: false });
-    }
-    if (netErr instanceof ApiError) {
-      throw netErr;
-    }
-    useFallback = true;
-  }
-
-  // If streaming response is active, consume SSE stream
-  if (streamResponse && streamResponse.ok && streamResponse.body && !useFallback) {
-    const reader = streamResponse.body.getReader();
-    const decoder = new TextDecoder('utf-8');
+    if (!response.ok) throw new ApiError(`Analysis could not start (HTTP ${response.status}). Check your input and retry.`, { statusCode: response.status });
+    if (!response.body || !response.headers.get('content-type')?.includes('text/event-stream')) throw new ApiError('The live connection is unavailable. Please retry.');
+    reader = response.body.getReader();
+    const decoder = new TextDecoder();
     let buffer = '';
-    let finalResult: BackendJobAnalysisResponse | null = null;
-    let streamError: ApiError | null = null;
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const messages = buffer.split('\n\n');
-        buffer = messages.pop() || '';
-
-        for (const rawMessage of messages) {
-          const lines = rawMessage.split('\n');
-          let eventName = 'message';
-          const dataLines: string[] = [];
-
-          for (const line of lines) {
-            if (line.startsWith('event:')) {
-              eventName = line.substring(6).trim();
-            } else if (line.startsWith('data:')) {
-              dataLines.push(line.substring(5).trim());
-            }
-          }
-
-          if (dataLines.length > 0) {
-            const dataStr = dataLines.join('\n');
-            let parsedData: unknown;
-            try {
-              parsedData = JSON.parse(dataStr);
-            } catch {
-              parsedData = dataStr;
-            }
-
-            if (eventName === 'stage_update') {
-              onStageUpdate(parsedData as InvestigationStageUpdate);
-            } else if (eventName === 'complete') {
-              finalResult = parsedData as BackendJobAnalysisResponse;
-            } else if (eventName === 'error') {
-              const errPayload = parsedData as { message?: string; code?: string; detail?: string };
-              streamError = new ApiError(errPayload.message || 'Stage processing failed', {
-                code: errPayload.code || 'STAGE_ERROR',
-                detail: errPayload.detail,
-              });
-            }
-          }
+    let result: BackendJobAnalysisResponse | undefined;
+    while (true) {
+      const { done, value } = await reader.read();
+      buffer += done ? decoder.decode() : decoder.decode(value, { stream: true });
+      if (buffer.length > 262144) throw new ApiError('The live response exceeded its limit.');
+      let boundary: RegExpExecArray | null;
+      while ((boundary = /\r?\n\r?\n/.exec(buffer))) {
+        if (buffer.length > 262144) throw new ApiError('The investigation response exceeded its supported size.');
+        const frame = buffer.slice(0, boundary.index);
+        buffer = buffer.slice(boundary.index + boundary[0].length);
+        const lines = frame.split(/\r?\n/);
+        const event = lines.find(line => line.startsWith('event:'))?.slice(6).trim();
+        const body = lines.filter(line => line.startsWith('data:')).map(line => line.slice(5).trimStart()).join('\n');
+        if (!body) continue;
+        const data: unknown = JSON.parse(body);
+        if (event === 'error') throw new ApiError('The investigation could not finish. Please retry.');
+        if (event === 'stage_update') onStageUpdate(data as InvestigationStageUpdate);
+        if (event === 'complete') {
+          if (result) throw new ApiError('Duplicate final response.');
+          result = validateAnalysisResponse(data);
         }
       }
-    } catch (readErr: unknown) {
-      if (abortSignal?.aborted) {
-        throw new ApiError('Investigation dismissed.', { code: 'ABORTED', isRetryable: false });
-      }
-      console.warn('SSE stream read interrupted:', readErr);
+      if (buffer.length > 262144) throw new ApiError('The investigation response exceeded its supported size.');
+      if (done) break;
     }
-
-    if (streamError) {
-      throw streamError;
-    }
-
-    if (finalResult) {
-      return finalResult;
-    }
+    if (controller.signal.aborted) throw new ApiError('Investigation cancelled or timed out.');
+    if (!result || buffer.trim()) throw new ApiError('Connection ended before the investigation finished. Please retry; no result was saved.');
+    return result;
+  } catch (error) {
+    if (abortSignal?.aborted) throw new ApiError('Investigation cancelled.', { code: 'ABORTED', isRetryable: false });
+    if (controller.signal.aborted) throw new ApiError('Investigation timed out. Please retry.');
+    if (error instanceof ApiError) throw error;
+    throw new ApiError('The live investigation was interrupted. Please retry; no result was saved.');
+  } finally {
+    clearTimeout(timer);
+    abortSignal?.removeEventListener('abort', abort);
+    await reader?.cancel().catch(() => undefined);
   }
-
-  // Fallback path: standard HTTP call with sequential card updates
-  onStageUpdate({
-    card_id: 1,
-    key: 'validation',
-    title: 'Validating submitted information',
-    description: 'Checking input format, required fields, and URL safety.',
-    status: 'completed',
-    detail: 'Input format validated.',
-  });
-
-  if (trimmedUrl && !trimmedDescription) {
-    onStageUpdate({
-      card_id: 2,
-      key: 'extraction',
-      title: 'Retrieving and extracting job details',
-      description: 'Fetching the job posting and extracting relevant content.',
-      status: 'in_progress',
-      detail: `Fetching public job posting from ${trimmedUrl.slice(0, 45)}...`,
-    });
-  } else {
-    onStageUpdate({
-      card_id: 2,
-      key: 'extraction',
-      title: 'Retrieving and extracting job details',
-      description: 'Fetching the job posting and extracting relevant content.',
-      status: 'skipped',
-      detail: 'Direct text description provided. Web retrieval bypassed.',
-    });
-  }
-
-  onStageUpdate({
-    card_id: 3,
-    key: 'ml_analysis',
-    title: 'Analyzing content with ML model',
-    description: 'Running the extracted text through our trained model.',
-    status: 'in_progress',
-    detail: 'Evaluating content with TF-IDF and trained ML classifier...',
-  });
-
-  const response = await analyzeJobPosting(payload);
-
-  if (trimmedUrl && !trimmedDescription) {
-    if (response.extraction_status === 'success') {
-      onStageUpdate({
-        card_id: 2,
-        key: 'extraction',
-        title: 'Retrieving and extracting job details',
-        description: 'Fetching the job posting and extracting relevant content.',
-        status: 'completed',
-        detail: `Successfully extracted ${response.extracted_title || 'job text'}.`,
-      });
-    } else {
-      onStageUpdate({
-        card_id: 2,
-        key: 'extraction',
-        title: 'Retrieving and extracting job details',
-        description: 'Fetching the job posting and extracting relevant content.',
-        status: 'failed',
-        detail: `Extraction incomplete: ${response.extraction_error || response.extraction_status}`,
-        error: response.extraction_error || undefined,
-      });
-    }
-  }
-
-  onStageUpdate({
-    card_id: 3,
-    key: 'ml_analysis',
-    title: 'Analyzing content with ML model',
-    description: 'Running the extracted text through our trained model.',
-    status: 'completed',
-    detail: `Model evaluated: ${(response.fraud_probability * 100).toFixed(1)}% estimated probability (${response.label}).`,
-  });
-
-  onStageUpdate({
-    card_id: 4,
-    key: 'warning_signals',
-    title: 'Checking scam warning signals',
-    description: 'Detecting payment requests, credential demands, and other red flags.',
-    status: 'completed',
-    detail: 'Deterministic payment and credential warning signals evaluated.',
-  });
-
-  onStageUpdate({
-    card_id: 5,
-    key: 'trust_chain',
-    title: 'Verifying employer and domain consistency',
-    description: 'Comparing employer, recruiter, and application details.',
-    status: 'completed',
-    detail: 'Trust Chain consistency audit completed with available information.',
-  });
-
-  return response;
 }
-
 
 /**
  * Transforms the real backend response into a full typed Investigation record
@@ -663,13 +298,15 @@ export function buildInvestigationRecord(
   const isHighRisk = response.risk_level === 'high';
   const isMediumRisk = response.risk_level === 'medium';
 
-  let assessmentLabel = 'Lower Risk';
-  if (response.review_decision === 'flagged_suspicious' || isHighRisk) {
+  let assessmentLabel = response.analysis_status === 'completed' ? 'Lower model score' : 'Unable to assess';
+  if (response.analysis_status !== 'completed') {
+    assessmentLabel = 'Unable to assess';
+  } else if (response.review_decision === 'flagged_suspicious' || isHighRisk) {
     assessmentLabel = 'Suspicious';
   } else if (response.review_decision === 'review_recommended' || isMediumRisk) {
     assessmentLabel = 'Review Recommended';
   } else {
-    assessmentLabel = 'Lower Risk';
+    assessmentLabel = 'Lower model score';
   }
 
   // Find max absolute impact for relative weight scaling
@@ -755,6 +392,8 @@ export function buildInvestigationRecord(
     webResearchSummary: response.web_research_summary,
 
     // Real ML model fields
+    analysisStatus: response.analysis_status,
+    errorCode: response.error_code,
     isRealAnalysis: true,
     prediction: response.prediction,
     reviewDecision: response.review_decision,
@@ -767,6 +406,16 @@ export function buildInvestigationRecord(
   };
 
   return investigation;
+}
+
+function normalizeStored(record: Investigation): Investigation | undefined {
+  if (!record || typeof record.id !== 'string' || typeof record.jobTitle !== 'string' || !Array.isArray(record.signals) || !['low','medium','high','unknown'].includes(record.riskLevel) || typeof record.assessmentLabel !== 'string') return undefined;
+  if (record.isRealAnalysis && (!record.analysisStatus || record.extractionStatus && !['success', 'not_applicable'].includes(record.extractionStatus))) {
+    return { ...record, analysisStatus: 'unable_to_assess', riskLevel: 'unknown', assessmentLabel: 'Unable to assess',
+      fraudProbability: null, confidence: null, prediction: null, reviewDecision: 'review_recommended',
+      assessmentSummary: 'This older result does not include a verified assessment state. Run the analysis again.', signals: [] };
+  }
+  return record;
 }
 
 const STORAGE_KEY_LATEST = 'latestInvestigation';
@@ -787,8 +436,8 @@ export function persistInvestigation(record: Investigation): void {
     filtered.unshift(record);
     // Keep last 20
     sessionStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(filtered.slice(0, 20)));
-  } catch (err) {
-    console.warn('Failed to persist investigation in sessionStorage:', err);
+  } catch {
+    console.warn('Investigation could not be saved in this browser session.');
   }
 }
 
@@ -799,13 +448,13 @@ export function getStoredInvestigation(id: string): Investigation | undefined {
   try {
     // Check specific id
     const specific = sessionStorage.getItem(`investigation_${id}`);
-    if (specific) return JSON.parse(specific);
+    if (specific) return normalizeStored(JSON.parse(specific));
 
     // Check latest
     const latest = sessionStorage.getItem(STORAGE_KEY_LATEST);
     if (latest) {
       const parsed: Investigation = JSON.parse(latest);
-      if (parsed.id === id) return parsed;
+      if (parsed.id === id) return normalizeStored(parsed);
     }
 
     // Check history list
@@ -813,10 +462,10 @@ export function getStoredInvestigation(id: string): Investigation | undefined {
     if (historyJson) {
       const list: Investigation[] = JSON.parse(historyJson);
       const match = list.find((item) => item.id === id);
-      if (match) return match;
+      if (match) return normalizeStored(match);
     }
-  } catch (err) {
-    console.warn('Error reading investigation from sessionStorage:', err);
+  } catch {
+    console.warn('Stored investigation could not be read.');
   }
   return undefined;
 }

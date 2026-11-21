@@ -20,7 +20,7 @@ import type { InvestigationStageState } from '../types/investigation';
 
 export interface InvestigationModalResult {
   id?: string;
-  fraudProbability: number;
+  fraudProbability: number | null;
   riskLevel: 'low' | 'medium' | 'high' | 'unknown';
   label: string;
   assessmentSummary: string;
@@ -73,6 +73,14 @@ export default function InvestigationModal({
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        const controls = modalRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input, textarea, [tabindex="0"]');
+        if (controls?.length) {
+          const first = controls[0], last = controls[controls.length - 1];
+          if (e.shiftKey && (document.activeElement === first || document.activeElement === modalRef.current)) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && (document.activeElement === last || document.activeElement === modalRef.current)) { e.preventDefault(); first.focus(); }
+        }
+      }
       if (e.key === 'Escape') {
         // Safe dismissal: hides overlay while background task completes safely
         onClose();
@@ -85,9 +93,9 @@ export default function InvestigationModal({
 
   // Focus modal container on open
   useEffect(() => {
-    if (isOpen && modalRef.current) {
-      modalRef.current.focus();
-    }
+    const previous = document.activeElement as HTMLElement | null;
+    if (isOpen && modalRef.current) modalRef.current.focus();
+    return () => { if (isOpen) previous?.focus(); };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -132,6 +140,7 @@ export default function InvestigationModal({
         }
       }}
     >
+      <div role="status" aria-live="polite" className="sr-only">{error ? error.message : isComplete ? 'Assessment completed.' : stages.filter(stage => stage.status !== 'pending').map(stage => `${stage.title}: ${stage.status}`).join('. ')}</div>
       <div
         ref={modalRef}
         tabIndex={-1}
@@ -155,10 +164,10 @@ export default function InvestigationModal({
                 id="investigation-modal-title"
                 className="font-serif text-[20px] sm:text-[23px] md:text-[27px] font-normal tracking-[-0.01em] text-[#141413] leading-tight"
               >
-                {isComplete ? 'Investigation Complete' : 'Running Investigation'}
+                {error ? 'Unable to complete analysis' : isComplete ? 'Investigation Complete' : 'Running Investigation'}
               </h2>
               <p className="text-[12.5px] sm:text-[12px] md:text-[13px] text-[#625F58] mt-0.5">
-                {isComplete
+                {error ? 'Retry or paste a job description. No safety verdict was produced.' : isComplete
                   ? 'Analysis finished • Risk score and evidence dossier compiled.'
                   : 'Please wait while we analyze this job posting.'}
               </p>
@@ -172,7 +181,7 @@ export default function InvestigationModal({
                 Completed
               </span>
             ) : (
-              <span className="text-[11px] font-mono text-[#77746C] hidden sm:inline-block">
+              <span className="text-[11px] whitespace-nowrap shrink-0 font-mono text-[#77746C] hidden sm:inline-block">
                 ~ 20–60 seconds
               </span>
             )}
@@ -200,7 +209,7 @@ export default function InvestigationModal({
                     </span>
                   )}
                   <span className="text-[12px] font-mono text-[#77746C]">
-                    Verdict: <strong className="text-[#141413] font-semibold">{result.label}</strong>
+                    Classifier output: <strong className="text-[#141413] font-semibold">{result.label}</strong>
                   </span>
                 </div>
                 <div className="flex items-baseline gap-2.5">
@@ -213,10 +222,10 @@ export default function InvestigationModal({
                         : 'text-[#141413]'
                     }`}
                   >
-                    {(result.fraudProbability * 100).toFixed(1)}%
+                    {(typeof result.fraudProbability === 'number' ? (result.fraudProbability * 100).toFixed(1) : 'Not scored')}%
                   </span>
                   <span className="text-[13px] text-[#625F58]">
-                    Estimated Fraud Probability
+                    ML model score — not a verified probability of fraud
                   </span>
                 </div>
               </div>
@@ -230,13 +239,13 @@ export default function InvestigationModal({
                 {/* Detected Signals Pills */}
                 {result.topSuspiciousSignals && result.topSuspiciousSignals.length > 0 && (
                   <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11.5px] sm:text-[11px] font-mono font-medium text-[#77746C] mr-1">
+                    <span className="text-[11.5px] sm:text-[11px] whitespace-nowrap shrink-0 font-mono font-medium text-[#77746C] mr-1">
                       Key warning indicators:
                     </span>
                     {result.topSuspiciousSignals.slice(0, 4).map((signal, idx) => (
                       <span
                         key={idx}
-                        className="text-[11.5px] sm:text-[11px] font-mono px-2 py-0.5 bg-[#FFFFFF] border border-[#E0DED4] text-[#141413] rounded-none shadow-2xs"
+                        className="text-[11.5px] sm:text-[11px] whitespace-nowrap shrink-0 font-mono px-2 py-0.5 bg-[#FFFFFF] border border-[#E0DED4] text-[#141413] rounded-none shadow-2xs"
                       >
                         ⚠ {signal}
                       </span>
@@ -249,7 +258,7 @@ export default function InvestigationModal({
 
           {isComplete && (
             <div className="flex items-center gap-2 pb-3 mb-2 border-b border-[#E0DED4]">
-              <span className="text-[11px] font-mono font-medium text-[#77746C] uppercase tracking-wider">
+              <span className="text-[11px] whitespace-nowrap shrink-0 font-mono font-medium text-[#77746C] uppercase tracking-wider">
                 Completed Verification Stages
               </span>
             </div>
@@ -331,7 +340,7 @@ export default function InvestigationModal({
                 <div className="flex-1 min-w-0 pt-0.5">
                   <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[12px] sm:text-[11px] font-mono text-[#77746C] font-medium">
+                      <span className="text-[12px] sm:text-[11px] whitespace-nowrap shrink-0 font-mono text-[#77746C] font-medium">
                         {stage.stepNumber}
                       </span>
                       <h3
@@ -451,7 +460,7 @@ export default function InvestigationModal({
                 <Check size={16} className="stroke-[2.5] flex-shrink-0" />
                 <span className="text-[13px] font-medium leading-tight">
                   {result
-                    ? `Analysis complete • ${(result.fraudProbability * 100).toFixed(1)}% estimated fraud probability`
+                    ? `Analysis complete • ${(typeof result.fraudProbability === 'number' ? (result.fraudProbability * 100).toFixed(1) : 'Not scored')}% uncalibrated model score`
                     : 'Investigation complete. Ready to view report.'}
                 </span>
               </div>
@@ -475,7 +484,7 @@ export default function InvestigationModal({
                 onClick={onClose}
                 className="text-[#77746C] hover:text-[#141413] underline cursor-pointer py-0.5"
               >
-                Hide overlay (keeps running)
+                Cancel investigation
               </button>
             </div>
           )}

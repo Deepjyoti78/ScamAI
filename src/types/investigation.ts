@@ -96,13 +96,17 @@ export interface WebResearchSummary {
 }
 
 export interface BackendJobAnalysisResponse {
-  prediction: number;
-  label: string;
+  analysis_status: 'completed' | 'unable_to_assess' | 'not_scored';
+  scoring_status: 'scored' | 'not_scored';
+  error_code?: string | null;
+  model_score?: number | null;
+  prediction: number | null;
+  label: string | null;
   risk_level: RiskLevel;
   review_decision?: string;
   decision_rationale?: string;
-  fraud_probability: number;
-  confidence: number;
+  fraud_probability: number | null;
+  confidence: number | null;
   assessment_summary: string;
   top_suspicious_signals: SignalAttribution[];
   top_legitimate_signals: SignalAttribution[];
@@ -172,12 +176,14 @@ export interface Investigation {
   webResearchSummary?: WebResearchSummary;
 
   // Real ML inference metadata
+  analysisStatus?: 'completed' | 'unable_to_assess' | 'not_scored';
+  errorCode?: string | null;
   isRealAnalysis?: boolean;
-  prediction?: number;
+  prediction?: number | null;
   reviewDecision?: string;
   decisionRationale?: string;
-  fraudProbability?: number; // 0.0 to 1.0 (e.g. 0.9822 for 98.22%)
-  confidence?: number;
+  fraudProbability?: number | null; // 0.0 to 1.0 (e.g. 0.9822 for 98.22%)
+  confidence?: number | null;
   inferenceTimeMs?: number;
   topSuspiciousSignals?: SignalAttribution[];
   topLegitimateSignals?: SignalAttribution[];

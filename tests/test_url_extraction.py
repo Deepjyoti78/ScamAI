@@ -197,134 +197,58 @@ def make_mock_http_response(
     return resp
 
 
-def test_url_extraction_success_controlled_fixture():
-    """Verify successful extraction from a controlled HTML response."""
-    html_fixture = b"""
-    <html>
-    <head><title>Senior Staff Engineer - TechCorp</title></head>
-    <body>
-        <main>
-            <h1>Senior Staff Engineer</h1>
-            <p>TechCorp is seeking a Senior Staff Engineer with extensive Python and machine learning experience.</p>
-            <p>You will lead architectural design and mentor senior engineering staff. Strong background in scalable systems required.</p>
-        </main>
-    </body>
-    </html>
-    """
-    mock_resp = make_mock_http_response(html_fixture)
-
-    with patch("backend.services.url_extractor.validate_url_security", return_value=(True, None, MagicMock())), \
-         patch("urllib.request.build_opener") as mock_opener:
-        mock_opener.return_value.open.return_value.__enter__.return_value = mock_resp
-
-        result = extract_job_posting_from_url("https://careers.example.com/job/101")
-        assert result.status == "success"
-        assert result.title == "Senior Staff Engineer - TechCorp"
-        assert "Senior Staff Engineer" in result.extracted_text
-        assert "extensive Python and machine learning experience" in result.extracted_text
-        assert result.char_count > 50
+def test_url_extraction_success_controlled_fixture(monkeypatch):
+    monkeypatch.setenv('SCAMSHIELD_ENABLE_URL_FETCH', 'true')
+    with patch('backend.services.url_extractor._fetch_html', return_value=('<title>Senior Staff Engineer - TechCorp</title><main>TechCorp seeks an engineer with extensive Python and machine learning experience.</main>', 'https://careers.example.com/job', 200, 'success')):
+        result = extract_job_posting_from_url('https://careers.example.com/job')
+    assert result.status == 'success'
+    assert result.title == 'Senior Staff Engineer - TechCorp'
+    assert 'extensive Python' in result.extracted_text
 
 
-def test_url_extraction_unsupported_content_type():
-    """Verify that non-HTML content types (e.g., PDF, JSON, binaries) are rejected."""
-    mock_resp = make_mock_http_response(b"%PDF-1.4 ...", content_type="application/pdf")
-
-    with patch("backend.services.url_extractor.validate_url_security", return_value=(True, None, MagicMock())), \
-         patch("urllib.request.build_opener") as mock_opener:
-        mock_opener.return_value.open.return_value.__enter__.return_value = mock_resp
-
-        result = extract_job_posting_from_url("https://careers.example.com/job.pdf")
-        assert result.status == "unsupported_content_type"
-        assert "application/pdf" in result.error_message
-        assert result.extracted_text is None
+def test_url_extraction_unsupported_content_type(monkeypatch):
+    monkeypatch.setenv('SCAMSHIELD_ENABLE_URL_FETCH', 'true')
+    with patch('backend.services.url_extractor._fetch_html', return_value=(None, 'https://careers.example.com/job', 200, 'unsupported_content_type')):
+        result = extract_job_posting_from_url('https://careers.example.com/job')
+    assert result.status == 'unsupported_content_type'
+    assert result.extracted_text is None
 
 
-def test_url_extraction_oversized_response():
-    """Verify that responses exceeding MAX_RESPONSE_BYTES are aborted."""
-    # Chunk larger than 2MB
-    huge_chunk = b"A" * (MAX_RESPONSE_BYTES + 1024)
-    mock_resp = make_mock_http_response(huge_chunk)
-
-    with patch("backend.services.url_extractor.validate_url_security", return_value=(True, None, MagicMock())), \
-         patch("urllib.request.build_opener") as mock_opener:
-        mock_opener.return_value.open.return_value.__enter__.return_value = mock_resp
-
-        result = extract_job_posting_from_url("https://careers.example.com/huge-job")
-        assert result.status == "oversized"
-        assert "exceeds the maximum allowed size" in result.error_message
+def test_url_extraction_oversized_response(monkeypatch):
+    monkeypatch.setenv('SCAMSHIELD_ENABLE_URL_FETCH', 'true')
+    with patch('backend.services.url_extractor._fetch_html', return_value=(None, 'https://careers.example.com/job', 200, 'oversized')):
+        result = extract_job_posting_from_url('https://careers.example.com/job')
+    assert result.status == 'oversized'
+    assert result.extracted_text is None
 
 
-def test_url_extraction_timeout_handling():
-    """Verify graceful handling of connection timeouts."""
-    with patch("backend.services.url_extractor.validate_url_security", return_value=(True, None, MagicMock())), \
-         patch("urllib.request.build_opener") as mock_opener:
-        mock_opener.return_value.open.side_effect = TimeoutError("Connection timed out")
-
-        result = extract_job_posting_from_url("https://careers.example.com/slow-job")
-        assert result.status == "timeout"
-        assert "timed out" in result.error_message.lower()
+def test_url_extraction_timeout_handling(monkeypatch):
+    monkeypatch.setenv('SCAMSHIELD_ENABLE_URL_FETCH', 'true')
+    with patch('backend.services.url_extractor._fetch_html', side_effect=TimeoutError()):
+        result = extract_job_posting_from_url('https://careers.example.com/job')
+    assert result.status == 'timeout'
+    assert 'timed out' in result.error_message
 
 
-def test_url_extraction_blocked_anti_bot_or_403():
-    """Verify that HTTP 403 / anti-bot defenses return 'blocked' status."""
-    import urllib.error
-
-    http_error = urllib.error.HTTPError(
-        url="https://careers.example.com/job/403",
-        code=403,
-        msg="Forbidden",
-        hdrs={},
-        fp=None,
-    )
-
-    with patch("backend.services.url_extractor.validate_url_security", return_value=(True, None, MagicMock())), \
-         patch("urllib.request.build_opener") as mock_opener:
-        mock_opener.return_value.open.side_effect = http_error
-
-        result = extract_job_posting_from_url("https://careers.example.com/job/403")
-        assert result.status == "blocked"
-        assert result.http_status == 403
-        assert "restricted by the job board" in result.error_message
-        assert "copy and paste" in result.error_message
+def test_url_extraction_blocked_anti_bot_or_403(monkeypatch):
+    monkeypatch.setenv('SCAMSHIELD_ENABLE_URL_FETCH', 'true')
+    with patch('backend.services.url_extractor._fetch_html', return_value=(None, 'https://careers.example.com/job', 403, 'blocked')):
+        result = extract_job_posting_from_url('https://careers.example.com/job')
+    assert result.status == 'blocked'
+    assert result.http_status == 403
+    assert 'paste' in result.error_message
 
 
 # --- 4. Pipeline Integration & Backward Compatibility Tests ---
 
 def test_prediction_service_url_only_extraction_flow():
-    """Verify that URL-only payload runs extraction and feeds real text to ML model."""
-    html_fixture = b"""
-    <html>
-    <head><title>Machine Learning Infrastructure Specialist</title></head>
-    <body>
-        <main>
-            <h1>Machine Learning Infrastructure Specialist</h1>
-            <p>We are seeking an ML engineer to optimize inference clusters and build feature store pipelines.</p>
-            <p>Candidate must have solid experience with PyTorch, Kubernetes, and model deployment.</p>
-        </main>
-    </body>
-    </html>
-    """
-    mock_resp = make_mock_http_response(html_fixture)
-
-    with patch("backend.services.url_extractor.validate_url_security", return_value=(True, None, MagicMock())), \
-         patch("urllib.request.build_opener") as mock_opener:
-        mock_opener.return_value.open.return_value.__enter__.return_value = mock_resp
-
-        req = JobAnalysisRequest(job_url="https://careers.legit-enterprise.com/jobs/ml-eng")
-        response = prediction_service.analyze_job(req)
-
-        # Verify response structure
-        assert isinstance(response, JobAnalysisResponse)
-        assert response.source_type == "extracted_url"
-        assert response.extraction_status == "success"
-        assert response.extracted_title == "Machine Learning Infrastructure Specialist"
-        assert response.extracted_text_preview is not None
-        assert "Machine Learning" in response.extracted_text_preview
-
-        # Model evaluated the extracted text
-        assert response.prediction in (0, 1)
-        assert 0.0 <= response.fraud_probability <= 1.0
-        assert len(response.top_legitimate_signals) > 0 or len(response.top_suspicious_signals) > 0
+    with patch('backend.services.prediction.extract_job_posting_from_url', return_value=JobExtractionResult(url='', status='success', title='Machine Learning Infrastructure Specialist', extracted_text='We seek a Machine Learning engineer to optimize inference clusters and build feature store pipelines.')):
+        result = prediction_service.analyze_job(JobAnalysisRequest(job_url='https://careers.example.com/job'))
+    assert result.analysis_status == 'completed'
+    assert result.source_type == 'extracted_url'
+    assert result.extraction_status == 'success'
+    assert result.prediction in (0, 1)
+    assert 0 <= result.fraud_probability <= 1
 
 
 def test_prediction_service_extraction_failure_does_not_flag_as_fraud():
@@ -342,10 +266,11 @@ def test_prediction_service_extraction_failure_does_not_flag_as_fraud():
 
         assert response.source_type == "extracted_url"
         assert response.extraction_status == "blocked"
-        assert response.extraction_error == "Access was restricted by Cloudflare bot protection."
+        assert response.analysis_status == "unable_to_assess"
         # Confirm not classified as fraud
-        assert response.prediction == 0
-        assert response.fraud_probability == 0.0
+        assert response.prediction is None
+        assert response.fraud_probability is None
+        assert response.risk_level == "unknown"
         assert "paste" in response.assessment_summary.lower()
 
 

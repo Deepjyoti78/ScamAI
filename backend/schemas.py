@@ -1,6 +1,6 @@
 """Pydantic schemas for ScamShield AI FastAPI backend."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
@@ -61,6 +61,14 @@ class JobAnalysisRequest(BaseModel):
         default=None,
         description="Recruiter message, email body, or additional context.",
     )
+
+    @field_validator("*", mode="after")
+    @classmethod
+    def limit_field_size(cls, value, info):
+        limit = 4096 if info.field_name.endswith("url") or info.field_name == "company_website" else 30000
+        if isinstance(value, str) and len(value) > limit:
+            raise ValueError("Input field exceeds its supported length.")
+        return value
 
     @model_validator(mode="before")
     @classmethod
@@ -181,14 +189,27 @@ class WebResearchSummary(BaseModel):
 class JobAnalysisResponse(BaseModel):
     """Response returned after ML inference, Trust Chain investigation, and external web research."""
 
-    prediction: int = Field(description="0 for Legitimate, 1 for Fraudulent based on 0.50 threshold.")
-    label: str = Field(description="'Legitimate' or 'Fraudulent'.")
-    risk_level: str = Field(description="'low', 'medium', or 'high'.")
-    review_decision: str = Field(description="'auto_cleared', 'review_recommended', or 'flagged_suspicious'.")
-    decision_rationale: str = Field(description="Explicit reasoning for review tier and risk rating.")
-    fraud_probability: float = Field(description="Model-estimated posterior probability of fraud (0.0 to 1.0).")
-    confidence: float = Field(description="Confidence score of the winning prediction class (0.5 to 1.0).")
+    analysis_status: Literal["completed", "unable_to_assess", "not_scored"] = "completed"
+    scoring_status: Literal["scored", "not_scored"] = "scored"
+    error_code: Optional[str] = None
+    prediction: Optional[int] = None
+    label: Optional[str] = None
+    risk_level: Literal["low", "medium", "high", "unknown"] = "unknown"
+    review_decision: str = "review_recommended"
+    decision_rationale: str = ""
+    model_score: Optional[float] = Field(default=None, ge=0, le=1, description="Uncalibrated ML model score; not a verified probability of fraud.")
+    fraud_probability: Optional[float] = Field(default=None, ge=0, le=1, description="Legacy alias of uncalibrated model_score, not a calibrated fraud probability; null if not scored.")
+    confidence: Optional[float] = Field(default=None, ge=0, le=1, description="Legacy max class score, not measured predictive reliability; null if not scored.")
     assessment_summary: str = Field(description="Contextual, evidence-grounded assessment summary.")
+
+    @model_validator(mode="after")
+    def consistent_assessment(self):
+        if self.analysis_status != "completed":
+            if self.scoring_status != "not_scored" or self.risk_level != "unknown" or any(value is not None for value in (self.prediction, self.label, self.model_score, self.fraud_probability, self.confidence)):
+                raise ValueError("Unavailable assessment must not contain a score or verdict.")
+        elif self.scoring_status != "scored" or self.prediction not in (0, 1) or self.model_score is None or self.fraud_probability != self.model_score:
+            raise ValueError("Completed assessment requires a valid model score and prediction.")
+        return self
     top_suspicious_signals: List[SignalAttribution] = Field(default_factory=list)
     top_legitimate_signals: List[SignalAttribution] = Field(default_factory=list)
     inference_time_ms: Optional[float] = Field(

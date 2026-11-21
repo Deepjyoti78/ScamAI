@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import Header from '../components/Header';
 import Button from '../components/Button';
+import { getStoredInvestigation } from '../services/investigationService';
 import { demoInvestigations } from '../data/demoInvestigations';
 import type { Investigation, RiskLevel } from '../types/investigation';
 
@@ -25,18 +26,12 @@ function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
 
 export default function InvestigationsListPage() {
   const navigate = useNavigate();
-  const [realInvestigations, setRealInvestigations] = useState<Investigation[]>([]);
-
-  useEffect(() => {
+  const [realInvestigations] = useState<Investigation[]>(() => {
     try {
       const stored = sessionStorage.getItem('scamshield_real_investigations');
-      if (stored) {
-        setRealInvestigations(JSON.parse(stored));
-      }
-    } catch {
-      // Ignore sessionStorage parsing errors
-    }
-  }, []);
+      return stored ? (JSON.parse(stored) as Investigation[]).map(item => getStoredInvestigation(item.id)).filter((item): item is Investigation => Boolean(item)) : [];
+    } catch { return []; }
+  });
 
   return (
     <div className="min-h-screen bg-[#FAF9F5]">
@@ -92,9 +87,9 @@ export default function InvestigationsListPage() {
                     })}
                   </div>
                   <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                    {inv.fraudProbability !== undefined && (
+                    {typeof inv.fraudProbability === 'number' && (
                       <span className="text-[11px] font-mono text-[#625F58] hidden md:inline">
-                        {(inv.fraudProbability * 100).toFixed(1)}% prob.
+                        {(inv.fraudProbability * 100).toFixed(1)}% model score
                       </span>
                     )}
                     <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />

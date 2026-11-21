@@ -5,6 +5,8 @@ job posting analysis endpoints.
 """
 
 import sys
+import asyncio
+import json
 from pathlib import Path
 
 # Ensure project root is in sys.path
@@ -38,6 +40,44 @@ app = FastAPI(
     description="Machine learning-powered detection and explanation of recruitment scams.",
     version="1.0.0",
 )
+
+
+class RequestBodyLimit:
+    """Bound request buffering before JSON/Pydantic parsing, including chunked input."""
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or scope.get("method") != "POST":
+            return await self.app(scope, receive, send)
+        body = bytearray()
+        try:
+            async with asyncio.timeout(5):
+                while True:
+                    message = await receive()
+                    if message["type"] == "http.disconnect":
+                        return
+                    body.extend(message.get("body", b""))
+                    if len(body) > 128 * 1024:
+                        raise ValueError("Request too large")
+                    if not message.get("more_body", False):
+                        break
+        except (ValueError, TimeoutError) as error:
+            status_code = 413 if isinstance(error, ValueError) else 408
+            payload = json.dumps({"detail": "Request is too large or timed out. Shorten the input and retry."}).encode()
+            await send({"type": "http.response.start", "status": status_code, "headers": [(b"content-type", b"application/json")]})
+            return await send({"type": "http.response.body", "body": payload})
+        delivered = False
+        async def replay():
+            nonlocal delivered
+            if not delivered:
+                delivered = True
+                return {"type": "http.request", "body": bytes(body), "more_body": False}
+            return await receive()
+        return await self.app(scope, replay, send)
+
+
+app.add_middleware(RequestBodyLimit)
 
 # Enable CORS for React frontend (Vercel production/preview deployments & local development)
 ALLOWED_ORIGINS = [
@@ -106,7 +146,7 @@ def get_model_status() -> ModelStatusResponse:
 def analyze_job_posting(payload: JobAnalysisRequest) -> JobAnalysisResponse:
     """Analyze job posting text using the trained baseline ML model.
 
-    Returns risk probability, risk level, and token attribution signals.
+    Returns an uncalibrated model score, separate triage and explicit assessment state.
     Returns HTTP 503 if the model has not been trained yet.
     """
     try:
@@ -124,7 +164,7 @@ def analyze_job_posting(payload: JobAnalysisRequest) -> JobAnalysisResponse:
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Inference error: {str(e)}",
+            detail="Analysis could not finish. Please retry later.",
         )
 
 

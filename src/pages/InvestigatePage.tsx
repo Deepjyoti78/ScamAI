@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link2, FileText, ArrowRight, Loader2, AlertCircle, RefreshCw, Eye, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
@@ -45,9 +45,11 @@ export default function InvestigatePage() {
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
+
   const executeInvestigation = async () => {
     // Prevent duplicate submissions
-    if (loading) return;
+    if (loading || abortControllerRef.current) return;
 
     setError(null);
     setErrorDetail(null);
@@ -56,7 +58,7 @@ export default function InvestigatePage() {
     setAnalysisResult(null);
     setCompletedRecordId(null);
 
-    const trimmedDescription = jobDescription.trim();
+    const trimmedDescription = mode === 'text' ? jobDescription.trim() : '';
     const trimmedUrl = jobUrl.trim();
 
     // 1. Validate submitted form
@@ -94,178 +96,21 @@ export default function InvestigatePage() {
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
 
-    const delay = (ms: number) =>
-      new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(resolve, ms);
-        abortController.signal.addEventListener(
-          'abort',
-          () => {
-            clearTimeout(timeout);
-            reject(new Error('ABORTED'));
-          },
-          { once: true }
-        );
-      });
-
     try {
-      // 1. Fire off genuine backend analysis in parallel
-      const stageUpdatesMap = new Map<number, { detail?: string; progress?: number; status?: string }>();
-      const responsePromise = analyzeJobPostingWithStream(
-        {
-          description: trimmedDescription || undefined,
-          title: jobTitle.trim() || undefined,
-          employer_name: employer.trim() || undefined,
-          company_profile: employer.trim() || undefined,
-          employment_type: employmentType || undefined,
-          job_url: trimmedUrl || undefined,
-          company_website: companyWebsite.trim() || undefined,
-          recruiter_email: recruiterEmail.trim() || undefined,
-          application_url: applicationUrl.trim() || undefined,
-          recruiter_message: recruiterMessage.trim() || undefined,
-        },
-        (stageUpdate) => {
-          stageUpdatesMap.set(stageUpdate.card_id, {
-            detail: stageUpdate.detail,
-            progress: stageUpdate.progress,
-            status: stageUpdate.status,
-          });
-        },
-        abortController.signal
-      );
-
-      // STEP 1: Validating submitted information
-      await delay(1300);
-      setStages((prev) =>
-        prev.map((s) => {
-          if (s.id === 1) {
-            return {
-              ...s,
-              status: 'completed',
-              progress: 100,
-              detail:
-                stageUpdatesMap.get(1)?.detail ||
-                (mode === 'url'
-                  ? `Input format validated. URL scheme verified (${trimmedUrl.slice(0, 36)}...).`
-                  : `Input format validated. ${trimmedDescription.length} characters verified.`),
-            };
-          }
-          if (s.id === 2) {
-            return {
-              ...s,
-              status: 'in_progress',
-              progress: 60,
-              detail:
-                mode === 'url'
-                  ? `Fetching public web page from ${trimmedUrl.slice(0, 45)}...`
-                  : 'Validating job posting structure and extracting metadata...',
-            };
-          }
-          return s;
-        })
-      );
-
-      // STEP 2: Retrieving and extracting job details (Arrow 1 -> 2 is traveling)
-      await delay(1400);
-      setStages((prev) =>
-        prev.map((s) => {
-          if (s.id === 2) {
-            return {
-              ...s,
-              status: mode === 'url' ? 'completed' : 'skipped',
-              progress: 100,
-              detail:
-                stageUpdatesMap.get(2)?.detail ||
-                (mode === 'url'
-                  ? 'Successfully extracted job details from target URL.'
-                  : 'Direct text description provided. Web retrieval bypassed.'),
-            };
-          }
-          if (s.id === 3) {
-            return {
-              ...s,
-              status: 'in_progress',
-              progress: 65,
-              detail: 'Vectorizing text with TF-IDF and running trained ML classifier inference...',
-            };
-          }
-          return s;
-        })
-      );
-
-      // STEP 3: Analyzing content with ML model (Arrow 2 -> 3 is traveling)
-      // Wait for backend inference result (guarantee at least 1500ms display)
-      const [response] = await Promise.all([responsePromise, delay(1500)]);
-
-      const pctStr = `${(response.fraud_probability * 100).toFixed(1)}%`;
-      setStages((prev) =>
-        prev.map((s) => {
-          if (s.id === 3) {
-            return {
-              ...s,
-              status: 'completed',
-              progress: 100,
-              detail:
-                stageUpdatesMap.get(3)?.detail ||
-                `Model inference complete: ${pctStr} estimated fraud probability (${response.label}).`,
-            };
-          }
-          if (s.id === 4) {
-            return {
-              ...s,
-              status: 'in_progress',
-              progress: 70,
-              detail: 'Scanning description for fee requests, wire transfers, and credential demands...',
-            };
-          }
-          return s;
-        })
-      );
-
-      // STEP 4: Checking scam warning signals (Arrow 3 -> 4 is traveling)
-      await delay(1400);
-      setStages((prev) =>
-        prev.map((s) => {
-          if (s.id === 4) {
-            return {
-              ...s,
-              status: 'completed',
-              progress: 100,
-              detail:
-                stageUpdatesMap.get(4)?.detail ||
-                (response.top_suspicious_signals?.length > 0
-                  ? 'Identified risk signals in text patterns.'
-                  : 'No upfront recruitment fees, wire transfer requests, or credential theft patterns detected.'),
-            };
-          }
-          if (s.id === 5) {
-            return {
-              ...s,
-              status: 'in_progress',
-              progress: 80,
-              detail: 'Comparing employer, recruiter email, and application domains against Trust Chain...',
-            };
-          }
-          return s;
-        })
-      );
-
-      // STEP 5: Verifying employer and domain consistency (Arrow 4 -> 5 is traveling)
-      await delay(1500);
-      setStages((prev) =>
-        prev.map((s) => {
-          if (s.id === 5) {
-            return {
-              ...s,
-              status: 'completed',
-              progress: 100,
-              detail:
-                stageUpdatesMap.get(5)?.detail ||
-                `Domain consistency verified against ${employer.trim() || 'specified employer'}.`,
-            };
-          }
-          return s;
-        })
-      );
+      const response = await analyzeJobPostingWithStream({
+        description: trimmedDescription || undefined, title: jobTitle.trim() || undefined,
+        employer_name: employer.trim() || undefined, employment_type: employmentType || undefined,
+        job_url: mode === 'url' ? trimmedUrl : undefined,
+        company_website: companyWebsite.trim() || undefined, recruiter_email: recruiterEmail.trim() || undefined,
+        application_url: applicationUrl.trim() || undefined, recruiter_message: recruiterMessage.trim() || undefined,
+      }, update => {
+        if (abortController.signal.aborted) return;
+        setStages(previous => previous.map(stage => stage.id === update.card_id ? { ...stage, ...update } : stage));
+      }, abortController.signal);
+      if (abortController.signal.aborted) return;
+      if (response.analysis_status !== 'completed') {
+        throw new ApiError(response.assessment_summary, { code: response.error_code || 'NOT_SCORED' });
+      }
 
       // 2. Build full investigation record with real inference results
       const investigationRecord = buildInvestigationRecord(
@@ -273,7 +118,7 @@ export default function InvestigatePage() {
           jobTitle: jobTitle.trim() || undefined,
           employer: employer.trim() || undefined,
           employmentType,
-          sourceUrl: trimmedUrl || undefined,
+          sourceUrl: mode === 'url' ? trimmedUrl : undefined,
           companyWebsite: companyWebsite.trim() || undefined,
           recruiterEmail: recruiterEmail.trim() || undefined,
           applicationUrl: applicationUrl.trim() || undefined,
@@ -292,7 +137,7 @@ export default function InvestigatePage() {
         id: investigationRecord.id,
         fraudProbability: response.fraud_probability,
         riskLevel: response.risk_level,
-        label: response.label,
+        label: response.label || 'Unable to assess',
         assessmentSummary: response.assessment_summary,
         topSuspiciousSignals: response.top_suspicious_signals?.map((s) => s.term) || [],
         topLegitimateSignals: response.top_legitimate_signals?.map((s) => s.term) || [],
@@ -300,17 +145,6 @@ export default function InvestigatePage() {
 
       setIsComplete(true);
 
-      // Ensure all cards are in their final completed/skipped status
-      setStages((prev) =>
-        prev.map((s) => ({
-          ...s,
-          status: s.status === 'skipped' ? 'skipped' : 'completed',
-          progress: 100,
-        }))
-      );
-
-      // Modal stays open so the user can inspect the percentage and info in the popup itself!
-      // To see the full report, the user clicks "Show full investigation".
     } catch (err: unknown) {
       if (abortController.signal.aborted) {
         // Safe dismissal without error
@@ -346,7 +180,10 @@ export default function InvestigatePage() {
         return prev;
       });
     } finally {
-      setLoading(false);
+      if (abortControllerRef.current === abortController) {
+        abortControllerRef.current = null;
+        setLoading(false);
+      }
     }
   };
 
@@ -387,7 +224,7 @@ export default function InvestigatePage() {
             Investigate a job posting.
           </h1>
           <p className="text-[14px] sm:text-[13.5px] text-[#625F58] leading-relaxed mb-6 max-w-[600px]">
-            Submit a job description or a job URL to evaluate recruitment fraud probabilities and run cross-source Trust Chain checks.
+            Submit a job description or a job URL to inspect an uncalibrated ML model score and run cross-source Trust Chain checks.
           </p>
 
           {/* Input mode toggle */}
@@ -424,7 +261,8 @@ export default function InvestigatePage() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <p className="text-xs text-[#625F58] mb-4">Your submission is sent to this analysis server. Results are kept in this browser session. Optional web search uses employer and role details, not the full job description.</p>
+          <form aria-busy={loading} onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* If URL Mode is active, render the Job URL field above */}
             {mode === 'url' && (
               <div className="border border-[#E0DED4] rounded-none p-4 bg-[#F0EEE6]">
@@ -436,7 +274,7 @@ export default function InvestigatePage() {
                 </div>
                 <input
                   type="url"
-                  value={jobUrl}
+                  maxLength={4096} value={jobUrl}
                   onChange={(e) => setJobUrl(e.target.value)}
                   placeholder="https://boards.greenhouse.io/... or https://company.com/careers/..."
                   className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 text-[14px] sm:text-[13px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] mb-2"
@@ -463,7 +301,7 @@ export default function InvestigatePage() {
                 </label>
               </div>
               <textarea
-                value={jobDescription}
+                maxLength={30000} value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
                 placeholder="Paste the full job posting description, requirements, benefits, or recruiter message here..."
                 rows={mode === 'url' ? 4 : 5}
@@ -667,7 +505,7 @@ export default function InvestigatePage() {
       {/* Five-Card Live Investigation Modal Overlay */}
       <InvestigationModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => { abortControllerRef.current?.abort(); setIsModalOpen(false); if (loading) setError('Investigation cancelled. Your input is preserved.'); }}
         stages={stages}
         isComplete={isComplete}
         result={analysisResult}

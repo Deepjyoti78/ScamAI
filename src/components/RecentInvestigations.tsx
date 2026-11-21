@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, FileText, Sparkles } from 'lucide-react';
+import { getStoredInvestigation } from '../services/investigationService';
 import { demoInvestigations } from '../data/demoInvestigations';
 import type { Investigation, RiskLevel } from '../types/investigation';
 
@@ -31,27 +32,14 @@ function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
 
 export default function RecentInvestigations() {
   const navigate = useNavigate();
-  const [displayList, setDisplayList] = useState<Investigation[]>(demoInvestigations.slice(0, 3));
-  const [hasRealRecord, setHasRealRecord] = useState(false);
-
-  useEffect(() => {
+  const [displayList] = useState<Investigation[]>(() => {
     try {
       const stored = sessionStorage.getItem('scamshield_real_investigations');
-      if (stored) {
-        const real: Investigation[] = JSON.parse(stored);
-        if (real.length > 0) {
-          setHasRealRecord(true);
-          // Combine live investigations with demo records, max 3 total
-          const remainingDemo = demoInvestigations.filter(
-            (demo) => !real.some((r) => r.id === demo.id)
-          );
-          setDisplayList([...real.slice(0, 3), ...remainingDemo].slice(0, 3));
-        }
-      }
-    } catch {
-      // Fallback to initial demo records
-    }
-  }, []);
+      const real = stored ? (JSON.parse(stored) as Investigation[]).map(item => getStoredInvestigation(item.id)).filter((item): item is Investigation => Boolean(item)) : [];
+      return [...real, ...demoInvestigations.filter(demo => !real.some(item => item.id === demo.id))].slice(0, 3);
+    } catch { return demoInvestigations.slice(0, 3); }
+  });
+  const hasRealRecord = displayList.some(item => item.isRealAnalysis);
 
   return (
     <section className="w-full px-4 sm:px-6 lg:px-10 py-8 md:py-11 border-t border-[#E0DED4]">
@@ -93,20 +81,14 @@ export default function RecentInvestigations() {
       <div className="border border-[#E0DED4] rounded-none bg-[#FAF9F5] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         <div className="divide-y divide-[#E0DED4]">
           {displayList.map((inv) => {
-            const probability =
-              typeof inv.fraudProbability === 'number'
-                ? inv.fraudProbability
-                : inv.riskLevel === 'high'
-                ? 0.885
-                : inv.riskLevel === 'medium'
-                ? 0.542
-                : 0.082;
-            const probPct = (probability * 100).toFixed(1);
+            const probPct = inv.isRealAnalysis && inv.analysisStatus === 'completed' && typeof inv.fraudProbability === 'number' ? `${(inv.fraudProbability * 100).toFixed(1)}%` : inv.isRealAnalysis ? 'Not scored' : 'Example';
 
             return (
               <div
                 key={inv.id}
                 className="grid grid-cols-12 items-center px-3.5 sm:px-5 py-3.5 sm:py-3.5 gap-2.5 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-[#F0EEE6]"
+                role="link" tabIndex={0}
+                onKeyDown={event => { if (event.key === 'Enter') navigate(`/investigations/${inv.id}`); }}
                 onClick={() => navigate(`/investigations/${inv.id}`)}
               >
                 {/* Column 1: Document Icon + Job Title & Employer */}
@@ -132,9 +114,9 @@ export default function RecentInvestigations() {
                     {/* Mobile-only percentage subtitle */}
                     <div className="sm:hidden flex items-center gap-1.5 text-[12px] text-[#625F58] mt-0.5">
                       <span className="font-mono font-medium text-[#141413]">
-                        {probPct}%
+                        {probPct}
                       </span>
-                      <span className="text-[#77746C]">fraud prob.</span>
+                      <span className="text-[#77746C]">model score</span>
                     </div>
                   </div>
                 </div>
@@ -142,10 +124,10 @@ export default function RecentInvestigations() {
                 {/* Column 2: Percentage info instead of Location */}
                 <div className="hidden sm:flex sm:col-span-3 items-center gap-2 text-[13px] text-[#625F58] font-normal truncate">
                   <span className="font-mono font-medium text-[#141413]">
-                    {probPct}%
+                    {probPct}
                   </span>
                   <span className="text-[12px] text-[#77746C] truncate">
-                    fraud probability
+                    model score
                   </span>
                 </div>
 

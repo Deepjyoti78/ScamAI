@@ -654,6 +654,16 @@ def resolve_search_provider(api_key: Optional[str] = None) -> Tuple[str, str, st
     return "none", "Web Search API", ""
 
 
+class _NoProviderRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise urllib.error.URLError("Provider redirect blocked")
+
+
+def _provider_open(req, timeout):
+    # Fixed service endpoints only; never forward API credentials through redirects/proxies.
+    return urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoProviderRedirect()).open(req, timeout=timeout)
+
+
 def execute_web_research(
     employer_name: Optional[str] = None,
     job_title: Optional[str] = None,
@@ -679,12 +689,12 @@ def execute_web_research(
             "total_queries_executed": 0,
             "findings_count": 0,
             "overall_evidence_assessment": (
-                "External web search is not configured. (Neither TAVILY_API_KEY nor BRAVE_SEARCH_API_KEY is set in the backend environment). "
+                "Optional web search is not configured on this server. "
                 "Investigation proceeded using statistical NLP and local Trust Chain evidence checks."
             ),
             "limitations_disclaimer": (
                 "External web verification was bypassed. ScamShield AI did not claim that web research was conducted. "
-                "Set TAVILY_API_KEY or BRAVE_SEARCH_API_KEY to enable live employer and vacancy search corroboration."
+                "No external employer or vacancy search was performed."
             ),
         }
         return [], summary
@@ -766,8 +776,10 @@ def execute_web_research(
         queries_executed += 1
 
         try:
-            with urllib.request.urlopen(req, timeout=timeout_seconds) as response:
-                content = response.read()
+            with _provider_open(req, timeout=min(timeout_seconds, 8.0)) as response:
+                content = response.read(1024 * 1024 + 1)
+                if len(content) > 1024 * 1024:
+                    raise ValueError("Search response exceeds limit")
                 # Decompress gzip if encoded or if gzip magic bytes are present
                 encoding = ""
                 if hasattr(response, "info") and callable(response.info):
@@ -779,9 +791,12 @@ def execute_web_research(
 
                 if encoding == "gzip" or content.startswith(b"\x1f\x8b"):
                     try:
-                        content = gzip.decompress(content)
+                        with gzip.GzipFile(fileobj=io.BytesIO(content)) as compressed:
+                            content = compressed.read(1024 * 1024 + 1)
+                        if len(content) > 1024 * 1024:
+                            raise ValueError("Decoded search response exceeds limit")
                     except Exception:
-                        pass
+                        raise ValueError("Invalid or oversized search encoding") from None
 
                 data = json.loads(content.decode("utf-8", errors="replace"))
                 if "web" in data and isinstance(data["web"], dict):
@@ -812,19 +827,19 @@ def execute_web_research(
                 provider_error = f"{provider_name} rate limit exceeded (HTTP 429). Search temporarily unavailable."
             elif e.code in (401, 403):
                 key_env = "TAVILY_API_KEY" if provider == "tavily" else "BRAVE_SEARCH_API_KEY"
-                provider_error = f"{provider_name} authentication failed (HTTP {e.code}). Verify {key_env}."
+                provider_error = f"{provider_name} authentication failed (HTTP {e.code}). Search is unavailable."
             else:
-                provider_error = f"{provider_name} returned HTTP {e.code}: {e.reason}."
+                provider_error = f"{provider_name} returned HTTP {e.code}."
             break
         except urllib.error.URLError as e:
-            provider_error = f"External search connection error or timeout: {str(e.reason)}."
+            provider_error = "External search connection failed or timed out."
             break
         except Exception as e:
-            provider_error = f"Unexpected error during external search: {str(e)}."
+            provider_error = "External search response error; corroboration could not finish."
             break
 
     # Determine overall status and assessment
-    if provider_error and not findings:
+    if provider_error:
         summary = {
             "status": "search_unavailable",
             "provider": provider_name,
@@ -836,7 +851,7 @@ def execute_web_research(
                 "Investigation completed using ML text scoring and local Trust Chain rules."
             ),
         }
-        return [], summary
+        return findings, summary
 
     # If queries were executed and returned empty list, synthesize structured finding
     if not findings and queries_executed > 0 and not provider_error:
