@@ -335,19 +335,19 @@ export default function JobAnalysisMockup() {
             </button>
           </div>
 
-          {/* 2. Three Annotation Cards Column with razor-sharp clean edges */}
+          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and darker reddish background */}
           <div className="flex flex-col gap-2.5 justify-between">
             {/* Card 1: Domain mismatch */}
             <div
               ref={c1Ref}
-              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FAD2CF] border border-[#F1948A] rounded-none p-3 shadow-[0_2px_8px_rgba(185,28,28,0.06)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[0].icon}</div>
               <div className="min-w-0">
-                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#141413] leading-tight">
+                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#7F1D1D] leading-tight">
                   {annotations[0].label}
                 </h4>
-                <p className="text-[10.5px] text-[#625F58] leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#991B1B] font-medium leading-snug mt-0.5">
                   {annotations[0].detail}
                 </p>
               </div>
@@ -356,14 +356,14 @@ export default function JobAnalysisMockup() {
             {/* Card 2: Payment request */}
             <div
               ref={c2Ref}
-              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FAD2CF] border border-[#F1948A] rounded-none p-3 shadow-[0_2px_8px_rgba(185,28,28,0.06)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[1].icon}</div>
               <div className="min-w-0">
-                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#141413] leading-tight">
+                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#7F1D1D] leading-tight">
                   {annotations[1].label}
                 </h4>
-                <p className="text-[10.5px] text-[#625F58] leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#991B1B] font-medium leading-snug mt-0.5">
                   {annotations[1].detail}
                 </p>
               </div>
@@ -372,14 +372,14 @@ export default function JobAnalysisMockup() {
             {/* Card 3: Unverified employer */}
             <div
               ref={c3Ref}
-              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FAD2CF] border border-[#F1948A] rounded-none p-3 shadow-[0_2px_8px_rgba(185,28,28,0.06)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[2].icon}</div>
               <div className="min-w-0">
-                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#141413] leading-tight">
+                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#7F1D1D] leading-tight">
                   {annotations[2].label}
                 </h4>
-                <p className="text-[10.5px] text-[#625F58] leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#991B1B] font-medium leading-snug mt-0.5">
                   {annotations[2].detail}
                 </p>
               </div>
