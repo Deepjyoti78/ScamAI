@@ -7,7 +7,7 @@ export default function HeroSection() {
 
   return (
     <section className="w-full pt-8 pb-10 sm:pt-10 sm:pb-12 md:pt-12 md:pb-14 lg:pt-13 lg:pb-16 px-4 sm:px-6 lg:px-10">
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] gap-8 lg:gap-12 xl:gap-14 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] xl:grid-cols-[minmax(0,470px)_1fr] gap-8 lg:gap-10 xl:gap-12 items-center">
 
           {/* ── Left column ── */}
           <div className="flex flex-col">
