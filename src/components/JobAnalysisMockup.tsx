@@ -26,27 +26,27 @@ interface PointCoords {
 
 const annotations = [
   {
-    icon: <Mail size={15} strokeWidth={2} className="text-[#FECACA]" />,
+    icon: <Mail size={15} strokeWidth={1.75} className="text-[#DC2626]" />,
     label: 'Domain mismatch',
     detail: "Recruiter email doesn't match the company domain.",
   },
   {
-    icon: <AlertTriangle size={15} strokeWidth={2} className="text-[#FECACA]" />,
+    icon: <AlertTriangle size={15} strokeWidth={1.75} className="text-[#DC2626]" />,
     label: 'Payment request',
     detail: 'Mentions an upfront registration fee.',
   },
   {
-    icon: <Building2 size={15} strokeWidth={2} className="text-[#FECACA]" />,
+    icon: <Building2 size={15} strokeWidth={1.75} className="text-[#DC2626]" />,
     label: 'Unverified employer',
     detail: 'Company details could not be verified.',
   },
 ];
 
 const riskFactors = [
-  { label: 'Payment Fee', fill: 'w-[68%]', val: '+0.42', positive: true },
-  { label: 'Personal Email', fill: 'w-[46%]', val: '+0.28', positive: true },
-  { label: 'Urgent Hiring', fill: 'w-[28%]', val: '+0.18', positive: true },
-  { label: 'Positive Signals', fill: 'w-[18%]', val: '-0.12', positive: false },
+  { label: 'Payment Fee', val: '+0.42', color: '#DC2626', pct: '42%' },
+  { label: 'Personal Email', val: '+0.28', color: '#EA580C', pct: '28%' },
+  { label: 'Urgent Hiring', val: '+0.18', color: '#D97706', pct: '18%' },
+  { label: 'Positive Signals', val: '-0.12', color: '#16A34A', pct: '12%' },
 ];
 
 export default function JobAnalysisMockup() {
@@ -335,19 +335,19 @@ export default function JobAnalysisMockup() {
             </button>
           </div>
 
-          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and bold dark reddish background */}
+          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and lighter reddish background */}
           <div className="flex flex-col gap-2.5 justify-between">
             {/* Card 1: Domain mismatch */}
             <div
               ref={c1Ref}
-              className="bg-[#991B1B] border border-[#7F1D1D] rounded-none p-3 shadow-[0_2px_8px_rgba(127,29,29,0.18)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[0].icon}</div>
               <div className="min-w-0">
-                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-white leading-tight">
+                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
                   {annotations[0].label}
                 </h4>
-                <p className="text-[10.5px] text-[#FEE2E2] leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#7F1D1D]/90 leading-snug mt-0.5">
                   {annotations[0].detail}
                 </p>
               </div>
@@ -356,14 +356,14 @@ export default function JobAnalysisMockup() {
             {/* Card 2: Payment request */}
             <div
               ref={c2Ref}
-              className="bg-[#991B1B] border border-[#7F1D1D] rounded-none p-3 shadow-[0_2px_8px_rgba(127,29,29,0.18)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[1].icon}</div>
               <div className="min-w-0">
-                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-white leading-tight">
+                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
                   {annotations[1].label}
                 </h4>
-                <p className="text-[10.5px] text-[#FEE2E2] leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#7F1D1D]/90 leading-snug mt-0.5">
                   {annotations[1].detail}
                 </p>
               </div>
@@ -372,14 +372,14 @@ export default function JobAnalysisMockup() {
             {/* Card 3: Unverified employer */}
             <div
               ref={c3Ref}
-              className="bg-[#991B1B] border border-[#7F1D1D] rounded-none p-3 shadow-[0_2px_8px_rgba(127,29,29,0.18)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[2].icon}</div>
               <div className="min-w-0">
-                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-white leading-tight">
+                <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
                   {annotations[2].label}
                 </h4>
-                <p className="text-[10.5px] text-[#FEE2E2] leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#7F1D1D]/90 leading-snug mt-0.5">
                   {annotations[2].detail}
                 </p>
               </div>
@@ -387,63 +387,134 @@ export default function JobAnalysisMockup() {
           </div>
         </div>
 
-        {/* ── BOTTOM SECTION: Overall Assessment Result Card with razor-sharp clean edges ── */}
+        {/* ── BOTTOM SECTION: Overall Assessment Result Card with darker reddish background & circular wheel ── */}
         <div className="relative z-10 mt-8 sm:mt-9">
           <div
             ref={bottomCardRef}
-            className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] card-interactive"
+            className="bg-[#F8D4CF] border border-[#F09489] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(220,38,38,0.06)] card-interactive"
           >
-            <div className="grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-4 sm:gap-6 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-4 sm:gap-6 items-center">
               {/* Left Column: Verdict & Narrative */}
               <div>
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="w-3 h-3 rounded-none bg-[#dc2626] flex-shrink-0" />
-                  <span className="text-[13.5px] sm:text-[14px] font-bold text-[#141413]">
+                  <span className="w-3 h-3 rounded-none bg-[#DC2626] flex-shrink-0" />
+                  <span className="text-[13.5px] sm:text-[14px] font-bold text-[#7F1D1D]">
                     Likely Suspicious
                   </span>
-                  <span className="text-[9.5px] font-bold tracking-wider text-[#dc2626] bg-[#fef2f2] border border-[#fca5a5] px-2 py-0.5 rounded-none uppercase">
+                  <span className="text-[9px] font-bold tracking-wider text-white bg-[#DC2626] border border-[#B91C1C] px-2 py-0.5 rounded-none uppercase">
                     HIGH RISK
                   </span>
                 </div>
 
-                <p className="text-[11.5px] sm:text-[12px] text-[#625F58] leading-relaxed mb-2.5 max-w-[340px]">
+                <p className="text-[11.5px] sm:text-[12px] text-[#7F1D1D]/90 leading-relaxed mb-2.5 max-w-[320px]">
                   Multiple warning signs detected. Review the evidence and verify the details
                   independently.
                 </p>
 
-                <p className="text-[10.5px] text-[#77746C] font-mono flex items-center gap-1">
+                <p className="text-[10px] text-[#991B1B] font-mono flex items-center gap-1">
                   + Illustrative demo data. Not a real investigation.
                 </p>
               </div>
 
-              {/* Right Column: Key Risk Factors with Capsule Bars */}
-              <div className="md:border-l md:border-[#E0DED4] md:pl-6">
-                <p className="text-[9.5px] font-bold tracking-widest text-[#77746C] uppercase mb-2">
+              {/* Right Column: Circular Risk Wheel Illustration & Factor Legend */}
+              <div className="md:border-l md:border-[#F09489]/80 md:pl-5">
+                <p className="text-[9.5px] font-bold tracking-widest text-[#7F1D1D] uppercase mb-2">
                   KEY RISK FACTORS
                 </p>
 
-                <div className="space-y-1.5">
-                  {riskFactors.map((factor) => (
-                    <div key={factor.label} className="flex items-center justify-between gap-3 text-[11.5px]">
-                      <span className="text-[#141413] text-[11px] font-medium min-w-[95px]">
-                        {factor.label}
+                <div className="flex items-center gap-3.5">
+                  {/* Circular Radial Donut Wheel */}
+                  <div className="relative w-[76px] h-[76px] flex-shrink-0">
+                    <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                      {/* Background track circle */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="38"
+                        fill="none"
+                        stroke="#FDECE9"
+                        strokeWidth="9"
+                      />
+
+                      {/* Arc 1: Payment Fee (+0.42) -> 42% = 97.78 */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="38"
+                        fill="none"
+                        stroke="#DC2626"
+                        strokeWidth="9"
+                        strokeDasharray="97.78 140.98"
+                        strokeDashoffset="0"
+                      />
+
+                      {/* Arc 2: Personal Email (+0.28) -> 28% = 64.35 */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="38"
+                        fill="none"
+                        stroke="#EA580C"
+                        strokeWidth="9"
+                        strokeDasharray="64.35 174.41"
+                        strokeDashoffset="-100.28"
+                      />
+
+                      {/* Arc 3: Urgent Hiring (+0.18) -> 18% = 40.48 */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="38"
+                        fill="none"
+                        stroke="#D97706"
+                        strokeWidth="9"
+                        strokeDasharray="40.48 198.28"
+                        strokeDashoffset="-167.13"
+                      />
+
+                      {/* Arc 4: Positive Signals (-0.12) -> 12% = 26.15 */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="38"
+                        fill="none"
+                        stroke="#16A34A"
+                        strokeWidth="9"
+                        strokeDasharray="26.15 212.61"
+                        strokeDashoffset="-210.11"
+                      />
+                    </svg>
+
+                    {/* Wheel Center Readout */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                      <span className="text-[12px] font-mono font-bold text-[#7F1D1D] leading-none">
+                        +0.88
                       </span>
-
-                      {/* Horizontal Capsule Bar */}
-                      <div className="w-9 h-1.5 rounded-full bg-[#E5E2D9] overflow-hidden flex-shrink-0">
-                        <div
-                          className={`h-full rounded-full ${
-                            factor.positive ? 'bg-[#77746C]' : 'bg-[#C8C5BB]'
-                          } ${factor.fill}`}
-                        />
-                      </div>
-
-                      {/* Metric Value */}
-                      <span className="text-[11px] font-mono font-semibold text-[#141413] text-right min-w-[36px]">
-                        {factor.val}
+                      <span className="text-[7.5px] font-mono uppercase tracking-wider text-[#991B1B] mt-0.5">
+                        RISK
                       </span>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Legend List */}
+                  <div className="flex-1 min-w-0 space-y-1">
+                    {riskFactors.map((factor) => (
+                      <div key={factor.label} className="flex items-center justify-between gap-1.5 text-[11px]">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span
+                            className="w-2 h-2 rounded-none flex-shrink-0"
+                            style={{ backgroundColor: factor.color }}
+                          />
+                          <span className="text-[#141413] text-[10.5px] font-medium truncate">
+                            {factor.label}
+                          </span>
+                        </div>
+                        <span className="text-[10.5px] font-mono font-bold text-[#7F1D1D] text-right flex-shrink-0">
+                          {factor.val}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
