@@ -126,8 +126,8 @@ export default function JobAnalysisMockup() {
 
     const xTrunk = Math.round(Math.max(xC1R, xC2R, xC3R) + 24);
 
-    // Connect cleanly into top edge of bottom card at ~38% width
-    const xB = Math.round(bottom.left - container.left + bottom.width * 0.38);
+    // Connect cleanly into top edge in the middle of bottom card (shifted right to center)
+    const xB = Math.round(bottom.left - container.left + bottom.width * 0.52);
     const yB = Math.round(bottom.top - container.top);
 
     const yTurn = Math.round(yC3R + (yB - yC3R) * 0.46);
@@ -270,22 +270,22 @@ export default function JobAnalysisMockup() {
 
         {/* ── LAYER 2: CARDS (z-10 with solid background to guarantee lines never overlap inside!) ── */}
         <div className="relative z-10 grid grid-cols-[minmax(0,1.15fr)_minmax(0,0.95fr)] sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-8 sm:gap-10 items-center">
-          {/* 1. Job Card with sharp clean edges */}
+          {/* 1. Job Card with razor-sharp clean edges */}
           <div
             ref={jobCardRef}
-            className="bg-[#FAF9F5] border border-[#E0DED4] rounded-lg p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] card-interactive"
+            className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] card-interactive"
           >
             {/* Browser URL Pill */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-[#F0EEE6] border border-[#E0DED4] mb-3.5 w-full">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-[#F0EEE6] border border-[#E0DED4] mb-3.5 w-full">
               <Link2 size={11} className="text-[#141413]/70 flex-shrink-0" />
-              <span className="text-[10px] sm:text-[10.5px] font-mono text-[#141413]/80 tracking-tight truncate">
+              <span className="text-[9.5px] sm:text-[10px] font-mono text-[#141413]/80 tracking-tight truncate">
                 careers-rapidtech.com/jobs/product-designer
               </span>
             </div>
 
             {/* Company Info Row */}
             <div className="flex items-center gap-2.5 mb-2.5">
-              <div className="w-7 h-7 rounded-[6px] bg-[#F0EEE6] border border-[#E0DED4] flex items-center justify-center font-bold text-[12px] text-[#141413] flex-shrink-0">
+              <div className="w-7 h-7 rounded-none bg-[#F0EEE6] border border-[#E0DED4] flex items-center justify-center font-bold text-[12px] text-[#141413] flex-shrink-0">
                 R
               </div>
               <div className="min-w-0">
@@ -329,18 +329,18 @@ export default function JobAnalysisMockup() {
             {/* Apply Button */}
             <button
               type="button"
-              className="text-[11px] font-semibold bg-[#141413] text-[#FAF9F5] rounded-[6px] px-3.5 py-1.5 hover:bg-[#30302D] transition-colors cursor-pointer"
+              className="text-[11px] font-semibold bg-[#141413] text-[#FAF9F5] rounded-none px-3.5 py-1.5 hover:bg-[#30302D] transition-colors cursor-pointer"
             >
               Apply Now
             </button>
           </div>
 
-          {/* 2. Three Annotation Cards Column with sharp clean edges */}
+          {/* 2. Three Annotation Cards Column with razor-sharp clean edges */}
           <div className="flex flex-col gap-2.5 justify-between">
             {/* Card 1: Domain mismatch */}
             <div
               ref={c1Ref}
-              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-lg p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[0].icon}</div>
               <div className="min-w-0">
@@ -356,7 +356,7 @@ export default function JobAnalysisMockup() {
             {/* Card 2: Payment request */}
             <div
               ref={c2Ref}
-              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-lg p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[1].icon}</div>
               <div className="min-w-0">
@@ -372,7 +372,7 @@ export default function JobAnalysisMockup() {
             {/* Card 3: Unverified employer */}
             <div
               ref={c3Ref}
-              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-lg p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-3 shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex items-start gap-2.5 card-interactive"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[2].icon}</div>
               <div className="min-w-0">
@@ -387,21 +387,21 @@ export default function JobAnalysisMockup() {
           </div>
         </div>
 
-        {/* ── BOTTOM SECTION: Overall Assessment Result Card with sharp clean edges ── */}
+        {/* ── BOTTOM SECTION: Overall Assessment Result Card with razor-sharp clean edges ── */}
         <div className="relative z-10 mt-8 sm:mt-9">
           <div
             ref={bottomCardRef}
-            className="bg-[#FAF9F5] border border-[#E0DED4] rounded-lg p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] card-interactive"
+            className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] card-interactive"
           >
             <div className="grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-4 sm:gap-6 items-center">
               {/* Left Column: Verdict & Narrative */}
               <div>
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="w-3 h-3 rounded-[2px] bg-[#dc2626] flex-shrink-0" />
+                  <span className="w-3 h-3 rounded-none bg-[#dc2626] flex-shrink-0" />
                   <span className="text-[13.5px] sm:text-[14px] font-bold text-[#141413]">
                     Likely Suspicious
                   </span>
-                  <span className="text-[9.5px] font-bold tracking-wider text-[#dc2626] bg-[#fef2f2] border border-[#fca5a5] px-2 py-0.5 rounded-[4px] uppercase">
+                  <span className="text-[9.5px] font-bold tracking-wider text-[#dc2626] bg-[#fef2f2] border border-[#fca5a5] px-2 py-0.5 rounded-none uppercase">
                     HIGH RISK
                   </span>
                 </div>
