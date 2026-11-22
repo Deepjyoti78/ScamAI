@@ -280,3 +280,4 @@ class HealthResponse(BaseModel):
     status: str
     app: str
     version: str
+    url_fetch_enabled: bool = Field(default=False, description="Actual server URL-retrieval capability; false in the controlled text-only demo.")

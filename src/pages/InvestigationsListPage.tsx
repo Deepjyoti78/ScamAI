@@ -37,7 +37,7 @@ export default function InvestigationsListPage() {
     <div className="min-h-screen bg-[#FAF9F5]">
       <Header />
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10 pt-5 pb-14 md:pt-6 md:pb-18 border-x border-[#E0DED4] bg-[#FAF9F5] min-h-[calc(100vh-60px)]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-6 sm:mb-8 animate-text-reveal">
           <div>
             <p className="text-[11px] sm:text-[10px] font-medium tracking-[0.18em] uppercase text-[#77746C] mb-2">
               All Records
@@ -50,7 +50,7 @@ export default function InvestigationsListPage() {
             variant="primary"
             size="sm"
             onClick={() => navigate('/investigate')}
-            className="w-full sm:w-auto justify-center h-[42px] sm:h-[34px] text-[14px] sm:text-[13px]"
+            className="w-full sm:w-auto justify-center h-[42px] sm:h-[34px] text-[14px] sm:text-[13px] hover:shadow-[0_4px_16px_rgba(20,20,19,0.2)] hover:-translate-y-0.5 transition-all"
           >
             New investigation →
           </Button>
@@ -58,7 +58,7 @@ export default function InvestigationsListPage() {
 
         {/* Real Investigations Section (if any submitted during session) */}
         {realInvestigations.length > 0 && (
-          <div className="mb-10">
+          <div className="mb-10 animate-card-entrance stagger-1">
             <div className="flex items-center gap-2 mb-3">
               <ShieldCheck size={15} className="text-[#2e7d32]" />
               <h2 className="text-[12.5px] sm:text-[12px] font-semibold uppercase tracking-wider text-[#141413]">
@@ -69,7 +69,7 @@ export default function InvestigationsListPage() {
               {realInvestigations.map((inv) => (
                 <div
                   key={inv.id}
-                  className="flex items-center justify-between gap-3 sm:gap-4 py-3.5 px-3.5 sm:px-4 cursor-pointer group transition-colors hover:bg-[#F0EEE6] bg-[#FAF9F5]"
+                  className="flex items-center justify-between gap-3 sm:gap-4 py-3.5 px-3.5 sm:px-4 cursor-pointer group transition-all duration-200 hover:bg-[#F0EEE6] bg-[#FAF9F5]"
                   onClick={() => navigate(`/investigations/${inv.id}`)}
                 >
                   <div className="flex flex-col min-w-0 pr-1">
@@ -95,7 +95,7 @@ export default function InvestigationsListPage() {
                     <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />
                     <ArrowRight
                       size={14}
-                      className="text-[#77746C] group-hover:text-[#141413] transition-colors"
+                      className="text-[#77746C] group-hover:text-[#141413] group-hover:translate-x-1 transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -105,7 +105,7 @@ export default function InvestigationsListPage() {
         )}
 
         {/* Illustrative Demo Records */}
-        <div>
+        <div className="animate-card-entrance stagger-2">
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#E0DED4]">
             <span className="text-[11.5px] sm:text-[11px] uppercase tracking-wider font-semibold text-[#77746C]">
               Illustrative Sample Records
@@ -113,12 +113,12 @@ export default function InvestigationsListPage() {
             <span className="text-[11.5px] sm:text-[11px] text-[#77746C]">Demo benchmark scenarios</span>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col divide-y divide-[#E0DED4]">
             {demoInvestigations.map((inv, i) => (
               <div
                 key={inv.id}
-                className={`flex items-center justify-between gap-3 sm:gap-4 py-3.5 sm:py-4 cursor-pointer group transition-colors hover:bg-[#F0EEE6] -mx-2 sm:-mx-3 px-2 sm:px-3 rounded-none ${
-                  i < demoInvestigations.length - 1 ? 'border-b border-[#E0DED4]' : ''
+                className={`flex items-center justify-between gap-3 sm:gap-4 py-3.5 sm:py-4 cursor-pointer group transition-all duration-200 hover:bg-[#F0EEE6] -mx-2 sm:-mx-3 px-2 sm:px-3 rounded-none animate-slide-in-up ${
+                  i === 0 ? 'stagger-1' : i === 1 ? 'stagger-2' : i === 2 ? 'stagger-3' : i === 3 ? 'stagger-4' : 'stagger-5'
                 }`}
                 onClick={() => navigate(`/investigations/${inv.id}`)}
               >
@@ -141,7 +141,7 @@ export default function InvestigationsListPage() {
                   <RiskBadge level={inv.riskLevel} label={inv.assessmentLabel} />
                   <ArrowRight
                     size={14}
-                    className="text-[#77746C] group-hover:text-[#141413] transition-colors"
+                    className="text-[#77746C] group-hover:text-[#141413] group-hover:translate-x-1 transition-all duration-200"
                   />
                 </div>
               </div>

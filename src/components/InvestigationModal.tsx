@@ -292,7 +292,7 @@ export default function InvestigationModal({
               <div key={stage.id} className="relative flex items-start gap-4 py-3.5 group">
                 {/* Vertical timeline connecting line */}
                 {!isLast && (
-                  <div className="absolute left-[19px] md:left-[21px] top-[44px] bottom-[-2px] w-[2px] z-0">
+                  <div className="absolute left-[19.5px] top-[54px] bottom-[-14px] w-[1px] z-0">
                     {/* Background track line */}
                     <div className="absolute inset-0 bg-[#E0DED4]" />
 
@@ -309,20 +309,26 @@ export default function InvestigationModal({
                       }`}
                     />
 
-                    {/* Animated downward arrow going from this step to the next in-progress step */}
+                    {/* Animated downward arrow passing directly down the middle line */}
                     {isFlowingToNext && (
-                      <div className="absolute left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-arrow-down pointer-events-none">
-                        <div className="w-5 h-5 rounded-none bg-[#141413] text-[#FAF9F5] border border-[#141413] shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                          <ArrowDown size={11} className="stroke-[2.8]" />
+                      <div
+                        className="absolute z-20 flex flex-col items-center animate-arrow-down pointer-events-none"
+                        style={{ left: '50%', marginLeft: '-9px' }}
+                      >
+                        <div className="w-[18px] h-[18px] rounded-none bg-[#141413] text-[#FAF9F5] border border-[#141413] shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                          <ArrowDown size={10} className="stroke-[2.8]" />
                         </div>
                       </div>
                     )}
 
-                    {/* Subtle static downward chevron when both stages are completed */}
+                    {/* Subtle static downward chevron centered on the thin line when both stages are completed */}
                     {isBothCompleted && (
-                      <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+                      <div
+                        className="absolute top-1/2 -translate-y-1/2 z-10 pointer-events-none"
+                        style={{ left: '50%', marginLeft: '-8px' }}
+                      >
                         <div className="w-4 h-4 rounded-none bg-[#FAF9F5] text-[#141413] border border-[#D7D4C9] flex items-center justify-center shadow-xs">
-                          <ChevronDown size={10} className="stroke-[2.5]" />
+                          <ChevronDown size={9} className="stroke-[2.5]" />
                         </div>
                       </div>
                     )}
@@ -331,7 +337,7 @@ export default function InvestigationModal({
 
                 {/* Square Stage Icon */}
                 <div
-                  className={`relative z-10 w-10 h-10 md:w-11 md:h-11 rounded-none border flex items-center justify-center flex-shrink-0 transition-all duration-200 ${circleStyle}`}
+                  className={`relative z-10 w-10 h-10 rounded-none border flex items-center justify-center flex-shrink-0 transition-all duration-200 ${circleStyle}`}
                 >
                   {getCardIcon(stage.id, stage.status)}
                 </div>

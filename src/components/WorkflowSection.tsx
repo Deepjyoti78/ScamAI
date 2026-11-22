@@ -59,7 +59,7 @@ export default function WorkflowSection() {
   return (
     <section id="workflow" className="w-full border-t border-[#E0DED4] px-4 sm:px-6 lg:px-10 py-9 sm:py-10 md:py-12 bg-[#FAF9F5]">
       {/* Centered Section Header with tighter vertical spacing */}
-      <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-9">
+      <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-9 animate-text-reveal">
         <span className="text-[11px] sm:text-[10px] font-mono tracking-[0.2em] uppercase text-[#77746C] font-medium">
           HOW IT WORKS
         </span>
@@ -75,15 +75,19 @@ export default function WorkflowSection() {
       <div className="flex flex-col sm:grid sm:grid-cols-2 lg:flex lg:flex-row items-stretch lg:items-center gap-3 lg:gap-2 max-w-[1180px] mx-auto">
         {steps.map((step, idx) => (
           <div key={step.num} className="contents">
-            {/* Step Card with sharp square edges */}
-            <div className="flex-1 bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4.5 sm:p-4.5 flex flex-col justify-between hover:border-[#77746C] transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.02)] min-h-0 sm:min-h-[175px]">
+            {/* Step Card with sharp square edges and smooth entrance */}
+            <div
+              className={`flex-1 bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4.5 sm:p-4.5 flex flex-col justify-between transition-all duration-200 card-interactive shadow-[0_1px_3px_rgba(0,0,0,0.02)] min-h-0 sm:min-h-[175px] animate-card-entrance ${
+                idx === 0 ? 'stagger-1' : idx === 1 ? 'stagger-2' : idx === 2 ? 'stagger-3' : idx === 3 ? 'stagger-4' : 'stagger-5'
+              }`}
+            >
               <div>
                 {/* Step Number + Icon */}
                 <div className="flex items-center justify-between mb-3.5">
                   <span className="text-[12px] sm:text-[11px] font-mono font-medium text-[#77746C]">
                     {step.num}
                   </span>
-                  <div className="w-9 h-9 sm:w-8 sm:h-8 rounded-none bg-[#FAF9F5] border border-[#E0DED4] flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 sm:w-8 sm:h-8 rounded-none bg-[#FAF9F5] border border-[#E0DED4] flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
                     {step.icon}
                   </div>
                 </div>
@@ -100,9 +104,9 @@ export default function WorkflowSection() {
               </div>
             </div>
 
-            {/* Connecting Arrow between cards */}
+            {/* Connecting Arrow between cards with subtle pulse */}
             {idx < steps.length - 1 && (
-              <div className="hidden lg:flex items-center justify-center text-[#D7D4C9] shrink-0 px-0.5">
+              <div className="hidden lg:flex items-center justify-center text-[#D7D4C9] shrink-0 px-0.5 transition-transform duration-200 hover:translate-x-0.5">
                 <ArrowRight className="w-3.5 h-3.5 text-[#D7D4C9]" strokeWidth={1.5} />
               </div>
             )}

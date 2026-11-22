@@ -5,6 +5,7 @@ job posting analysis endpoints.
 """
 
 import sys
+import os
 import asyncio
 import json
 from pathlib import Path
@@ -122,6 +123,7 @@ def get_health() -> HealthResponse:
         status="ok",
         app="ScamShield AI API",
         version="1.0.0",
+        url_fetch_enabled=os.getenv("SCAMSHIELD_ENABLE_URL_FETCH", "false").lower() == "true",
     )
 
 
@@ -147,7 +149,7 @@ def analyze_job_posting(payload: JobAnalysisRequest) -> JobAnalysisResponse:
     """Analyze job posting text using the trained baseline ML model.
 
     Returns an uncalibrated model score, separate triage and explicit assessment state.
-    Returns HTTP 503 if the model has not been trained yet.
+    Model/extraction unavailability returns HTTP 200 with an explicit non-completed analysis_status and null scores; malformed input returns HTTP 422.
     """
     try:
         response = prediction_service.analyze_job(payload)

@@ -37,8 +37,8 @@ export default function JobAnalysisMockup() {
       {/* Two-panel layout: job card left, annotations right */}
       <div className="flex gap-2.5 xl:gap-3 items-start">
 
-        {/* Job card */}
-        <div className="flex-1 min-w-0 bg-[#FAF9F5] border border-[#E0DED4] rounded-none shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+        {/* Job card with smooth entrance */}
+        <div className="flex-1 min-w-0 bg-[#FAF9F5] border border-[#E0DED4] rounded-none shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden animate-card-entrance stagger-3 card-interactive">
           {/* Browser chrome */}
           <div className="flex items-center gap-1.5 px-3 py-2 border-b border-[#E0DED4] bg-[#F0EEE6]">
             <span className="w-2 h-2 rounded-none bg-[#D7D4C9]" />
@@ -93,15 +93,17 @@ export default function JobAnalysisMockup() {
           </div>
         </div>
 
-        {/* Annotation column — right of job card */}
+        {/* Annotation column — right of job card with staggered slide-in */}
         <div className="hidden lg:flex flex-col gap-2 w-[148px] xl:w-[164px] flex-shrink-0 pt-2">
           {annotations.map((a, i) => (
             <div
               key={i}
-              className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-2.5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative"
+              className={`bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-2.5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative animate-slide-in-right card-interactive ${
+                i === 0 ? 'stagger-3' : i === 1 ? 'stagger-4' : 'stagger-5'
+              }`}
             >
               {/* Connector dot on left edge */}
-              <div className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2 h-2 rounded-none bg-[#FAF9F5] border border-[#D7D4C9]" />
+              <div className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2 h-2 rounded-none bg-[#FAF9F5] border border-[#D7D4C9] animate-pulse-glow" />
               <div className="flex items-start gap-1.5">
                 <span className="text-[#c5291e] mt-0.5 flex-shrink-0">{a.icon}</span>
                 <div>
@@ -117,7 +119,7 @@ export default function JobAnalysisMockup() {
       {/* Mobile-only annotations */}
       <div className="lg:hidden flex flex-col gap-2.5 mt-3.5">
         {annotations.map((a, i) => (
-          <div key={i} className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-3 flex items-start gap-2.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          <div key={i} className={`bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-3 flex items-start gap-2.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] animate-card-entrance ${i === 0 ? 'stagger-3' : i === 1 ? 'stagger-4' : 'stagger-5'}`}>
             <span className="text-[#c5291e] mt-0.5 flex-shrink-0">{a.icon}</span>
             <div>
               <p className="text-[13px] font-semibold text-[#141413] leading-tight mb-0.5">{a.label}</p>
@@ -128,11 +130,11 @@ export default function JobAnalysisMockup() {
       </div>
 
       {/* AI analysis panel — subtle white overlay with light-gray border */}
-      <div className="mt-3.5 bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-4 shadow-[0_1px_4px_rgba(0,0,0,0.03)]">
+      <div className="mt-3.5 bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-4 shadow-[0_1px_4px_rgba(0,0,0,0.03)] animate-card-entrance stagger-5 card-interactive">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3.5 sm:gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="w-2 h-2 rounded-none bg-[#c5291e] flex-shrink-0" />
+              <span className="w-2 h-2 rounded-none bg-[#c5291e] flex-shrink-0 animate-live-pulse" />
               <span className="text-[13.5px] sm:text-[12px] font-semibold text-[#141413]">Likely Suspicious</span>
               <span className="text-[11px] sm:text-[10px] font-semibold bg-[#fef2f2] text-[#c5291e] border border-[#fcc9c6] px-2 py-0.5 rounded-none tracking-wide uppercase">
                 High Risk
@@ -150,7 +152,7 @@ export default function JobAnalysisMockup() {
                   <span className="text-[12px] sm:text-[10px] text-[#625F58] min-w-[90px] sm:min-w-0 sm:w-[76px] truncate">{sig.label}</span>
                   <div className="flex-1 h-1.5 sm:h-1 bg-[#E0DED4] rounded-none overflow-hidden">
                     <div
-                      className={`h-full rounded-none ${sig.flagged ? 'bg-[#141413]' : 'bg-[#77746C]'}`}
+                      className={`h-full rounded-none transition-all duration-700 ease-out ${sig.flagged ? 'bg-[#141413]' : 'bg-[#77746C]'}`}
                       style={{
                         width: `${sig.weight * 100}%`,
                       }}

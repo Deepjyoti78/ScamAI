@@ -240,9 +240,9 @@ export default function InvestigationResultPage() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_330px] gap-8 lg:gap-12 items-start">
           {/* Main Content Area */}
           <div>
-            {notAssessed && <div role="alert" className="border border-[#E0DED4] bg-[#F0EEE6] p-5 mb-5"><h2 className="text-lg">Unable to assess — not scored</h2><p>No fraud score or safety verdict is available. Retry or paste the job description manually.</p><Button onClick={() => navigate('/investigate')}>Start another analysis</Button></div>}
+            {notAssessed && <div role="alert" className="border border-[#E0DED4] bg-[#F0EEE6] p-5 mb-5 animate-card-entrance"><h2 className="text-lg">Unable to assess — not scored</h2><p>No fraud score or safety verdict is available. Retry or paste the job description manually.</p><Button onClick={() => navigate('/investigate')}>Start another analysis</Button></div>}
             {/* Header badges row: Eyebrow + Mode badge + Source badge */}
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3 animate-text-reveal stagger-1">
               <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-[#77746C]">
                 Investigation Report
               </p>
@@ -292,10 +292,10 @@ export default function InvestigationResultPage() {
             </div>
 
             {/* Title */}
-            <h1 className="font-serif text-[28px] sm:text-[34px] md:text-[40px] leading-[1.12] tracking-[-0.02em] text-[#141413] mb-2">
+            <h1 className="font-serif text-[28px] sm:text-[34px] md:text-[40px] leading-[1.12] tracking-[-0.02em] text-[#141413] mb-2 animate-text-reveal stagger-2">
               {inv.jobTitle}
             </h1>
-            <p className="text-[14.5px] sm:text-[14px] text-[#625F58] mb-4">
+            <p className="text-[14.5px] sm:text-[14px] text-[#625F58] mb-4 animate-text-reveal stagger-3">
               {inv.employer} · {inv.location}
             </p>
 
@@ -371,7 +371,7 @@ export default function InvestigationResultPage() {
 
             {/* Dual Metric Cards: Fraud Probability vs Model Confidence */}
             {isReal && fraudProbabilityPct !== null && (
-              <div className="border border-[#E0DED4] rounded-none p-5 mb-8 bg-[#F0EEE6]">
+              <div className="border border-[#E0DED4] rounded-none p-5 mb-8 bg-[#F0EEE6] animate-card-entrance stagger-2">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-[#E0DED4]">
                   {/* Metric 1: Fraud Probability */}
                   <div className="flex flex-col justify-between">
@@ -393,10 +393,10 @@ export default function InvestigationResultPage() {
                         </span>
                       </div>
                     </div>
-                    {/* Progress bar */}
+                    {/* Progress bar with smooth animated fill */}
                     <div className="h-2 w-full bg-[#E0DED4] rounded-none overflow-hidden mb-2">
                       <div
-                        className={`h-full rounded-none transition-all duration-500 ${
+                        className={`h-full rounded-none transition-all duration-1000 ease-out animate-score-fill ${
                           inv.riskLevel === 'high'
                             ? 'bg-[#c5291e]'
                             : inv.riskLevel === 'medium'
@@ -412,7 +412,7 @@ export default function InvestigationResultPage() {
                   </div>
 
                   {/* Metric 2: Prediction Confidence */}
-                  <div><p className="text-sm font-medium">Operational review tier</p><p className="capitalize">{inv.riskLevel}</p><p className="text-xs text-[#625F58]">Text score and rule indicators may both affect this tier. It does not establish whether the employer or recruiter is genuine.</p></div>
+                  <div><p className="text-sm font-medium">Operational review tier</p><p className="capitalize font-semibold text-[#141413] mt-1">{inv.riskLevel}</p><p className="text-xs text-[#625F58] mt-2">Text score and rule indicators may both affect this tier. It does not establish whether the employer or recruiter is genuine.</p></div>
                 </div>
 
                 <div className="pt-3">
@@ -424,7 +424,7 @@ export default function InvestigationResultPage() {
             )}
 
             {/* Assessment Summary */}
-            <div className="border border-[#E0DED4] rounded-none p-5 mb-8 bg-[#F0EEE6]">
+            <div className="border border-[#E0DED4] rounded-none p-5 mb-8 bg-[#F0EEE6] animate-card-entrance stagger-3 card-interactive">
               <p className="text-[11px] uppercase tracking-widest text-[#77746C] mb-2 font-medium">
                 Assessment summary
               </p>
@@ -433,7 +433,7 @@ export default function InvestigationResultPage() {
 
             {/* Trust Chain & Evidence Consistency Checks Section */}
             {inv.trustChainFindings && inv.trustChainFindings.length > 0 && (
-              <div className="mb-8 border border-[#E0DED4] rounded-none p-5 bg-[#FAF9F5]">
+              <div className="mb-8 border border-[#E0DED4] rounded-none p-5 bg-[#FAF9F5] animate-card-entrance stagger-4 card-interactive">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-[#E0DED4]">
                   <div>
                     <div className="flex items-center gap-2">
@@ -834,9 +834,9 @@ export default function InvestigationResultPage() {
           </div>
 
           {/* Sidebar Summary Card */}
-          <div className="lg:sticky lg:top-[76px] flex flex-col gap-4">
+          <div className="lg:sticky lg:top-[76px] flex flex-col gap-4 animate-card-entrance stagger-3">
             {/* Quick Details Box */}
-            <div className="border border-[#E0DED4] rounded-none overflow-hidden bg-[#FAF9F5]">
+            <div className="border border-[#E0DED4] rounded-none overflow-hidden bg-[#FAF9F5] card-interactive">
               <div className="px-4 py-3 border-b border-[#E0DED4] bg-[#F0EEE6] flex items-center justify-between">
                 <p className="text-[11px] font-semibold text-[#625F58] uppercase tracking-wider">
                   Investigation Details

@@ -9,6 +9,7 @@ import {
   buildInvestigationRecord,
   persistInvestigation,
   ApiError,
+  checkApiHealth,
 } from '../services/investigationService';
 import type { InvestigationStageState } from '../types/investigation';
 
@@ -17,6 +18,7 @@ type InputMode = 'text' | 'url';
 export default function InvestigatePage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<InputMode>('text');
+  const [urlFetchEnabled, setUrlFetchEnabled] = useState<boolean | null>(null);
   const [jobUrl, setJobUrl] = useState('');
   const [jobTitle, setJobTitle] = useState('');
   const [employer, setEmployer] = useState('');
@@ -46,6 +48,13 @@ export default function InvestigatePage() {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => () => abortControllerRef.current?.abort(), []);
+  useEffect(() => {
+    let active = true;
+    checkApiHealth().then(({ data }) => {
+      if (active) setUrlFetchEnabled(typeof data?.url_fetch_enabled === 'boolean' ? data.url_fetch_enabled : null);
+    });
+    return () => { active = false; };
+  }, []);
 
   const executeInvestigation = async () => {
     // Prevent duplicate submissions
@@ -63,6 +72,10 @@ export default function InvestigatePage() {
 
     // 1. Validate submitted form
     if (mode === 'url') {
+      if (urlFetchEnabled !== true) {
+        setError('URL analysis is unavailable. Choose Paste text to analyze a job description.');
+        return;
+      }
       if (!trimmedUrl) {
         setError('Please enter a public job posting URL (e.g. https://careers.example.com/job/123).');
         return;
@@ -207,28 +220,28 @@ export default function InvestigatePage() {
     <div className="min-h-screen bg-[#FAF9F5]">
       <Header />
       <main className="max-w-[1200px] mx-auto px-3 sm:px-6 pt-3 sm:pt-4 md:pt-5 pb-10 flex justify-center">
-        <div className="w-full max-w-[720px] bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-8 md:px-9 md:py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div className="w-full max-w-[720px] bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-8 md:px-9 md:py-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)] animate-card-entrance stagger-1">
           {/* Back button */}
           <button
             onClick={() => navigate(-1)}
-            className="text-[13px] sm:text-[12px] text-[#77746C] hover:text-[#141413] transition-colors mb-3 flex items-center gap-1 cursor-pointer font-medium py-1"
+            className="text-[13px] sm:text-[12px] text-[#77746C] hover:text-[#141413] transition-colors mb-3 flex items-center gap-1 cursor-pointer font-medium py-1 group"
           >
-            ← Back
+            <span className="group-hover:-translate-x-0.5 transition-transform">←</span> Back
           </button>
 
           {/* Heading */}
-          <p className="text-[11px] sm:text-[10px] font-semibold tracking-[0.16em] uppercase text-[#77746C] mb-2">
+          <p className="text-[11px] sm:text-[10px] font-semibold tracking-[0.16em] uppercase text-[#77746C] mb-2 animate-text-reveal stagger-1">
             ML & TRUST CHAIN INVESTIGATION
           </p>
-          <h1 className="font-serif text-[28px] sm:text-[40px] leading-[1.1] tracking-[-0.02em] text-[#141413] mb-3">
+          <h1 className="font-serif text-[28px] sm:text-[40px] leading-[1.1] tracking-[-0.02em] text-[#141413] mb-3 animate-text-reveal stagger-2">
             Investigate a job posting.
           </h1>
-          <p className="text-[14px] sm:text-[13.5px] text-[#625F58] leading-relaxed mb-6 max-w-[600px]">
-            Submit a job description or a job URL to inspect an uncalibrated ML model score and run cross-source Trust Chain checks.
+          <p className="text-[14px] sm:text-[13.5px] text-[#625F58] leading-relaxed mb-6 max-w-[600px] animate-text-reveal stagger-3">
+            Paste a job description to inspect an uncalibrated ML model score and separate Trust Chain indicators. A lower score does not verify a job or recruiter.
           </p>
 
           {/* Input mode toggle */}
-          <div className="inline-flex border border-[#E0DED4] rounded-none p-[3px] bg-[#F0EEE6] mb-6 gap-1 w-full sm:w-auto">
+          <div className="inline-flex border border-[#E0DED4] rounded-none p-[3px] bg-[#F0EEE6] mb-6 gap-1 w-full sm:w-auto animate-card-entrance stagger-2">
             <button
               type="button"
               onClick={() => {
@@ -263,32 +276,39 @@ export default function InvestigatePage() {
 
           <p className="text-xs text-[#625F58] mb-4">Your submission is sent to this analysis server. Results are kept in this browser session. Optional web search uses employer and role details, not the full job description.</p>
           <form aria-busy={loading} onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {mode === 'url' && urlFetchEnabled !== true && (
+              <div role="status" aria-live="polite" className="border border-[#E0DED4] bg-[#F0EEE6] p-4 text-sm">
+                <p>{urlFetchEnabled === false ? 'URL analysis is unavailable on this server.' : 'URL availability could not be confirmed.'} No URL will be fetched. Paste the job description instead.</p>
+                <button type="button" onClick={() => { setMode('text'); setError(null); }} className="underline mt-2">Use pasted-text analysis</button>
+              </div>
+            )}
             {/* If URL Mode is active, render the Job URL field above */}
             {mode === 'url' && (
               <div className="border border-[#E0DED4] rounded-none p-4 bg-[#F0EEE6]">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em]">
+                  <label htmlFor="job-url" className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em]">
                     JOB POSTING URL <span className="text-[#c5291e]">*</span>
                   </label>
                   <span className="text-[11px] sm:text-[10px] text-[#77746C]">Public web link</span>
                 </div>
                 <input
-                  type="url"
+                  id="job-url" type="url"
+                  disabled={urlFetchEnabled !== true}
                   maxLength={4096} value={jobUrl}
                   onChange={(e) => setJobUrl(e.target.value)}
                   placeholder="https://boards.greenhouse.io/... or https://company.com/careers/..."
                   className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 text-[14px] sm:text-[13px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] mb-2"
                 />
                 <p className="text-[12px] sm:text-[11px] text-[#77746C] leading-relaxed">
-                  ✦ ScamShield AI will fetch and extract readable job text for analysis. If the listing requires login or bot verification, paste the description below.
+                  {urlFetchEnabled === true ? 'This server permits retrieval under its URL policy. A page may still be inaccessible; use Paste text if retrieval fails.' : 'Retrieval is disabled. Switch to Paste text to continue.'}
                 </p>
               </div>
             )}
 
-            {/* 1. Job Description (Textarea first, matching mockup) */}
-            <div>
+            {/* Text input is analyzed only in Paste text mode. */}
+            <div hidden={mode !== 'text'}>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em]">
+                <label htmlFor="job-description" className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em]">
                   {mode === 'url' ? (
                     <>
                        JOB POSTING CONTENT <span className="text-[#77746C] font-normal lowercase">(optional fallback)</span>
@@ -301,7 +321,7 @@ export default function InvestigatePage() {
                 </label>
               </div>
               <textarea
-                maxLength={30000} value={jobDescription}
+                id="job-description" maxLength={30000} value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
                 placeholder="Paste the full job posting description, requirements, benefits, or recruiter message here..."
                 rows={mode === 'url' ? 4 : 5}
@@ -309,19 +329,19 @@ export default function InvestigatePage() {
                 className="w-full border border-[#D7D4C9] rounded-none px-3.5 sm:px-4 py-3 text-[14px] sm:text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] resize-y leading-relaxed font-sans"
               />
               <div className="text-right text-[11px] text-[#77746C] mt-1 font-mono">
-                {jobDescription.length} / 5000
+                {jobDescription.length} / 30000
               </div>
             </div>
 
             {/* 2. Optional Metadata Row: Title & Company */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
+                <label htmlFor="job-title" className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
                   JOB TITLE <span className="text-[#77746C] font-normal lowercase">(optional)</span>
                 </label>
                 <input
                   type="text"
-                  value={jobTitle}
+                  id="job-title" value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
                   placeholder="e.g. Data Entry Specialist"
                   className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 text-[14px] sm:text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
@@ -329,12 +349,12 @@ export default function InvestigatePage() {
               </div>
 
               <div>
-                <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
+                <label htmlFor="employer-name" className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
                   EMPLOYER / COMPANY <span className="text-[#77746C] font-normal lowercase">(optional)</span>
                 </label>
                 <input
                   type="text"
-                  value={employer}
+                  id="employer-name" value={employer}
                   onChange={(e) => setEmployer(e.target.value)}
                   placeholder="e.g. Acme Logistics LLC"
                   className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 text-[14px] sm:text-[13px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
@@ -344,12 +364,12 @@ export default function InvestigatePage() {
 
             {/* 3. Employment Type */}
             <div>
-              <label className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
+              <label htmlFor="employment-type" className="block text-[12px] sm:text-[11px] font-semibold text-[#625F58] uppercase tracking-[0.06em] mb-2">
                 EMPLOYMENT TYPE <span className="text-[#77746C] font-normal lowercase">(optional)</span>
               </label>
               <div className="relative">
                 <select
-                  value={employmentType}
+                  id="employment-type" value={employmentType}
                   onChange={(e) => setEmploymentType(e.target.value)}
                   className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-3 sm:py-2.5 pr-10 text-[14px] sm:text-[13px] text-[#141413] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF] appearance-none cursor-pointer"
                 >
@@ -377,12 +397,12 @@ export default function InvestigatePage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
+                  <label htmlFor="company-website" className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
                     Official company website
                   </label>
                   <input
                     type="url"
-                    value={companyWebsite}
+                    id="company-website" value={companyWebsite}
                     onChange={(e) => setCompanyWebsite(e.target.value)}
                     placeholder="https://acmecorp.com"
                     className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 sm:py-2 text-[13.5px] sm:text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
@@ -390,12 +410,12 @@ export default function InvestigatePage() {
                 </div>
 
                 <div>
-                  <label className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
+                  <label htmlFor="recruiter-email" className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
                     Recruiter email address
                   </label>
                   <input
                     type="email"
-                    value={recruiterEmail}
+                    id="recruiter-email" value={recruiterEmail}
                     onChange={(e) => setRecruiterEmail(e.target.value)}
                     placeholder="recruitment@acmecorp.com"
                     className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 sm:py-2 text-[13.5px] sm:text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
@@ -405,12 +425,12 @@ export default function InvestigatePage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
+                  <label htmlFor="application-url" className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
                     Application destination URL
                   </label>
                   <input
                     type="url"
-                    value={applicationUrl}
+                    id="application-url" value={applicationUrl}
                     onChange={(e) => setApplicationUrl(e.target.value)}
                     placeholder="https://boards.greenhouse.io/acme/..."
                     className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 sm:py-2 text-[13.5px] sm:text-[12px] font-mono text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
@@ -418,12 +438,12 @@ export default function InvestigatePage() {
                 </div>
 
                 <div>
-                  <label className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
+                  <label htmlFor="recruiter-message" className="block text-[12px] sm:text-[11px] font-medium text-[#625F58] mb-1.5">
                     Recruiter message / InMail context
                   </label>
                   <input
                     type="text"
-                    value={recruiterMessage}
+                    id="recruiter-message" value={recruiterMessage}
                     onChange={(e) => setRecruiterMessage(e.target.value)}
                     placeholder="Optional context..."
                     className="w-full border border-[#D7D4C9] rounded-none px-3.5 py-2.5 sm:py-2 text-[13.5px] sm:text-[12px] text-[#141413] placeholder:text-[#77746C] focus:outline-none focus:border-[#141413] focus:ring-1 focus:ring-[#141413] transition-colors bg-[#FFFFFF]"
@@ -447,7 +467,7 @@ export default function InvestigatePage() {
                 <div className="flex items-center gap-3 pt-1 border-t border-[#fcc9c6]/50">
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || (mode === 'url' && urlFetchEnabled !== true)}
                     className="text-[12px] sm:text-[11px] font-medium text-[#c5291e] hover:underline flex items-center gap-1 cursor-pointer py-1"
                   >
                     <RefreshCw size={11} /> Retry submission
@@ -484,8 +504,8 @@ export default function InvestigatePage() {
             {/* 5. Submit CTA (Full width matching mockup: "Run investigation →") */}
             <button
               type="submit"
-              disabled={loading}
-              className="w-full bg-[#141413] hover:bg-[#30302D] active:bg-[#141413] text-[#FAF9F5] font-medium text-[14.5px] sm:text-[13px] py-4 sm:py-3.5 rounded-none flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              disabled={loading || (mode === 'url' && urlFetchEnabled !== true)}
+              className="w-full bg-[#141413] hover:bg-[#30302D] active:bg-[#141413] text-[#FAF9F5] font-medium text-[14.5px] sm:text-[13px] py-4 sm:py-3.5 rounded-none flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm hover:shadow-[0_4px_16px_rgba(20,20,19,0.2)] hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-2"
             >
               {loading ? (
                 <>
@@ -494,7 +514,7 @@ export default function InvestigatePage() {
                 </>
               ) : (
                 <>
-                  {mode === 'url' ? 'Fetch & run investigation' : 'Run investigation'} <ArrowRight size={15} />
+                  {mode === 'url' ? urlFetchEnabled === true ? 'Fetch & run investigation' : 'URL analysis unavailable' : 'Run investigation'} <ArrowRight size={15} />
                 </>
               )}
             </button>

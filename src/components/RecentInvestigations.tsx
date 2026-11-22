@@ -8,7 +8,6 @@ import type { Investigation, RiskLevel } from '../types/investigation';
 function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
   // Normalize badge text to match reference image conventions (LOWER RISK, SUSPICIOUS, NEEDS REVIEW)
   let text = label.toUpperCase();
-  if (level === 'low' && !text.includes('RISK')) text = 'LOWER RISK';
   if (level === 'high' && !text.includes('SUSPICIOUS')) text = 'SUSPICIOUS';
   if (level === 'medium' && !text.includes('REVIEW')) text = 'NEEDS REVIEW';
 
@@ -44,7 +43,7 @@ export default function RecentInvestigations() {
   return (
     <section className="w-full px-4 sm:px-6 lg:px-10 py-8 md:py-11 border-t border-[#E0DED4]">
       {/* Header row */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-5 sm:mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-5 sm:mb-6 animate-text-reveal">
         <div>
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
             <h2 className="text-[26px] sm:text-[34px] md:text-[38px] font-serif font-normal text-[#141413] tracking-tight leading-[1.15]">
@@ -55,7 +54,7 @@ export default function RecentInvestigations() {
             </span>
             {hasRealRecord && (
               <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-none text-[10.5px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
-                <span className="w-1.5 h-1.5 bg-[#16a34a]" />
+                <span className="w-1.5 h-1.5 bg-[#16a34a] animate-live-pulse" />
                 Live Session Active
               </span>
             )}
@@ -72,28 +71,30 @@ export default function RecentInvestigations() {
           View all
           <ArrowRight
             size={14}
-            className="group-hover:translate-x-0.5 transition-transform"
+            className="group-hover:translate-x-1 transition-transform duration-200"
           />
         </button>
       </div>
 
       {/* Card container with sharp, square edges and compact content */}
-      <div className="border border-[#E0DED4] rounded-none bg-[#FAF9F5] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <div className="border border-[#E0DED4] rounded-none bg-[#FAF9F5] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)] animate-card-entrance stagger-2">
         <div className="divide-y divide-[#E0DED4]">
-          {displayList.map((inv) => {
+          {displayList.map((inv, idx) => {
             const probPct = inv.isRealAnalysis && inv.analysisStatus === 'completed' && typeof inv.fraudProbability === 'number' ? `${(inv.fraudProbability * 100).toFixed(1)}%` : inv.isRealAnalysis ? 'Not scored' : 'Example';
 
             return (
               <div
                 key={inv.id}
-                className="grid grid-cols-12 items-center px-3.5 sm:px-5 py-3.5 sm:py-3.5 gap-2.5 sm:gap-4 cursor-pointer group transition-colors duration-150 hover:bg-[#F0EEE6]"
+                className={`grid grid-cols-12 items-center px-3.5 sm:px-5 py-3.5 sm:py-3.5 gap-2.5 sm:gap-4 cursor-pointer group transition-all duration-200 hover:bg-[#F0EEE6] ${
+                  idx === 0 ? 'animate-slide-in-up stagger-2' : idx === 1 ? 'animate-slide-in-up stagger-3' : 'animate-slide-in-up stagger-4'
+                }`}
                 role="link" tabIndex={0}
                 onKeyDown={event => { if (event.key === 'Enter') navigate(`/investigations/${inv.id}`); }}
                 onClick={() => navigate(`/investigations/${inv.id}`)}
               >
                 {/* Column 1: Document Icon + Job Title & Employer */}
                 <div className="col-span-8 sm:col-span-6 flex items-center gap-3 min-w-0 pr-1 sm:pr-2">
-                  <div className="w-9 h-9 sm:w-8 sm:h-8 rounded-none bg-[#FAF9F5] border border-[#E0DED4] flex items-center justify-center text-[#141413] shrink-0">
+                  <div className="w-9 h-9 sm:w-8 sm:h-8 rounded-none bg-[#FAF9F5] border border-[#E0DED4] flex items-center justify-center text-[#141413] shrink-0 transition-transform duration-200 group-hover:scale-105">
                     <FileText className="w-4 h-4 text-[#141413]" strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0 flex flex-col justify-center">

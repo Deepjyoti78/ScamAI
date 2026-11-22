@@ -205,6 +205,7 @@ export interface HealthResponse {
   status: string;
   app: string;
   version: string;
+  url_fetch_enabled?: boolean;
 }
 
 export interface ModelStatusResponse {

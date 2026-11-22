@@ -1,186 +1,74 @@
-# ScamShield AI — Recruitment Fraud Investigation Platform
+# ScamShield AI
 
-ScamShield AI is an end-to-end platform for detecting, analyzing, and explaining fraudulent employment postings. It pairs a minimalist editorial-style React frontend with an explainable machine learning pipeline and a FastAPI inference backend.
+A historical EMSCAD text-classification prototype with separate rule indicators, domain observations and optional search corroboration. The saved class-weighted Logistic Regression output is an **uncalibrated model score, not a verified probability of fraud**. A lower score does not authenticate a job or recruiter.
 
----
+The supported verification scope is a **local, controlled pasted-text demonstration**. Arbitrary URL retrieval is disabled by default. Public deployment is not cleared; see [deployment readiness](engineering/research_evidence/DEPLOYMENT_READINESS.md) and [remaining blockers](engineering/research_evidence/REMAINING_BLOCKERS.md).
 
-## 1. Project Architecture
+## Run the controlled demonstration
 
-```
-college project/
-├── src/                         # React 19 + TypeScript + Tailwind v4 Frontend
-│   ├── components/              # UI components (Header, Hero, Mockup, Workflow)
-│   ├── pages/                   # Pages (HomePage, InvestigatePage, Results)
-│   └── data/                    # Demo scenarios and simulated endpoints
-├── public/                      # Static web assets
-├── data/                        # Dataset storage directory
-│   ├── fake_job_postings.csv    # Place EMSCAD CSV dataset here (ignored by git)
-│   └── README.md                # Dataset placement instructions
-├── ml/                          # Machine Learning Pipeline
-│   ├── inspect_data.py          # Dataset reconnaissance & validation
-│   ├── preprocess.py            # Text combination & cleaning (train & inference)
-│   ├── train.py                 # TF-IDF + Logistic Regression training
-│   ├── evaluate.py              # Minority-class evaluation, PR-AUC, confusion matrix
-│   └── explain.py               # Linear feature attribution & signal ranking
-├── backend/                     # FastAPI Backend Application
-│   ├── main.py                  # API endpoints (/health, /model/status, /api/investigations/analyze, streaming SSE)
-│   ├── schemas.py               # Pydantic request and response schemas
-│   └── services/
-│       ├── prediction.py        # Model loading, inference, and attribution service
-│       ├── trust_chain.py       # Deterministic rule checks and cross-domain alignment
-│       ├── url_extractor.py     # Safe SSR-resistant public job URL text extraction
-│       └── web_research.py      # Brave Search API live external corroboration service
-├── models/                      # Trained model artifacts (.joblib)
-│   └── .gitkeep
-├── reports/                     # Model evaluation reports and metrics
-│   └── .gitkeep
-├── tests/                       # Unit tests
-│   └── test_data.py             # Preprocessing, schema, and error handling tests
-├── requirements.txt             # Python dependencies
-├── package.json                 # Node dependencies
-└── README.md                    # Project documentation
-```
+Use the existing trusted `models/baseline_model.joblib`; running the website does not require the raw CSV or another training run. Do not run the historical training/evaluation scripts to start the application.
 
----
+Verified runtime: Python 3.12.10 and Node 22.20.0. The current backend uses Python 3.11+ APIs; installed Vite 8 requires Node `^20.19.0 || >=22.12.0`. Exact tested package versions are recorded in `engineering/research_evidence/evidence/runtime_python.json` and `runtime_node.json`. The Python requirements currently specify ranges rather than a locked model-serving environment; do not assume a fresh arbitrary environment is artifact-compatible.
 
-## 2. Prerequisites
-
-- **Node.js**: v18+ (tested on Node v20+)
-- **Python**: v3.10+ (tested on Python 3.12 / 3.14 on Windows)
-
----
-
-## 3. Python Environment Setup (Windows PowerShell)
-
-Open PowerShell in the project root directory:
+With repository dependencies already available, open two terminals in the repository root:
 
 ```powershell
-# 1. Create a virtual environment using Python 3.12 (or standard py launcher)
-py -3.12 -m venv .venv
-
-# 2. Activate the virtual environment
-.\.venv\Scripts\Activate.ps1
-
-# (If PowerShell restricts scripts, enable execution for the current session:)
-# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-
-# 3. Upgrade pip and install dependencies
-python -m pip install --upgrade pip
-pip install -r requirements.txt
+# Terminal 1: loopback-only API; ignores .env, clears provider keys,
+# disables URL fetching and blocks external network connections/model fitting.
+.\.venv\Scripts\python.exe -X utf8 engineering/research_evidence/serve_demo.py --port 8177
 ```
-
----
-
-## 4. Dataset Placement & Inspection
-
-1. **Obtain Dataset**: Download the EMSCAD (*Real or Fake Job Posting*) dataset CSV.
-2. **Place CSV**: Copy the CSV file into the `data/` folder:
-   ```
-   data/fake_job_postings.csv
-   ```
-3. **Inspect Dataset**: Run the validation script to check row counts, missing values, and class imbalance:
-   ```powershell
-   python ml/inspect_data.py
-   ```
-   *(If your file has a different name: `python ml/inspect_data.py --path data/your_file.csv`)*
-
----
-
-## 5. Model Training & Evaluation
-
-Once the dataset has been verified by the inspection script:
-
-### Step 1: Train the Baseline Classifier
-```powershell
-python ml/train.py
-```
-- Fits TF-IDF on training split only (prevents data leakage).
-- Trains a balanced Logistic Regression classifier to handle minority fraud class.
-- Saves model artifact to `models/baseline_model.joblib`.
-- Saves training metrics to `reports/baseline_training_metrics.json`.
-
-### Step 2: Evaluate the Model
-```powershell
-python ml/evaluate.py
-```
-- Computes Precision, Recall, F1-score, ROC-AUC, and PR-AUC on the holdout test set.
-- Outputs confusion matrix and classification report.
-- Saves results to `reports/model_evaluation_report.json`.
-
----
-
-## 6. Running the Applications
-
-### Start the FastAPI Backend
-```powershell
-uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
-```
-- **Interactive Swagger Docs**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- **Alternative ReDoc**: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-- **Health Check**: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
-- **Model Status**: [http://127.0.0.1:8000/model/status](http://127.0.0.1:8000/model/status)
-
-### Start the React Frontend
-In a separate terminal window:
-```powershell
-npm run dev
-```
-- **Frontend URL**: [http://localhost:5173/](http://localhost:5173/)
-
----
-
-## 7. Running Unit Tests
 
 ```powershell
-pytest -v
+# Terminal 2: the API address is public frontend configuration, not a secret.
+$env:VITE_API_BASE_URL = 'http://127.0.0.1:8177'
+npm run dev -- --host 127.0.0.1 --port 5173 --strictPort
 ```
 
----
+Open [the website](http://127.0.0.1:5173/investigate) or [local API documentation](http://127.0.0.1:8177/docs). Paste a description, optionally add metadata and run an investigation. The URL tab reports server capability before submission and offers pasted-text analysis. Press Escape or Cancel to abort the browser request; input is preserved for retry. Browser cancellation does not forcibly stop a Python worker already executing.
 
-## 8. Live Web Research & Employer Evidence Enrichment (Tavily & Brave Search)
+If dependencies need installation in a separately approved environment, use the checked-in Node lockfile and a model-compatible Python environment. Installing or upgrading packages was not part of this verification.
 
-ScamShield AI enriches investigation reports with external web evidence corroboration using live search providers (supporting Tavily Search API and Brave Search API):
-- **Providers Supported**:
-  - **Tavily Search API**: `https://api.tavily.com/search` (optimized for LLM and agent search)
-  - **Brave Search API**: `https://api.search.brave.com/res/v1/web/search`
-- **Backend Service**: `backend/services/web_research.py`
-- **Search Strategy**: Executes targeted, length-clamped queries (<=120 characters) targeting official employer careers pages (`"<employer>" "<title>" careers`, `site:<domain> careers`).
-- **Epistemic Restraint & Ethics**:
-  - Vacancy matches on an employer website corroborate that a role was publicly advertised; they do *not* verify recruiter identity, message authenticity, or deposit safety.
-  - Absence of a search result is *not* proof of fraud.
-  - Search evidence is maintained in a dedicated evidence section and is *never* averaged into the ML model's text fraud probability.
-  - ScamShield AI never invents, simulates, or fabricates search results when external research is unconfigured or unavailable.
+## API behavior
 
-### Configuring Search API Keys
+| Endpoint | Actual purpose |
+|---|---|
+| `GET /health` | Process liveness and `url_fetch_enabled`; not a guarantee inference will succeed |
+| `GET /model/status` | Artifact file availability; not a comprehensive readiness check or new evaluation |
+| `POST /api/investigations/analyze` | JSON assessment |
+| `POST /api/investigations/analyze/stream` | SSE stage updates and terminal assessment; no `/api/investigations/stream` alias |
 
-#### 1. Tavily Search API (`TAVILY_API_KEY`)
-1. Obtain an API key from [Tavily](https://tavily.com/).
-2. Set `TAVILY_API_KEY` in your backend `.env` file or environment:
-   ```powershell
-   $env:TAVILY_API_KEY="tvly-..."
-   ```
+Successful scoring returns `analysis_status=completed`, `scoring_status=scored`, a model score, classifier output and a separate operational tier. Extraction failure returns `unable_to_assess`; model/inference failure returns `not_scored`. Both non-completed states contain null scores/prediction/label and `risk_level=unknown`, never a fabricated 0%/safe verdict. Ordinary unavailable assessments use HTTP 200; clients must inspect the payload. Malformed input uses 422, oversized body 413 and incomplete upload 408. Unexpected route exceptions can still use 500.
 
-#### 2. Brave Search API (`BRAVE_SEARCH_API_KEY`)
-1. Obtain an API key from the [Brave Search API Dashboard](https://api-dashboard.search.brave.com/).
-2. Set `BRAVE_SEARCH_API_KEY` in your backend `.env` file or environment:
-   ```powershell
-   $env:BRAVE_SEARCH_API_KEY="your-brave-key"
-   ```
+SSE `complete` means the transport finished delivering an assessment, not that the assessment succeeded. A disconnected or malformed stream cannot be silently treated as success. No automatic second analysis request is made. See the [API contract](engineering/research_evidence/API_CONTRACT.md) for fields, limits and examples.
 
-#### Render Production Deployment
-1. Navigate to your Web Service on [Render](https://dashboard.render.com).
-2. Go to **Environment** > **Environment Variables**.
-3. Add secret:
-   - Key: `TAVILY_API_KEY` (or `BRAVE_SEARCH_API_KEY`)
-   - Value: `your-api-key`
-4. Click **Save Changes**. Render redeploys the service automatically.
+## Configuration, privacy and deployment
 
-> **Security Reminder**: Never expose `TAVILY_API_KEY` or `BRAVE_SEARCH_API_KEY` in Vite frontend environments, client-side bundles, or git repositories. The React frontend interacts with the backend solely via `/api/investigations/analyze` or `/api/investigations/stream`.
+See [.env.example](.env.example), [environment documentation](engineering/research_evidence/ENVIRONMENT.md) and [deployment guidance](engineering/research_evidence/DEPLOYMENT_GUIDANCE.md). Do not overwrite an existing private `.env` with the example. Normal `uvicorn backend.main:app` startup may load the root `.env`; the controlled-demo launcher deliberately does not.
 
----
+- `VITE_API_BASE_URL` is compiled into the browser bundle. Do not put secrets in any `VITE_` variable. Changing a served API URL requires rebuilding the frontend.
+- `MODEL_PATH` points only to a trusted, compatible local artifact. Do not accept uploaded/untrusted pickle/joblib models.
+- Keep `SCAMSHIELD_ENABLE_URL_FETCH=false`. The transport is not cleared for public opt-in despite prior offline tests.
+- Tavily/Brave keys are backend-only. Without them, search is `not_configured`. No live provider verification was performed. A previously exposed provider credential still requires owner rotation; no external credentials were changed.
+- No analysis database is implemented. The frontend keeps results, including supplied text/metadata, in browser `sessionStorage`; this is not encrypted storage or a server-wide deletion guarantee. Do not use real applicant passwords, OTPs or other personal secrets in demonstrations.
+- No application-level rate limiter, authentication gateway or production error-monitoring service is configured. Body/time limits and CORS are not substitutes for these protections. Do not publish this API unchanged as a public production service.
 
-## 9. Current Scope & Intentional Limitations
+`vercel.json` configures a static Vite SPA fallback to `index.html`. It does not provision the FastAPI process, model file, production API origin or SSE reverse-proxy behavior. A static page build succeeding is not an end-to-end deployment test.
 
-- **No Synthetic Data**: The system does not fabricate artificial model weights or mock training data. Model inference requires training on the genuine EMSCAD dataset.
-- **Explainability**: Explanations use exact linear feature attribution ($x_i \cdot w_i$) from the TF-IDF and Logistic Regression weights.
-- **Search Scope**: Web research uses search result snippets and titles to corroborate public vacancy presence; it does not crawl entire corporate networks or execute client-side scripts. Absence of search results is explicitly disclaimed as insufficient evidence of fraud.
+## Evidence and checks
+
+Current verification artifacts are under [engineering/research_evidence](engineering/research_evidence): functional matrix, actual results, genuine desktop/mobile screenshots and verified architecture/workflow diagrams. Authored software fixtures are not a new recruitment dataset, independent accuracy validation or calibration study.
+
+```powershell
+# Narrow documentation/API checks; no training or external traffic
+.\.venv\Scripts\python.exe -X utf8 -m pytest engineering/research_evidence/test_contract_docs.py -q
+
+# Static source checks
+npx oxlint src
+$env:VITE_API_BASE_URL = 'http://127.0.0.1:8177'
+npm run build
+
+# Windows/local Chrome E2E evidence harness; see ACTUAL_TEST_RESULTS.md
+node engineering/research_evidence/capture_evidence.mjs
+```
+
+The historical experiments and scientific conclusions remain frozen. Raw data redistribution rights remain unresolved; no raw dataset is bundled by this evidence phase. Dataset/model/manuscript hashes and before/after integrity checks are saved with the new evidence. No automatic commit, push or deployment is performed.
