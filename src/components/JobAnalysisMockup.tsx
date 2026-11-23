@@ -210,7 +210,7 @@ export default function JobAnalysisMockup() {
       {/* Container with responsive bounds and right margin for bus line and score */}
       <div
         ref={containerRef}
-        className="relative min-w-[500px] sm:min-w-0 pr-12 sm:pr-16 pt-1 pb-1 animate-card-entrance stagger-3"
+        className="relative min-w-[500px] sm:min-w-0 pr-6 sm:pr-8 pt-1 pb-1 animate-card-entrance stagger-3"
       >
         {/* ── TOP SYSTEM TELEMETRY BAR ── */}
         <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-mono mb-3.5 px-1 select-none text-[#77746C] whitespace-nowrap">
@@ -228,25 +228,6 @@ export default function JobAnalysisMockup() {
           </div>
           <div className="font-mono text-[#8C887E] tracking-wider">22:41:08</div>
         </div>
-
-        {/* ── RIGHT SIDE RISK SCORE & TELEMETRY (Anchored dynamically to the right of the bus line) ── */}
-        {points.ready && (
-          <div
-            className="hidden sm:flex flex-col items-center justify-center absolute top-10 text-center pointer-events-none select-none z-10 whitespace-nowrap"
-            style={{ left: points.xTrunk + 14 }}
-          >
-            <div className="text-[26px] sm:text-[30px] font-bold text-[#1E3A8A] leading-none font-mono tracking-tight">
-              94<span className="text-[12px] sm:text-[13px] font-medium text-[#77746C]">/100</span>
-            </div>
-            <div className="text-[8px] sm:text-[8.5px] font-bold uppercase tracking-widest text-[#77746C] mt-1 font-mono">
-              RISK SCORE
-            </div>
-            <div className="mt-4 flex flex-col text-[9.5px] sm:text-[10px] font-mono">
-              <span className="text-[#77746C]">IN → IN</span>
-              <span className="font-semibold text-[#2563EB] mt-0.5">$82.40</span>
-            </div>
-          </div>
-        )}
 
         {/* ── LAYER 1: BEHIND CARDS (z-0) — Flowing dashed lines & traveling telemetry pulses ── */}
         <svg
@@ -468,16 +449,6 @@ export default function JobAnalysisMockup() {
         <div className="relative z-10 grid grid-cols-[minmax(0,1.15fr)_minmax(0,0.95fr)] sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-8 sm:gap-10 items-center">
           {/* 1. Job Card with elevated top white line and crisp razor-sharp edges */}
           <div className="relative">
-            {/* Left Telemetry Markers */}
-            <div className="hidden xl:flex flex-col text-[10px] font-mono absolute -left-20 top-12 pointer-events-none select-none z-10 whitespace-nowrap">
-              <span className="text-[#8C887E]">TXN_839204</span>
-              <span className="font-semibold text-[#2563EB]">$2,680.00</span>
-            </div>
-            <div className="hidden xl:flex flex-col text-[10px] font-mono absolute -left-20 bottom-16 pointer-events-none select-none z-10 whitespace-nowrap">
-              <span className="text-[#8C887E]">TXN_839207</span>
-              <span className="text-[#8C887E]">$15.20</span>
-            </div>
-
             <div
               ref={jobCardRef}
               className="relative overflow-hidden bg-[#FAF9F6] border border-[#E2DFD7] rounded-none p-4 sm:p-5 card-interactive flow-anim-job"
