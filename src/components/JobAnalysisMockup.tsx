@@ -99,10 +99,6 @@ export default function JobAnalysisMockup() {
     const c3 = c3Ref.current.getBoundingClientRect();
     const bottom = bottomCardRef.current.getBoundingClientRect();
 
-    // Left connection points: right edge of job card, left edges of 3 cards
-    const xJ = Math.round(job.right - container.left);
-    const yJ = Math.round(job.top + job.height / 2 - container.top);
-
     const xC1L = Math.round(c1.left - container.left);
     const yC1L = Math.round(c1.top + c1.height / 2 - container.top);
 
@@ -111,6 +107,10 @@ export default function JobAnalysisMockup() {
 
     const xC3L = Math.round(c3.left - container.left);
     const yC3L = Math.round(c3.top + c3.height / 2 - container.top);
+
+    // Left connection points: perfectly straight horizontal axis aligned with Payment Request (Card 2)
+    const xJ = Math.round(job.right - container.left);
+    const yJ = yC2L; // Aligned with Card 2 center so junction & card 2 are 100% dead straight horizontal
 
     const xMid = Math.round(xJ + (xC2L - xJ) * 0.48);
 
