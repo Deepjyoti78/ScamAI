@@ -11,7 +11,7 @@ export default function HeroSection() {
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,440px)_1fr] xl:grid-cols-[minmax(0,470px)_1fr] gap-6 lg:gap-8 xl:gap-10 items-start">
 
           {/* ── Left column ── */}
-          <div className="flex flex-col pt-3 sm:pt-5 lg:pt-6 xl:pt-7">
+          <div className="flex flex-col pt-8 sm:pt-12 lg:pt-14 xl:pt-16">
             {/* Eyebrow with red left dash and right dividing rule */}
             <div className="flex items-center gap-2.5 mb-4 lg:mb-5 animate-text-reveal stagger-1">
               <span className="w-5 h-[2px] bg-[#DC2626] flex-shrink-0" />
@@ -35,12 +35,12 @@ export default function HeroSection() {
             </h1>
 
             {/* Supporting description matching exact copy */}
-            <p className="text-[14px] sm:text-[14.5px] lg:text-[15px] text-[#55524B] leading-[1.6] max-w-[440px] mb-10 sm:mb-13 lg:mb-16 animate-text-reveal stagger-4">
+            <p className="text-[14px] sm:text-[14.5px] lg:text-[15px] text-[#55524B] leading-[1.6] max-w-[440px] mb-8 sm:mb-10 lg:mb-12 animate-text-reveal stagger-4">
               Spot, verify, and avoid recruitment fraud before you share your details or commit to an opportunity.
             </p>
 
             {/* CTA buttons — positioned lower downward as requested */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-7 sm:mb-8 lg:mb-9 w-full sm:w-auto animate-card-entrance stagger-5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6 sm:mb-7 lg:mb-8 w-full sm:w-auto animate-card-entrance stagger-5">
               <button
                 type="button"
                 onClick={() => navigate('/investigate')}
