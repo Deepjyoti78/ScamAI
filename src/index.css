@@ -386,88 +386,89 @@ a, button {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HERO ANALYSIS STORY FLOW (12s synchronized cycle)
-   1. Initial clean state: NO dotted lines, NO extra nodes, NO empty card shapes.
-   2. Cursor glides in (1.5% - 11.5%) & clicks 'Apply Now' button (12.5% - 14.5%).
-   3. Telemetry point arises from 'Apply Now' (14.6% - 21.7%) & dividing line appears.
-   4. At junction, point divides into three:
-      - Point 1 (21.7% - 30%) -> reveals Domain Mismatch (Card 1)
-      - Point 2 (31.7% - 40%) -> reveals Payment Request (Card 2) - 100% straight
-      - Point 3 (41.7% - 50%) -> reveals Unverified Employer (Card 3)
-   5. Signals from all 3 cards stream down right bus (53.3% - 65%) to bottom card.
-   6. Bottom card ('Likely Suspicious') materializes (65% - 68%) + Circular Risk Wheel
-      animates/spins in + +0.88 RISK readout pops + legend cascades.
-   7. Full analysis dossier completely visible for reading (72% - 94%).
-   8. Graceful reset (94% - 97%) back to clean initial state.
+   HERO ANALYSIS STORY FLOW
+   Phase 1 (One-time Intro on page load):
+   - Initial clean slate: NO dotted lines, NO extra nodes, NO warning cards.
+   - Cursor glides in (0.2s - 1.3s) & clicks 'Apply Now' button (1.3s - 1.5s).
+   - Telemetry point arises from 'Apply Now' (1.6s - 2.4s) & connector line reveals.
+   - At junction (2.4s), point divides into three:
+     * Point 1 -> Card 1 reveals (2.9s - 3.4s)
+     * Point 2 -> Card 2 reveals (3.6s - 4.1s)
+     * Point 3 -> Card 3 reveals (4.3s - 4.8s)
+   - Signals from all 3 cards stream down right bus (4.8s - 6.2s).
+   - Bottom card ('Likely Suspicious') materializes (5.8s - 6.4s) + Circular Risk Wheel
+     spins/draws in (6.0s) + +0.88 RISK readout pops (6.4s) + legend cascades (6.2s).
+   - Once revealed, ALL CARDS, LINES, WHEEL, AND TEXT REMAIN VISIBLE PERMANENTLY.
+     They NEVER vanish or restart!
+
+   Phase 2 (Ambient Continuous Scanner Loop - runs indefinitely):
+   - Dotted lines remain visible with continuous marching dash effect.
+   - Telemetry dots continuously stream along the lines (4.8s cycle).
+   - Nodes ping red subtly as data signals pass through.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Animated Mouse Cursor Drag & Click */
-@keyframes mouseCursorGlideClick {
+/* ── Mouse Cursor & Button Click (Runs ONCE on first load) ── */
+@keyframes cursorIntroOnce {
   0% {
     opacity: 0;
-    transform: translate(65px, 55px) scale(1);
+    transform: translate(60px, 50px) scale(1);
   }
-  1.5% {
+  12% {
     opacity: 1;
-    transform: translate(58px, 48px) scale(1);
+    transform: translate(50px, 40px) scale(1);
   }
-  9.5% {
-    opacity: 1;
-    transform: translate(14px, 10px) scale(1);
-  }
-  11.5% {
+  60% {
     opacity: 1;
     transform: translate(14px, 10px) scale(1);
   }
-  12.5% {
+  72% {
     opacity: 1;
     transform: translate(14px, 10px) scale(0.85);
   }
-  14.5% {
+  82% {
     opacity: 1;
     transform: translate(14px, 10px) scale(1);
   }
-  17.5% {
+  94% {
     opacity: 0;
-    transform: translate(32px, 22px) scale(1);
+    transform: translate(28px, 20px) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translate(65px, 55px) scale(1);
+    transform: translate(40px, 30px) scale(1);
+    pointer-events: none;
   }
 }
 
-/* Apply Now Button Click Press Animation */
-@keyframes applyButtonClick {
-  0%, 12% {
+@keyframes applyButtonPressOnce {
+  0%, 65% {
     transform: scale(1);
     background-color: #141413;
   }
-  12.8% {
+  72% {
     transform: scale(0.93);
     background-color: #2D2D2A;
   }
-  14.5% {
+  82% {
     transform: scale(1.03);
     background-color: #141413;
   }
-  15.5%, 100% {
+  90%, 100% {
     transform: scale(1);
     background-color: #141413;
   }
 }
 
-/* Click Ripple Ring */
-@keyframes clickRippleEffect {
-  0%, 12.5% {
+@keyframes clickRippleOnce {
+  0%, 68% {
     opacity: 0;
     transform: scale(0.3);
   }
-  13.2% {
+  72% {
     opacity: 0.85;
     transform: scale(0.6);
   }
-  15.5% {
+  85% {
     opacity: 0;
     transform: scale(2.0);
   }
@@ -478,339 +479,201 @@ a, button {
 }
 
 .flow-anim-mouse-cursor {
-  animation: mouseCursorGlideClick 12s cubic-bezier(0.2, 0.8, 0.25, 1) infinite;
+  animation: cursorIntroOnce 1.9s cubic-bezier(0.2, 0.8, 0.25, 1) 0.2s both;
 }
 .flow-anim-apply-btn {
-  animation: applyButtonClick 12s ease-in-out infinite;
+  animation: applyButtonPressOnce 1.9s ease-in-out 0.2s both;
 }
 .flow-anim-click-ripple {
-  animation: clickRippleEffect 12s ease-out infinite;
+  animation: clickRippleOnce 1.9s ease-out 0.2s both;
 }
 
-/* ── Dotted Lines Visibility (ZERO lines in the initial part!) ── */
-@keyframes revealLineApply {
-  0%, 14% {
+/* ── Dotted Lines Visibility (Hidden initially, reveals once, stays visible forwards!) ── */
+@keyframes lineFadeInForwards {
+  0% {
     opacity: 0;
   }
-  15.5%, 94% {
+  100% {
     opacity: 1;
-  }
-  97%, 100% {
-    opacity: 0;
-  }
-}
-
-@keyframes revealLineLeft {
-  0%, 21% {
-    opacity: 0;
-  }
-  22.5%, 94% {
-    opacity: 1;
-  }
-  97%, 100% {
-    opacity: 0;
-  }
-}
-
-@keyframes revealLineRight {
-  0%, 52.5% {
-    opacity: 0;
-  }
-  54%, 94% {
-    opacity: 1;
-  }
-  97%, 100% {
-    opacity: 0;
   }
 }
 
 .line-anim-apply {
-  animation: revealLineApply 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: lineFadeInForwards 0.35s ease-out 1.55s both;
 }
 .line-anim-left-branch {
-  animation: revealLineLeft 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: lineFadeInForwards 0.4s ease-out 2.35s both;
 }
 .line-anim-right-bus {
-  animation: revealLineRight 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: lineFadeInForwards 0.45s ease-out 4.75s both;
 }
 
-/* Job Card: subtle boundary indicator during active pulse emissions */
-@keyframes cardJobFlow {
-  0%, 100% {
-    border-color: #E0DED4;
-  }
-  12%, 50% {
-    border-color: #D6D3D1;
-  }
-  55% {
-    border-color: #E0DED4;
-  }
-}
-
-/* Card 1: Domain Mismatch Reveal */
-@keyframes revealCard1Seq {
-  0%, 29.5% {
+/* ── Cards One-Time Reveals (Hidden initially, reveals once, stays visible forwards!) ── */
+@keyframes cardRevealForwards {
+  0% {
     opacity: 0;
     transform: translateX(8px);
     pointer-events: none;
   }
-  33%, 94% {
+  100% {
     opacity: 1;
     transform: translateX(0);
     pointer-events: auto;
   }
-  97%, 100% {
-    opacity: 0;
-    transform: translateX(8px);
-    pointer-events: none;
-  }
 }
 
-/* Card 2: Payment Request Reveal */
-@keyframes revealCard2Seq {
-  0%, 39.5% {
-    opacity: 0;
-    transform: translateX(8px);
-    pointer-events: none;
-  }
-  43%, 94% {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-  97%, 100% {
-    opacity: 0;
-    transform: translateX(8px);
-    pointer-events: none;
-  }
-}
-
-/* Card 3: Unverified Employer Reveal */
-@keyframes revealCard3Seq {
-  0%, 49.5% {
-    opacity: 0;
-    transform: translateX(8px);
-    pointer-events: none;
-  }
-  53%, 94% {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-  97%, 100% {
-    opacity: 0;
-    transform: translateX(8px);
-    pointer-events: none;
-  }
-}
-
-/* Bottom Card: Likely Suspicious Assessment Card Reveal */
-@keyframes revealBottomCardSeq {
-  0%, 64.5% {
+@keyframes bottomCardRevealForwards {
+  0% {
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
   }
-  68%, 94% {
+  100% {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
   }
-  97%, 100% {
-    opacity: 0;
-    transform: translateY(12px);
-    pointer-events: none;
-  }
 }
 
-/* HIGH RISK Badge Pop */
-@keyframes badgePopSeq {
-  0%, 66% {
+@keyframes badgePopForwards {
+  0% {
     opacity: 0;
     transform: scale(0.8);
   }
-  69% {
+  60% {
     opacity: 1;
     transform: scale(1.08);
   }
-  72%, 94% {
+  100% {
     opacity: 1;
     transform: scale(1);
   }
-  97%, 100% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
 }
 
-/* Circular Risk Wheel Animation (Draws and unfurls from -180deg to -90deg) */
-@keyframes wheelSpinDrawSeq {
-  0%, 66% {
+@keyframes wheelSpinDrawForwards {
+  0% {
     opacity: 0;
     transform: rotate(-180deg) scale(0.7);
   }
-  72%, 94% {
+  100% {
     opacity: 1;
     transform: rotate(-90deg) scale(1);
   }
-  97%, 100% {
-    opacity: 0;
-    transform: rotate(-180deg) scale(0.7);
-  }
 }
 
-/* Wheel Center Readout (+0.88 RISK) Pop */
-@keyframes scorePopSeq {
-  0%, 70% {
+@keyframes scorePopForwards {
+  0% {
     opacity: 0;
     transform: scale(0.5);
   }
-  73% {
+  65% {
     opacity: 1;
     transform: scale(1.1);
   }
-  76%, 94% {
+  100% {
     opacity: 1;
     transform: scale(1);
   }
-  97%, 100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
 }
 
-/* Factor Legend Staggered Cascade */
-@keyframes legendCascadeSeq {
-  0%, 69% {
+@keyframes legendCascadeForwards {
+  0% {
     opacity: 0;
     transform: translateX(6px);
   }
-  73%, 94% {
+  100% {
     opacity: 1;
     transform: translateX(0);
   }
-  97%, 100% {
-    opacity: 0;
-    transform: translateX(6px);
-  }
 }
 
-.flow-anim-job {
-  animation: cardJobFlow 12s ease-in-out infinite;
-}
 .flow-anim-warn-1 {
-  animation: revealCard1Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: cardRevealForwards 0.5s cubic-bezier(0.16, 1, 0.3, 1) 2.9s both;
 }
 .flow-anim-warn-2 {
-  animation: revealCard2Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: cardRevealForwards 0.5s cubic-bezier(0.16, 1, 0.3, 1) 3.6s both;
 }
 .flow-anim-warn-3 {
-  animation: revealCard3Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: cardRevealForwards 0.5s cubic-bezier(0.16, 1, 0.3, 1) 4.3s both;
 }
 .flow-anim-bottom {
-  animation: revealBottomCardSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: bottomCardRevealForwards 0.6s cubic-bezier(0.16, 1, 0.3, 1) 5.8s both;
 }
 .flow-anim-badge {
-  animation: badgePopSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: badgePopForwards 0.5s cubic-bezier(0.16, 1, 0.3, 1) 5.9s both;
 }
 .flow-anim-wheel {
-  animation: wheelSpinDrawSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: wheelSpinDrawForwards 0.7s cubic-bezier(0.16, 1, 0.3, 1) 6.0s both;
   transform-origin: center;
 }
 .flow-anim-score {
-  animation: scorePopSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: scorePopForwards 0.5s cubic-bezier(0.16, 1, 0.3, 1) 6.4s both;
 }
 .flow-anim-legend {
-  animation: legendCascadeSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: legendCascadeForwards 0.5s cubic-bezier(0.16, 1, 0.3, 1) 6.2s both;
 }
 
-/* ── Node Pings across the 12s timeline (opacity 0 initially!) ── */
-/* Node at Apply Now button exit */
-@keyframes nodePingApply {
-  0%, 14% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  14.6%, 19% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
-  21%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+/* ── Continuous Ambient Node Pings (4.8s cycle, starts at 2.4s, repeats indefinitely) ── */
+@keyframes nodeFadeInOnce {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
-/* Left side: Job Card exit & midpoint pings when pulses depart/cross/divide */
-@keyframes nodePingLeft {
-  0%, 15% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  16%, 20% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  21.7%, 26% { opacity: 1; fill: #DC2626; stroke: #991B1B; } /* Pings as point divides into 3 */
-  28%, 31% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  31.7%, 35% { opacity: 1; fill: #DC2626; stroke: #991B1B; } /* Pings as point 2 departs */
-  37%, 41% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  41.7%, 45% { opacity: 1; fill: #DC2626; stroke: #991B1B; } /* Pings as point 3 departs */
-  47%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+@keyframes pingPulseLeft {
+  0%, 4% { fill: #DC2626; stroke: #991B1B; }
+  8%, 15% { fill: #FAF9F5; stroke: #77746C; }
+  17%, 21% { fill: #DC2626; stroke: #991B1B; }
+  25%, 31% { fill: #FAF9F5; stroke: #77746C; }
+  33%, 37% { fill: #DC2626; stroke: #991B1B; }
+  41%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes pingPulseC1L {
+  0%, 14% { fill: #FAF9F5; stroke: #77746C; }
+  18%, 24% { fill: #DC2626; stroke: #991B1B; }
+  28%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes pingPulseC2L {
+  0%, 28% { fill: #FAF9F5; stroke: #77746C; }
+  32%, 38% { fill: #DC2626; stroke: #991B1B; }
+  42%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes pingPulseC3L {
+  0%, 42% { fill: #FAF9F5; stroke: #77746C; }
+  46%, 52% { fill: #DC2626; stroke: #991B1B; }
+  56%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes pingPulseRight {
+  0%, 48% { fill: #FAF9F5; stroke: #77746C; }
+  52%, 58% { fill: #DC2626; stroke: #991B1B; }
+  62%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes pingPulseBottom {
+  0%, 72% { fill: #FAF9F5; stroke: #77746C; }
+  76%, 86% { fill: #DC2626; stroke: #991B1B; }
+  90%, 100% { fill: #FAF9F5; stroke: #77746C; }
 }
 
-/* Card 1 Left Node: pings red when Point 1 arrives (30% - 36%) */
-@keyframes nodePingC1L {
-  0%, 29% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  30%, 37% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
-  39%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+.node-ping-apply {
+  animation: nodeFadeInOnce 0.3s ease-out 1.55s both;
 }
-
-/* Card 2 Left Node: pings red when Point 2 arrives (40% - 46%) */
-@keyframes nodePingC2L {
-  0%, 39% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  40%, 47% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
-  49%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+.node-ping-j {
+  animation: nodeFadeInOnce 0.3s ease-out 2.35s both, pingPulseLeft 4.8s ease-in-out 2.4s infinite;
 }
-
-/* Card 3 Left Node: pings red when Point 3 arrives (50% - 56%) */
-@keyframes nodePingC3L {
-  0%, 49% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  50%, 57% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
-  59%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+.node-ping-c1l {
+  animation: nodeFadeInOnce 0.3s ease-out 2.9s both, pingPulseC1L 4.8s ease-in-out 2.4s infinite;
 }
-
-/* Card 1 Right Node: pings red when Point 4 departs (53.3% - 60%) */
-@keyframes nodePingC1R {
-  0%, 52% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  53.3%, 60% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
-  62%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+.node-ping-c2l {
+  animation: nodeFadeInOnce 0.3s ease-out 3.6s both, pingPulseC2L 4.8s ease-in-out 2.4s infinite;
 }
-
-/* Card 2 Right Node: pings red when Point 5 departs (55% - 61%) */
-@keyframes nodePingC2R {
-  0%, 53.5% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  55%, 61.5% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
-  63.5%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+.node-ping-c3l {
+  animation: nodeFadeInOnce 0.3s ease-out 4.3s both, pingPulseC3L 4.8s ease-in-out 2.4s infinite;
 }
-
-/* Card 3 Right Node: pings red when Point 6 departs (56.7% - 63%) */
-@keyframes nodePingC3R {
-  0%, 55% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  56.7%, 63% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
-  65%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+.node-ping-c1r, .node-ping-c2r, .node-ping-c3r {
+  animation: nodeFadeInOnce 0.3s ease-out 4.75s both, pingPulseRight 4.8s ease-in-out 2.4s infinite;
 }
-
-/* Bottom Card Top Node: pings red when signals plunge in (63.5% - 73%) */
-@keyframes nodePingBottom {
-  0%, 63% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
-  64%, 73% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
-  76%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
-  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+.node-ping-b {
+  animation: nodeFadeInOnce 0.3s ease-out 5.8s both, pingPulseBottom 4.8s ease-in-out 2.4s infinite;
 }
-
-.node-ping-apply { animation: nodePingApply 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
-.node-ping-j { animation: nodePingLeft 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
-.node-ping-c1l { animation: nodePingC1L 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
-.node-ping-c2l { animation: nodePingC2L 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
-.node-ping-c3l { animation: nodePingC3L 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
-.node-ping-c1r { animation: nodePingC1R 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
-.node-ping-c2r { animation: nodePingC2R 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
-.node-ping-c3r { animation: nodePingC3R 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
-.node-ping-b { animation: nodePingBottom 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
 
 /* Keep analysis content readable with long URLs and narrow viewports. */
 main { min-width: 0; }

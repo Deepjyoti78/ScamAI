@@ -275,137 +275,151 @@ export default function JobAnalysisMockup() {
                 />
               </g>
 
-              {/* Traveling crimson data pulses: flowing sequentially across the 12s narrative */}
+              {/* Traveling crimson data pulses: One-time pulse 0 from Apply Now + Continuous Telemetry Loop */}
               <g className="pointer-events-none">
-                {/* Pulse 0: Point arises from 'Apply Now' and travels to the junction point */}
+                {/* One-time Pulse 0: Point arises from 'Apply Now' and travels to junction */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xApply} ${points.yApply} L ${points.xJ} ${points.yApply} L ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ}`}
-                    dur="12s"
-                    repeatCount="indefinite"
-                    keyTimes="0;0.146;0.217;0.230;1"
-                    keyPoints="0;0;1;1;1"
+                    begin="1.6s"
+                    dur="0.8s"
+                    repeatCount="1"
+                    fill="freeze"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
-                    values="0;0;1;1;0;0"
-                    keyTimes="0;0.142;0.155;0.210;0.225;1"
-                    dur="12s"
-                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                    keyTimes="0;0.1;0.85;1"
+                    begin="1.6s"
+                    dur="0.8s"
+                    repeatCount="1"
+                    fill="freeze"
                   />
                 </circle>
 
-                {/* Pulse 1: At junction, point divides into three -> Branch 1 to Card 1 (Domain mismatch) */}
+                {/* Continuous Pulse 1: Branch 1 -> Card 1 (Domain mismatch) */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC1L} L ${points.xC1L} ${points.yC1L}`}
-                    dur="12s"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.217;0.300;0.315;1"
-                    keyPoints="0;0;1;1;1"
+                    keyTimes="0;0.188;0.22;1"
+                    keyPoints="0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
-                    values="0;0;1;1;0;0"
-                    keyTimes="0;0.212;0.225;0.295;0.310;1"
-                    dur="12s"
+                    values="0;1;1;0;0"
+                    keyTimes="0;0.04;0.17;0.21;1"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
                   />
                 </circle>
 
-                {/* Pulse 2: Branch 2 to Card 2 (Payment request) - 100% straight horizontal */}
+                {/* Continuous Pulse 2: Branch 2 -> Card 2 (Payment request) - 100% straight horizontal */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xMid} ${points.yJ} L ${points.xC2L} ${points.yC2L}`}
-                    dur="12s"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.317;0.400;0.415;1"
+                    keyTimes="0;0.146;0.333;0.36;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.312;0.325;0.395;0.410;1"
-                    dur="12s"
+                    keyTimes="0;0.14;0.18;0.31;0.35;1"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
                   />
                 </circle>
 
-                {/* Pulse 3: Branch 3 to Card 3 (Unverified employer) */}
+                {/* Continuous Pulse 3: Branch 3 -> Card 3 (Unverified employer) */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
-                    dur="12s"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.417;0.500;0.515;1"
+                    keyTimes="0;0.292;0.479;0.51;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.412;0.425;0.495;0.510;1"
-                    dur="12s"
+                    keyTimes="0;0.28;0.32;0.45;0.49;1"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
                   />
                 </circle>
 
-                {/* Right Bus: Card 1 -> Bottom Card */}
+                {/* Continuous Right Bus: Card 1 -> Bottom Card */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC1R} ${points.yC1R} L ${points.xTrunk} ${points.yC1R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
-                    dur="12s"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.533;0.625;0.640;1"
+                    keyTimes="0;0.50;0.75;0.78;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.528;0.540;0.620;0.635;1"
-                    dur="12s"
+                    keyTimes="0;0.49;0.53;0.73;0.77;1"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
                   />
                 </circle>
 
-                {/* Right Bus: Card 2 -> Bottom Card */}
+                {/* Continuous Right Bus: Card 2 -> Bottom Card */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC2R} ${points.yC2R} L ${points.xTrunk} ${points.yC2R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
-                    dur="12s"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.550;0.638;0.650;1"
+                    keyTimes="0;0.531;0.771;0.80;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.545;0.558;0.632;0.647;1"
-                    dur="12s"
+                    keyTimes="0;0.52;0.56;0.75;0.79;1"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
                   />
                 </circle>
 
-                {/* Right Bus: Card 3 -> Bottom Card */}
+                {/* Continuous Right Bus: Card 3 -> Bottom Card */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC3R} ${points.yC3R} L ${points.xTrunk} ${points.yC3R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
-                    dur="12s"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.567;0.650;0.665;1"
+                    keyTimes="0;0.562;0.802;0.83;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.562;0.575;0.645;0.660;1"
-                    dur="12s"
+                    keyTimes="0;0.55;0.59;0.78;0.82;1"
+                    begin="2.4s"
+                    dur="4.8s"
                     repeatCount="indefinite"
                   />
                 </circle>
