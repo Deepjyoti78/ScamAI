@@ -574,14 +574,14 @@ export default function JobAnalysisMockup() {
             </div>
           </div>
 
-          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and darker reddish upper gradient */}
+          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and elegant warm rose-porcelain theme */}
           <div className="flex flex-col gap-2.5 justify-between">
             {/* Card 1: Domain mismatch */}
             <div
               ref={c1Ref}
-              className="relative overflow-hidden bg-gradient-to-b from-[#F6ACA0] via-[#FBDCD6] to-[#FDF2F0] border border-[#F5A396] border-t-2 border-t-[#DC2626] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-1"
+              className="relative overflow-hidden bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border border-[#F6C6BF] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-1"
               style={{
-                boxShadow: '0 6px 20px -3px rgba(180, 50, 50, 0.08), 0 2px 5px -1px rgba(0, 0, 0, 0.03)',
+                boxShadow: '0 4px 16px -2px rgba(180, 50, 50, 0.05), 0 1px 3px -1px rgba(0, 0, 0, 0.03)',
               }}
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[0].icon}</div>
@@ -598,9 +598,9 @@ export default function JobAnalysisMockup() {
             {/* Card 2: Upfront payment request */}
             <div
               ref={c2Ref}
-              className="relative overflow-hidden bg-gradient-to-b from-[#F6ACA0] via-[#FBDCD6] to-[#FDF2F0] border border-[#F5A396] border-t-2 border-t-[#DC2626] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-2"
+              className="relative overflow-hidden bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border border-[#F6C6BF] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-2"
               style={{
-                boxShadow: '0 6px 20px -3px rgba(180, 50, 50, 0.08), 0 2px 5px -1px rgba(0, 0, 0, 0.03)',
+                boxShadow: '0 4px 16px -2px rgba(180, 50, 50, 0.05), 0 1px 3px -1px rgba(0, 0, 0, 0.03)',
               }}
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[1].icon}</div>
@@ -617,9 +617,9 @@ export default function JobAnalysisMockup() {
             {/* Card 3: Unverified employer */}
             <div
               ref={c3Ref}
-              className="relative overflow-hidden bg-gradient-to-b from-[#F6ACA0] via-[#FBDCD6] to-[#FDF2F0] border border-[#F5A396] border-t-2 border-t-[#DC2626] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-3"
+              className="relative overflow-hidden bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border border-[#F6C6BF] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-3"
               style={{
-                boxShadow: '0 6px 20px -3px rgba(180, 50, 50, 0.08), 0 2px 5px -1px rgba(0, 0, 0, 0.03)',
+                boxShadow: '0 4px 16px -2px rgba(180, 50, 50, 0.05), 0 1px 3px -1px rgba(0, 0, 0, 0.03)',
               }}
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[2].icon}</div>
@@ -635,13 +635,13 @@ export default function JobAnalysisMockup() {
           </div>
         </div>
 
-        {/* ── BOTTOM SECTION: Overall Assessment Result Card with darker reddish upper gradient & circular wheel ── */}
+        {/* ── BOTTOM SECTION: Overall Assessment Result Card with elegant warm rose theme & circular wheel ── */}
         <div className="relative z-10 mt-8 sm:mt-9">
           <div
             ref={bottomCardRef}
-            className="relative overflow-hidden bg-gradient-to-b from-[#F29F92] via-[#FBD4CD] to-[#FDF0EC] border border-[#EA8B7D] border-t-2 border-t-[#DC2626] rounded-none p-4 sm:p-5 card-interactive flow-anim-bottom"
+            className="relative overflow-hidden bg-gradient-to-b from-[#FFF0EC] via-[#FEE8E2] to-[#FDE0D8] border border-[#F4BEB4] rounded-none p-4 sm:p-5 card-interactive flow-anim-bottom"
             style={{
-              boxShadow: '0 10px 28px -4px rgba(180, 50, 50, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+              boxShadow: '0 8px 24px -4px rgba(180, 50, 50, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
             }}
           >
 
