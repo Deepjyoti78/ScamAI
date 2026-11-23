@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { AlertTriangle, Mail, Building2, Link2 } from 'lucide-react';
+import { AlertTriangle, Mail, Building2, Lock } from 'lucide-react';
 
 interface PointCoords {
   xApply: number;
@@ -34,7 +34,7 @@ const annotations = [
   },
   {
     icon: <AlertTriangle size={15} strokeWidth={1.75} className="text-[#DC2626]" />,
-    label: 'Payment request',
+    label: 'Upfront payment request',
     detail: 'Mentions an upfront registration fee.',
   },
   {
@@ -207,11 +207,47 @@ export default function JobAnalysisMockup() {
 
   return (
     <div className="w-full overflow-x-auto sm:overflow-x-visible pb-2 select-none no-scrollbar">
-      {/* Container with responsive bounds and right margin for bus line */}
+      {/* Container with responsive bounds and right margin for bus line and score */}
       <div
         ref={containerRef}
-        className="relative min-w-[500px] sm:min-w-0 pr-8 pt-1 pb-1 animate-card-entrance stagger-3"
+        className="relative min-w-[500px] sm:min-w-0 pr-12 sm:pr-16 pt-1 pb-1 animate-card-entrance stagger-3"
       >
+        {/* ── TOP SYSTEM TELEMETRY BAR ── */}
+        <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-mono mb-3.5 px-1 select-none text-[#77746C] whitespace-nowrap">
+          <div className="flex items-center gap-2 sm:gap-3.5">
+            <span className="text-[#8C887E]">JOB_839204</span>
+            <span className="font-semibold text-[#2563EB]">$2,680.00</span>
+            <span className="text-[#8C887E]">SG → BR</span>
+            <span className="font-semibold text-[#DC2626]">RISK +0.88</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-2 sm:gap-3.5">
+            <span className="text-[#8C887E]">JOB_839205</span>
+            <span className="font-semibold text-[#141413]">$75.30</span>
+            <span className="text-[#8C887E]">AE → AE</span>
+            <span className="font-semibold text-[#DC2626]">+0.28</span>
+          </div>
+          <div className="font-mono text-[#8C887E] tracking-wider">22:41:08</div>
+        </div>
+
+        {/* ── RIGHT SIDE RISK SCORE & TELEMETRY (Anchored dynamically to the right of the bus line) ── */}
+        {points.ready && (
+          <div
+            className="hidden sm:flex flex-col items-center justify-center absolute top-10 text-center pointer-events-none select-none z-10 whitespace-nowrap"
+            style={{ left: points.xTrunk + 14 }}
+          >
+            <div className="text-[26px] sm:text-[30px] font-bold text-[#1E3A8A] leading-none font-mono tracking-tight">
+              94<span className="text-[12px] sm:text-[13px] font-medium text-[#77746C]">/100</span>
+            </div>
+            <div className="text-[8px] sm:text-[8.5px] font-bold uppercase tracking-widest text-[#77746C] mt-1 font-mono">
+              RISK SCORE
+            </div>
+            <div className="mt-4 flex flex-col text-[9.5px] sm:text-[10px] font-mono">
+              <span className="text-[#77746C]">IN → IN</span>
+              <span className="font-semibold text-[#2563EB] mt-0.5">$82.40</span>
+            </div>
+          </div>
+        )}
+
         {/* ── LAYER 1: BEHIND CARDS (z-0) — Flowing dashed lines & traveling telemetry pulses ── */}
         <svg
           className={`absolute inset-0 w-full h-full pointer-events-none z-0 transition-opacity duration-300 ${
@@ -220,6 +256,36 @@ export default function JobAnalysisMockup() {
           style={{ overflow: 'visible' }}
           aria-hidden="true"
         >
+          {/* Ambient Technical Sweep Waves */}
+          <g className="pointer-events-none opacity-40">
+            <path
+              d="M -40 260 C 90 270, 180 180, 480 80 C 580 50, 680 70, 780 110"
+              fill="none"
+              stroke="#60A5FA"
+              strokeWidth="1.2"
+              strokeDasharray="4 6"
+            />
+            <path
+              d="M -20 300 C 120 290, 220 210, 520 110 C 620 80, 720 100, 800 130"
+              fill="none"
+              stroke="#93C5FD"
+              strokeWidth="1"
+            />
+            <path
+              d="M 40 340 C 170 320, 280 240, 560 140 C 660 110, 740 120, 820 150"
+              fill="none"
+              stroke="#F87171"
+              strokeWidth="1.2"
+              strokeDasharray="3 5"
+            />
+            <path
+              d="M 70 380 C 210 360, 320 280, 580 180 C 670 140, 760 150, 840 170"
+              fill="none"
+              stroke="#FCA5A5"
+              strokeWidth="1"
+            />
+          </g>
+
           {points.ready && (
             <g key={`${points.xJ}-${points.xB}`}>
               {/* Underlying marching dashed lines: segmented and revealed on demand (ZERO lines initially!) */}
@@ -430,125 +496,155 @@ export default function JobAnalysisMockup() {
 
         {/* ── LAYER 2: CARDS (z-10 with solid background to guarantee lines never overlap inside!) ── */}
         <div className="relative z-10 grid grid-cols-[minmax(0,1.15fr)_minmax(0,0.95fr)] sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-8 sm:gap-10 items-center">
-          {/* 1. Job Card with razor-sharp clean edges */}
-          <div
-            ref={jobCardRef}
-            className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] card-interactive flow-anim-job"
-          >
-            {/* Browser URL Pill */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-[#F0EEE6] border border-[#E0DED4] mb-3.5 w-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-              <Link2 size={11} className="text-[#141413]/70 flex-shrink-0" />
-              <span className="text-[9.5px] sm:text-[10px] font-mono text-[#141413]/80 tracking-tight truncate">
-                careers-rapidtech.com/jobs/product-designer
-              </span>
+          {/* 1. Job Card with elevated top white line and crisp razor-sharp edges */}
+          <div className="relative">
+            {/* Left Telemetry Markers */}
+            <div className="hidden xl:flex flex-col text-[10px] font-mono absolute -left-20 top-12 pointer-events-none select-none z-10 whitespace-nowrap">
+              <span className="text-[#8C887E]">TXN_839204</span>
+              <span className="font-semibold text-[#2563EB]">$2,680.00</span>
+            </div>
+            <div className="hidden xl:flex flex-col text-[10px] font-mono absolute -left-20 bottom-16 pointer-events-none select-none z-10 whitespace-nowrap">
+              <span className="text-[#8C887E]">TXN_839207</span>
+              <span className="text-[#8C887E]">$15.20</span>
             </div>
 
-            {/* Company Info Row */}
-            <div className="flex items-center gap-2.5 mb-2.5">
-              <div className="w-7 h-7 rounded-none bg-[#F0EEE6] border border-[#E0DED4] flex items-center justify-center font-bold text-[12px] text-[#141413] flex-shrink-0">
-                R
+            <div
+              ref={jobCardRef}
+              className="relative overflow-hidden bg-[#FAF9F6] border border-[#E2DFD7] rounded-none p-4 sm:p-5 card-interactive flow-anim-job"
+              style={{
+                boxShadow: '0 8px 26px -4px rgba(20, 20, 19, 0.07), 0 2px 6px -1px rgba(20, 20, 19, 0.03), inset 0 1px 0 0 #FFFFFF',
+              }}
+            >
+              {/* Elevated top specular white highlight line */}
+              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-20 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
+              {/* Browser URL Pill */}
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-[#F5F4EE] border border-[#E4E2D8] mb-3.5 w-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                <Lock size={10} className="text-[#141413]/70 flex-shrink-0" />
+                <span className="text-[9.5px] sm:text-[10px] font-mono text-[#141413]/80 tracking-tight truncate">
+                  careers-rapidtech.com/jobs/product...
+                </span>
               </div>
-              <div className="min-w-0">
-                <p className="text-[13px] font-semibold text-[#141413] leading-tight truncate">
-                  RapidTech Solutions
-                </p>
-                <p className="text-[10.5px] text-[#77746C] leading-tight mt-0.5">
-                  Posted 2 days ago
-                </p>
+
+              {/* Company Info Row */}
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <div className="w-7 h-7 rounded-none bg-[#F5F4EE] border border-[#E4E2D8] flex items-center justify-center font-bold text-[12px] text-[#141413] flex-shrink-0">
+                  R
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[13px] font-semibold text-[#141413] leading-tight truncate">
+                    RapidTech Solutions
+                  </p>
+                  <p className="text-[10.5px] text-[#77746C] leading-tight mt-0.5">
+                    Posted 2 days ago
+                  </p>
+                </div>
               </div>
-            </div>
 
-            {/* Job Title */}
-            <h3 className="text-[17px] sm:text-[18px] font-bold text-[#141413] leading-snug tracking-tight mb-1.5">
-              Product Designer
-            </h3>
+              {/* Job Title */}
+              <h3 className="text-[17px] sm:text-[18px] font-bold text-[#141413] leading-snug tracking-tight mb-1.5">
+                Product Designer
+              </h3>
 
-            {/* Meta Tags Row */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
-              <div className="flex items-center gap-1">
-                <span className="text-[9.5px] uppercase tracking-wider text-[#77746C]">Location</span>
-                <span className="text-[11px] font-semibold text-[#141413]">Remote</span>
+              {/* Meta Tags Row */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                <div className="flex items-center gap-1">
+                  <span className="text-[9.5px] uppercase tracking-wider text-[#77746C]">Location</span>
+                  <span className="text-[11px] font-semibold text-[#141413]">Remote</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-[9.5px] uppercase tracking-wider text-[#77746C]">Type</span>
+                  <span className="text-[11px] font-semibold text-[#141413]">Full-time</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                <span className="text-[9.5px] uppercase tracking-wider text-[#77746C]">Type</span>
-                <span className="text-[11px] font-semibold text-[#141413]">Full-time</span>
-              </div>
-            </div>
 
-            {/* Salary */}
-            <p className="text-[12.5px] sm:text-[13px] font-bold text-[#141413] mb-2">
-              ₹80,000 – ₹1,20,000 / month
-            </p>
+              {/* Salary */}
+              <p className="text-[12.5px] sm:text-[13px] font-bold text-[#141413] mb-2">
+                ₹80,000 – ₹1,20,000 / month
+              </p>
 
-            {/* Description */}
-            <p className="text-[11px] sm:text-[11.5px] text-[#625F58] leading-relaxed mb-3.5">
-              Join our fast-growing team as a Product Designer. You'll work on exciting products
-              and get hands-on experience.
-            </p>
+              {/* Description */}
+              <p className="text-[11px] sm:text-[11.5px] text-[#625F58] leading-relaxed mb-3.5">
+                Join our fast-growing team as a Product Designer. You'll work on exciting products
+                and get hands-on experience.
+              </p>
 
-            {/* Apply Button with Animated Synthetic Cursor & Click Simulation */}
-            <div className="relative inline-block">
-              <button
-                ref={applyBtnRef}
-                type="button"
-                className="text-[11px] font-semibold bg-[#141413] text-[#FAF9F5] rounded-none px-3.5 py-1.5 transition-colors cursor-pointer flow-anim-apply-btn"
-              >
-                Apply Now
-              </button>
-
-              {/* Synthetic Dragging Mouse Cursor */}
-              <div className="flow-anim-mouse-cursor absolute top-0 left-0 pointer-events-none z-30">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+              {/* Apply Button with Animated Synthetic Cursor & Click Simulation */}
+              <div className="relative inline-block">
+                <button
+                  ref={applyBtnRef}
+                  type="button"
+                  className="text-[11px] font-semibold bg-[#141413] text-[#FAF9F5] rounded-none px-3.5 py-1.5 transition-colors cursor-pointer flow-anim-apply-btn"
                 >
-                  <path
-                    d="M4 2L15.5 13.5L10 14.5L13 20.5L10.5 21.8L7.5 15.8L3.5 19.8V2Z"
-                    fill="#141413"
-                    stroke="#FAF9F5"
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                {/* Click ripple ring */}
-                <span className="flow-anim-click-ripple absolute top-0.5 left-0.5 w-4 h-4 rounded-full border-2 border-[#DC2626] pointer-events-none" />
+                  Apply Now
+                </button>
+
+                {/* Synthetic Dragging Mouse Cursor */}
+                <div className="flow-anim-mouse-cursor absolute top-0 left-0 pointer-events-none z-30">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+                  >
+                    <path
+                      d="M4 2L15.5 13.5L10 14.5L13 20.5L10.5 21.8L7.5 15.8L3.5 19.8V2Z"
+                      fill="#141413"
+                      stroke="#FAF9F5"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  {/* Click ripple ring */}
+                  <span className="flow-anim-click-ripple absolute top-0.5 left-0.5 w-4 h-4 rounded-full border-2 border-[#DC2626] pointer-events-none" />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and lighter reddish background */}
+          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and elevated top white line */}
           <div className="flex flex-col gap-2.5 justify-between">
             {/* Card 1: Domain mismatch */}
             <div
               ref={c1Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-none flex items-start gap-2.5 card-interactive flow-anim-warn-1"
+              className="relative overflow-hidden bg-gradient-to-br from-[#FFF8F7] via-[#FFF1EF] to-[#FEEDEB] border border-[#F7C8C2] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-1"
+              style={{
+                boxShadow: '0 6px 20px -3px rgba(220, 38, 38, 0.07), 0 2px 5px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.95)',
+              }}
             >
+              {/* Elevated top specular white highlight line */}
+              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 opacity-95 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
               <div className="mt-0.5 flex-shrink-0">{annotations[0].icon}</div>
               <div className="min-w-0">
                 <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
                   {annotations[0].label}
                 </h4>
-                <p className="text-[10.5px] text-[#7F1D1D]/90 leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#7F1D1D]/85 leading-snug mt-0.5">
                   {annotations[0].detail}
                 </p>
               </div>
             </div>
 
-            {/* Card 2: Payment request */}
+            {/* Card 2: Upfront payment request */}
             <div
               ref={c2Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-none flex items-start gap-2.5 card-interactive flow-anim-warn-2"
+              className="relative overflow-hidden bg-gradient-to-br from-[#FFF8F7] via-[#FFF1EF] to-[#FEEDEB] border border-[#F7C8C2] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-2"
+              style={{
+                boxShadow: '0 6px 20px -3px rgba(220, 38, 38, 0.07), 0 2px 5px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.95)',
+              }}
             >
+              {/* Elevated top specular white highlight line */}
+              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 opacity-95 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
               <div className="mt-0.5 flex-shrink-0">{annotations[1].icon}</div>
               <div className="min-w-0">
                 <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
                   {annotations[1].label}
                 </h4>
-                <p className="text-[10.5px] text-[#7F1D1D]/90 leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#7F1D1D]/85 leading-snug mt-0.5">
                   {annotations[1].detail}
                 </p>
               </div>
@@ -557,14 +653,20 @@ export default function JobAnalysisMockup() {
             {/* Card 3: Unverified employer */}
             <div
               ref={c3Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-none flex items-start gap-2.5 card-interactive flow-anim-warn-3"
+              className="relative overflow-hidden bg-gradient-to-br from-[#FFF8F7] via-[#FFF1EF] to-[#FEEDEB] border border-[#F7C8C2] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-3"
+              style={{
+                boxShadow: '0 6px 20px -3px rgba(220, 38, 38, 0.07), 0 2px 5px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.95)',
+              }}
             >
+              {/* Elevated top specular white highlight line */}
+              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 opacity-95 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
               <div className="mt-0.5 flex-shrink-0">{annotations[2].icon}</div>
               <div className="min-w-0">
                 <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
                   {annotations[2].label}
                 </h4>
-                <p className="text-[10.5px] text-[#7F1D1D]/90 leading-snug mt-0.5">
+                <p className="text-[10.5px] text-[#7F1D1D]/85 leading-snug mt-0.5">
                   {annotations[2].detail}
                 </p>
               </div>
@@ -572,12 +674,18 @@ export default function JobAnalysisMockup() {
           </div>
         </div>
 
-        {/* ── BOTTOM SECTION: Overall Assessment Result Card with darker reddish background & circular wheel ── */}
+        {/* ── BOTTOM SECTION: Overall Assessment Result Card with elevated top white line & circular wheel ── */}
         <div className="relative z-10 mt-8 sm:mt-9">
           <div
             ref={bottomCardRef}
-            className="bg-[#F8D4CF] border border-[#F09489] rounded-none p-4 sm:p-5 shadow-none card-interactive flow-anim-bottom"
+            className="relative overflow-hidden bg-gradient-to-br from-[#FFF4F2] via-[#FEEAE6] to-[#FEE1DC] border border-[#F4B2A8] rounded-none p-4 sm:p-5 card-interactive flow-anim-bottom"
+            style={{
+              boxShadow: '0 10px 28px -4px rgba(220, 38, 38, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.95)',
+            }}
           >
+            {/* Elevated top specular white highlight line */}
+            <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 opacity-95 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-4 sm:gap-6 items-center">
               {/* Left Column: Verdict & Narrative */}
               <div>
@@ -602,7 +710,7 @@ export default function JobAnalysisMockup() {
               </div>
 
               {/* Right Column: Circular Risk Wheel Illustration & Factor Legend */}
-              <div className="md:border-l md:border-[#F09489]/80 md:pl-5">
+              <div className="md:border-l md:border-[#F4B2A8]/70 md:pl-5">
                 <p className="text-[9.5px] font-bold tracking-widest text-[#7F1D1D] uppercase mb-2">
                   KEY RISK FACTORS
                 </p>
@@ -706,6 +814,13 @@ export default function JobAnalysisMockup() {
           </div>
         </div>
 
+        {/* ── BOTTOM LIVE SYSTEM TELEMETRY TICKER ── */}
+        <div className="flex items-center justify-around mt-4 pt-3 border-t border-[#E8E6DE]/70 text-[10.5px] sm:text-[11.5px] font-mono select-none">
+          <span className="text-[#77746C] font-medium tracking-wide">18,492 TXNS</span>
+          <span className="text-[#DC2626] font-bold tracking-wide">27 THREATS</span>
+          <span className="text-[#77746C] font-medium tracking-wide">99.98% UPTIME</span>
+        </div>
+
         {/* ── LAYER 3: FOREGROUND CIRCLE NODES (z-20) — Smaller, lighter, and delicate ── */}
         <svg
           className={`absolute inset-0 w-full h-full pointer-events-none z-20 transition-opacity duration-300 ${
@@ -719,8 +834,7 @@ export default function JobAnalysisMockup() {
               {/* Origin node at Apply Now button */}
               <circle cx={points.xApply} cy={points.yApply} r="2.8" className="node-ping-apply" />
 
-              {/* Left connection nodes: small delicate r=2.8 with telemetry pulse synchronization */}
-              <circle cx={points.xJ} cy={points.yJ} r="2.8" className="node-ping-j" />
+              {/* Left connection nodes: single junction node where branches split */}
               <circle cx={points.xMid} cy={points.yJ} r="2.8" className="node-ping-j" />
               <circle cx={points.xC1L} cy={points.yC1L} r="2.8" className="node-ping-c1l" />
               <circle cx={points.xC2L} cy={points.yC2L} r="2.8" className="node-ping-c2l" />
