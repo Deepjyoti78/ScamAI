@@ -35,12 +35,12 @@ export default function HeroSection() {
             </h1>
 
             {/* Supporting description matching exact copy */}
-            <p className="text-[14px] sm:text-[14.5px] lg:text-[15px] text-[#55524B] leading-[1.6] max-w-[440px] mb-6 lg:mb-7 animate-text-reveal stagger-4">
+            <p className="text-[14px] sm:text-[14.5px] lg:text-[15px] text-[#55524B] leading-[1.6] max-w-[440px] mb-12 sm:mb-16 lg:mb-20 animate-text-reveal stagger-4">
               Spot, verify, and avoid recruitment fraud before you share your details or commit to an opportunity.
             </p>
 
-            {/* CTA buttons — exact UI/UX preserved */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-7 sm:mb-8 lg:mb-9 w-full sm:w-auto animate-card-entrance stagger-5">
+            {/* CTA buttons — positioned lower downward as requested */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8 sm:mb-10 lg:mb-12 w-full sm:w-auto animate-card-entrance stagger-5">
               <button
                 type="button"
                 onClick={() => navigate('/investigate')}
