@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import Button from './Button';
 import JobAnalysisMockup from './JobAnalysisMockup';
 
@@ -36,14 +37,18 @@ export default function HeroSection() {
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-7 lg:mb-8 w-full sm:w-auto animate-card-entrance stagger-5">
-              <Button
-                variant="primary"
-                size="lg"
+              <button
+                type="button"
                 onClick={() => navigate('/investigate')}
-                className="w-full sm:w-auto justify-center h-[46px] text-[15px] sm:text-[14px] hover:shadow-[0_4px_16px_rgba(20,20,19,0.2)] hover:-translate-y-0.5 transition-all"
+                className="group relative inline-flex items-center justify-center gap-2.5 h-[48px] px-6 rounded-none bg-gradient-to-b from-[#262523] to-[#121211] text-[#FAF9F5] text-[15px] font-semibold tracking-[-0.01em] border border-[#3E3D38] shadow-[0_4px_16px_rgba(20,20,19,0.22),inset_0_1px_0_0_rgba(255,255,255,0.18)] hover:from-[#32312D] hover:to-[#171615] hover:border-[#4E4D47] hover:shadow-[0_8px_24px_rgba(20,20,19,0.32)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all duration-200 cursor-pointer select-none"
               >
-                Start an investigation →
-              </Button>
+                <span>Start an investigation</span>
+                <ArrowRight
+                  size={15}
+                  strokeWidth={2.2}
+                  className="text-[#FAF9F5]/90 transition-transform duration-200 group-hover:translate-x-1"
+                />
+              </button>
               <Button
                 variant="secondary"
                 size="lg"
@@ -51,7 +56,7 @@ export default function HeroSection() {
                   const el = document.getElementById('workflow');
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="w-full sm:w-auto justify-center h-[46px] text-[15px] sm:text-[14px] hover:-translate-y-0.5 transition-all"
+                className="w-full sm:w-auto justify-center h-[48px] px-5 text-[15px] font-medium border-[#D0CDC2] hover:bg-[#EFECE3] hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
               >
                 How it works
               </Button>

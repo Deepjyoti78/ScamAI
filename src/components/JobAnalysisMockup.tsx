@@ -256,36 +256,6 @@ export default function JobAnalysisMockup() {
           style={{ overflow: 'visible' }}
           aria-hidden="true"
         >
-          {/* Ambient Technical Sweep Waves */}
-          <g className="pointer-events-none opacity-40">
-            <path
-              d="M -40 260 C 90 270, 180 180, 480 80 C 580 50, 680 70, 780 110"
-              fill="none"
-              stroke="#60A5FA"
-              strokeWidth="1.2"
-              strokeDasharray="4 6"
-            />
-            <path
-              d="M -20 300 C 120 290, 220 210, 520 110 C 620 80, 720 100, 800 130"
-              fill="none"
-              stroke="#93C5FD"
-              strokeWidth="1"
-            />
-            <path
-              d="M 40 340 C 170 320, 280 240, 560 140 C 660 110, 740 120, 820 150"
-              fill="none"
-              stroke="#F87171"
-              strokeWidth="1.2"
-              strokeDasharray="3 5"
-            />
-            <path
-              d="M 70 380 C 210 360, 320 280, 580 180 C 670 140, 760 150, 840 170"
-              fill="none"
-              stroke="#FCA5A5"
-              strokeWidth="1"
-            />
-          </g>
-
           {points.ready && (
             <g key={`${points.xJ}-${points.xB}`}>
               {/* Underlying marching dashed lines: segmented and revealed on demand (ZERO lines initially!) */}
@@ -604,19 +574,16 @@ export default function JobAnalysisMockup() {
             </div>
           </div>
 
-          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and elevated top white line */}
+          {/* 2. Three Annotation Cards Column with razor-sharp clean edges and darker reddish upper gradient */}
           <div className="flex flex-col gap-2.5 justify-between">
             {/* Card 1: Domain mismatch */}
             <div
               ref={c1Ref}
-              className="relative overflow-hidden bg-gradient-to-br from-[#FFF8F7] via-[#FFF1EF] to-[#FEEDEB] border border-[#F7C8C2] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-1"
+              className="relative overflow-hidden bg-gradient-to-b from-[#F6ACA0] via-[#FBDCD6] to-[#FDF2F0] border border-[#F5A396] border-t-2 border-t-[#DC2626] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-1"
               style={{
-                boxShadow: '0 6px 20px -3px rgba(220, 38, 38, 0.07), 0 2px 5px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.95)',
+                boxShadow: '0 6px 20px -3px rgba(180, 50, 50, 0.08), 0 2px 5px -1px rgba(0, 0, 0, 0.03)',
               }}
             >
-              {/* Elevated top specular white highlight line */}
-              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 opacity-95 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
-
               <div className="mt-0.5 flex-shrink-0">{annotations[0].icon}</div>
               <div className="min-w-0">
                 <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
@@ -631,14 +598,11 @@ export default function JobAnalysisMockup() {
             {/* Card 2: Upfront payment request */}
             <div
               ref={c2Ref}
-              className="relative overflow-hidden bg-gradient-to-br from-[#FFF8F7] via-[#FFF1EF] to-[#FEEDEB] border border-[#F7C8C2] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-2"
+              className="relative overflow-hidden bg-gradient-to-b from-[#F6ACA0] via-[#FBDCD6] to-[#FDF2F0] border border-[#F5A396] border-t-2 border-t-[#DC2626] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-2"
               style={{
-                boxShadow: '0 6px 20px -3px rgba(220, 38, 38, 0.07), 0 2px 5px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.95)',
+                boxShadow: '0 6px 20px -3px rgba(180, 50, 50, 0.08), 0 2px 5px -1px rgba(0, 0, 0, 0.03)',
               }}
             >
-              {/* Elevated top specular white highlight line */}
-              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 opacity-95 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
-
               <div className="mt-0.5 flex-shrink-0">{annotations[1].icon}</div>
               <div className="min-w-0">
                 <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
@@ -653,14 +617,11 @@ export default function JobAnalysisMockup() {
             {/* Card 3: Unverified employer */}
             <div
               ref={c3Ref}
-              className="relative overflow-hidden bg-gradient-to-br from-[#FFF8F7] via-[#FFF1EF] to-[#FEEDEB] border border-[#F7C8C2] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-3"
+              className="relative overflow-hidden bg-gradient-to-b from-[#F6ACA0] via-[#FBDCD6] to-[#FDF2F0] border border-[#F5A396] border-t-2 border-t-[#DC2626] rounded-none p-3 pr-4 sm:pr-5 flex items-start gap-2.5 card-interactive flow-anim-warn-3"
               style={{
-                boxShadow: '0 6px 20px -3px rgba(220, 38, 38, 0.07), 0 2px 5px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.95)',
+                boxShadow: '0 6px 20px -3px rgba(180, 50, 50, 0.08), 0 2px 5px -1px rgba(0, 0, 0, 0.03)',
               }}
             >
-              {/* Elevated top specular white highlight line */}
-              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 opacity-95 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
-
               <div className="mt-0.5 flex-shrink-0">{annotations[2].icon}</div>
               <div className="min-w-0">
                 <h4 className="text-[12px] sm:text-[12.5px] font-bold text-[#991B1B] leading-tight">
@@ -674,17 +635,15 @@ export default function JobAnalysisMockup() {
           </div>
         </div>
 
-        {/* ── BOTTOM SECTION: Overall Assessment Result Card with elevated top white line & circular wheel ── */}
+        {/* ── BOTTOM SECTION: Overall Assessment Result Card with darker reddish upper gradient & circular wheel ── */}
         <div className="relative z-10 mt-8 sm:mt-9">
           <div
             ref={bottomCardRef}
-            className="relative overflow-hidden bg-gradient-to-br from-[#FFF4F2] via-[#FEEAE6] to-[#FEE1DC] border border-[#F4B2A8] rounded-none p-4 sm:p-5 card-interactive flow-anim-bottom"
+            className="relative overflow-hidden bg-gradient-to-b from-[#F29F92] via-[#FBD4CD] to-[#FDF0EC] border border-[#EA8B7D] border-t-2 border-t-[#DC2626] rounded-none p-4 sm:p-5 card-interactive flow-anim-bottom"
             style={{
-              boxShadow: '0 10px 28px -4px rgba(220, 38, 38, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.95)',
+              boxShadow: '0 10px 28px -4px rgba(180, 50, 50, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
             }}
           >
-            {/* Elevated top specular white highlight line */}
-            <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 opacity-95 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-4 sm:gap-6 items-center">
               {/* Left Column: Verdict & Narrative */}
