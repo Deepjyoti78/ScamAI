@@ -199,7 +199,7 @@ export default function JobAnalysisMockup() {
         ref={containerRef}
         className="relative min-w-[500px] sm:min-w-0 pr-8 pt-1 pb-1 animate-card-entrance stagger-3"
       >
-        {/* ── LAYER 1: BEHIND CARDS (z-0) — Lighter, thinner dashed connector lines ── */}
+        {/* ── LAYER 1: BEHIND CARDS (z-0) — Flowing dashed lines & traveling telemetry pulses ── */}
         <svg
           className={`absolute inset-0 w-full h-full pointer-events-none z-0 transition-opacity duration-300 ${
             points.ready ? 'opacity-100' : 'opacity-0'
@@ -208,62 +208,174 @@ export default function JobAnalysisMockup() {
           aria-hidden="true"
         >
           {points.ready && (
-            <g stroke="#A8A29E" strokeWidth="1">
-              {/* Left Branch Network: from Job Card right edge to 3 annotation cards */}
-              <line
-                x1={points.xJ}
-                y1={points.yJ}
-                x2={points.xMid}
-                y2={points.yJ}
-                strokeDasharray="5 4"
-              />
-              <line
-                x1={points.xMid}
-                y1={points.yJ}
-                x2={points.xC2L}
-                y2={points.yC2L}
-                strokeDasharray="5 4"
-              />
-              <path
-                d={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC1L} L ${points.xC1L} ${points.yC1L}`}
-                fill="none"
-                strokeDasharray="5 4"
-              />
-              <path
-                d={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
-                fill="none"
-                strokeDasharray="5 4"
-              />
+            <g key={`${points.xJ}-${points.xB}`}>
+              {/* Underlying marching dashed lines: constant smooth conveyor stream */}
+              <g stroke="#A8A29E" strokeWidth="1" className="flow-dash-line">
+                {/* Left Branch Network: from Job Card right edge to 3 annotation cards */}
+                <line
+                  x1={points.xJ}
+                  y1={points.yJ}
+                  x2={points.xMid}
+                  y2={points.yJ}
+                />
+                <line
+                  x1={points.xMid}
+                  y1={points.yJ}
+                  x2={points.xC2L}
+                  y2={points.yC2L}
+                />
+                <path
+                  d={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC1L} L ${points.xC1L} ${points.yC1L}`}
+                  fill="none"
+                />
+                <path
+                  d={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
+                  fill="none"
+                />
 
-              {/* Right Bus Network: from 3 cards right edges to vertical bus line */}
-              <line
-                x1={points.xC1R}
-                y1={points.yC1R}
-                x2={points.xTrunk}
-                y2={points.yC1R}
-                strokeDasharray="5 4"
-              />
-              <line
-                x1={points.xC2R}
-                y1={points.yC2R}
-                x2={points.xTrunk}
-                y2={points.yC2R}
-                strokeDasharray="5 4"
-              />
-              <line
-                x1={points.xC3R}
-                y1={points.yC3R}
-                x2={points.xTrunk}
-                y2={points.yC3R}
-                strokeDasharray="5 4"
-              />
+                {/* Right Bus Network: from 3 cards right edges to vertical bus line */}
+                <line
+                  x1={points.xC1R}
+                  y1={points.yC1R}
+                  x2={points.xTrunk}
+                  y2={points.yC1R}
+                />
+                <line
+                  x1={points.xC2R}
+                  y1={points.yC2R}
+                  x2={points.xTrunk}
+                  y2={points.yC2R}
+                />
+                <line
+                  x1={points.xC3R}
+                  y1={points.yC3R}
+                  x2={points.xTrunk}
+                  y2={points.yC3R}
+                />
 
-              {/* Vertical trunk line, turn 90 deg left across, then down into top border of bottom card */}
-              <path
-                d={`M ${points.xTrunk} ${points.yC1R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
-                fill="none"
-                strokeDasharray="5 4"
-              />
+                {/* Vertical trunk line, turn 90 deg left across, then down into top border of bottom card */}
+                <path
+                  d={`M ${points.xTrunk} ${points.yC1R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
+                  fill="none"
+                />
+              </g>
+
+              {/* Traveling crimson data pulses: flowing sequentially from card to card */}
+              <g className="pointer-events-none">
+                {/* Left Branch: Job Card -> Card 1 */}
+                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                  <animateMotion
+                    path={`M ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC1L} L ${points.xC1L} ${points.yC1L}`}
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                    keyTimes="0;0.06;0.25;0.27;1"
+                    keyPoints="0;0;1;1;1"
+                    calcMode="linear"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0;1;1;0;0"
+                    keyTimes="0;0.05;0.08;0.24;0.27;1"
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+
+                {/* Left Branch: Job Card -> Card 2 */}
+                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                  <animateMotion
+                    path={`M ${points.xJ} ${points.yJ} L ${points.xC2L} ${points.yC2L}`}
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                    keyTimes="0;0.09;0.28;0.30;1"
+                    keyPoints="0;0;1;1;1"
+                    calcMode="linear"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0;1;1;0;0"
+                    keyTimes="0;0.08;0.11;0.27;0.30;1"
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+
+                {/* Left Branch: Job Card -> Card 3 */}
+                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                  <animateMotion
+                    path={`M ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                    keyTimes="0;0.12;0.31;0.33;1"
+                    keyPoints="0;0;1;1;1"
+                    calcMode="linear"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0;1;1;0;0"
+                    keyTimes="0;0.11;0.14;0.30;0.33;1"
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+
+                {/* Right Bus: Card 1 -> Bottom Card */}
+                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                  <animateMotion
+                    path={`M ${points.xC1R} ${points.yC1R} L ${points.xTrunk} ${points.yC1R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                    keyTimes="0;0.47;0.71;0.73;1"
+                    keyPoints="0;0;1;1;1"
+                    calcMode="linear"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0;1;1;0;0"
+                    keyTimes="0;0.46;0.49;0.70;0.73;1"
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+
+                {/* Right Bus: Card 2 -> Bottom Card */}
+                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                  <animateMotion
+                    path={`M ${points.xC2R} ${points.yC2R} L ${points.xTrunk} ${points.yC2R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                    keyTimes="0;0.50;0.73;0.75;1"
+                    keyPoints="0;0;1;1;1"
+                    calcMode="linear"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0;1;1;0;0"
+                    keyTimes="0;0.49;0.52;0.72;0.75;1"
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+
+                {/* Right Bus: Card 3 -> Bottom Card */}
+                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                  <animateMotion
+                    path={`M ${points.xC3R} ${points.yC3R} L ${points.xTrunk} ${points.yC3R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                    keyTimes="0;0.53;0.75;0.77;1"
+                    keyPoints="0;0;1;1;1"
+                    calcMode="linear"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0;1;1;0;0"
+                    keyTimes="0;0.52;0.55;0.74;0.77;1"
+                    dur="5.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </g>
             </g>
           )}
         </svg>
@@ -273,10 +385,11 @@ export default function JobAnalysisMockup() {
           {/* 1. Job Card with razor-sharp clean edges */}
           <div
             ref={jobCardRef}
-            className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] card-interactive"
+            className="bg-[#FAF9F5] border border-[#E0DED4] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] card-interactive flow-anim-job"
           >
             {/* Browser URL Pill */}
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-[#F0EEE6] border border-[#E0DED4] mb-3.5 w-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
               <Link2 size={11} className="text-[#141413]/70 flex-shrink-0" />
               <span className="text-[9.5px] sm:text-[10px] font-mono text-[#141413]/80 tracking-tight truncate">
                 careers-rapidtech.com/jobs/product-designer
@@ -340,7 +453,7 @@ export default function JobAnalysisMockup() {
             {/* Card 1: Domain mismatch */}
             <div
               ref={c1Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive flow-anim-warn-1"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[0].icon}</div>
               <div className="min-w-0">
@@ -356,7 +469,7 @@ export default function JobAnalysisMockup() {
             {/* Card 2: Payment request */}
             <div
               ref={c2Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive flow-anim-warn-2"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[1].icon}</div>
               <div className="min-w-0">
@@ -372,7 +485,7 @@ export default function JobAnalysisMockup() {
             {/* Card 3: Unverified employer */}
             <div
               ref={c3Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive flow-anim-warn-3"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[2].icon}</div>
               <div className="min-w-0">
@@ -391,7 +504,7 @@ export default function JobAnalysisMockup() {
         <div className="relative z-10 mt-8 sm:mt-9">
           <div
             ref={bottomCardRef}
-            className="bg-[#F8D4CF] border border-[#F09489] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(220,38,38,0.06)] card-interactive"
+            className="bg-[#F8D4CF] border border-[#F09489] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(220,38,38,0.06)] card-interactive flow-anim-bottom"
           >
             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-4 sm:gap-6 items-center">
               {/* Left Column: Verdict & Narrative */}
@@ -401,7 +514,7 @@ export default function JobAnalysisMockup() {
                   <span className="text-[13.5px] sm:text-[14px] font-bold text-[#7F1D1D]">
                     Likely Suspicious
                   </span>
-                  <span className="text-[9px] font-bold tracking-wider text-white bg-[#DC2626] border border-[#B91C1C] px-2 py-0.5 rounded-none uppercase">
+                  <span className="text-[9px] font-bold tracking-wider text-white bg-[#DC2626] border border-[#B91C1C] px-2 py-0.5 rounded-none uppercase flow-anim-badge">
                     HIGH RISK
                   </span>
                 </div>
@@ -425,7 +538,7 @@ export default function JobAnalysisMockup() {
                 <div className="flex items-center gap-3.5">
                   {/* Circular Radial Donut Wheel */}
                   <div className="relative w-[76px] h-[76px] flex-shrink-0">
-                    <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                    <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 flow-anim-wheel">
                       {/* Background track circle */}
                       <circle
                         cx="50"
@@ -531,20 +644,20 @@ export default function JobAnalysisMockup() {
         >
           {points.ready && (
             <g fill="#FAF9F5" stroke="#77746C" strokeWidth="1.2">
-              {/* Left connection nodes: small delicate r=2.8 */}
-              <circle cx={points.xJ} cy={points.yJ} r="2.8" />
-              <circle cx={points.xMid} cy={points.yJ} r="2.8" />
-              <circle cx={points.xC1L} cy={points.yC1L} r="2.8" />
-              <circle cx={points.xC2L} cy={points.yC2L} r="2.8" />
-              <circle cx={points.xC3L} cy={points.yC3L} r="2.8" />
+              {/* Left connection nodes: small delicate r=2.8 with telemetry pulse synchronization */}
+              <circle cx={points.xJ} cy={points.yJ} r="2.8" className="node-ping-j" />
+              <circle cx={points.xMid} cy={points.yJ} r="2.8" className="node-ping-j" />
+              <circle cx={points.xC1L} cy={points.yC1L} r="2.8" className="node-ping-c1l" />
+              <circle cx={points.xC2L} cy={points.yC2L} r="2.8" className="node-ping-c2l" />
+              <circle cx={points.xC3L} cy={points.yC3L} r="2.8" className="node-ping-c3l" />
 
               {/* Right connection nodes */}
-              <circle cx={points.xC1R} cy={points.yC1R} r="2.8" />
-              <circle cx={points.xC2R} cy={points.yC2R} r="2.8" />
-              <circle cx={points.xC3R} cy={points.yC3R} r="2.8" />
+              <circle cx={points.xC1R} cy={points.yC1R} r="2.8" className="node-ping-c1r" />
+              <circle cx={points.xC2R} cy={points.yC2R} r="2.8" className="node-ping-c2r" />
+              <circle cx={points.xC3R} cy={points.yC3R} r="2.8" className="node-ping-c3r" />
 
               {/* Bottom card top connection node */}
-              <circle cx={points.xB} cy={points.yB} r="2.8" />
+              <circle cx={points.xB} cy={points.yB} r="2.8" className="node-ping-b" />
             </g>
           )}
         </svg>

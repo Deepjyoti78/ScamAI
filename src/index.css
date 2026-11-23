@@ -308,6 +308,271 @@ a, button {
   box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.07);
 }
 
+/* 6. Hero Telemetry & Data Flow Pipeline Animations */
+@keyframes marchDash {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+.flow-dash-line {
+  stroke-dasharray: 5 4;
+  animation: marchDash 1.25s linear infinite;
+}
+
+/* Pulses along Left Branches (normalized pathLength=100) */
+@keyframes pulseLeft1 {
+  0%, 4% { stroke-dashoffset: 0; opacity: 0; }
+  7% { opacity: 1; }
+  24% { stroke-dashoffset: -100; opacity: 1; }
+  26%, 100% { stroke-dashoffset: -100; opacity: 0; }
+}
+@keyframes pulseLeft2 {
+  0%, 7% { stroke-dashoffset: 0; opacity: 0; }
+  10% { opacity: 1; }
+  27% { stroke-dashoffset: -100; opacity: 1; }
+  29%, 100% { stroke-dashoffset: -100; opacity: 0; }
+}
+@keyframes pulseLeft3 {
+  0%, 10% { stroke-dashoffset: 0; opacity: 0; }
+  13% { opacity: 1; }
+  30% { stroke-dashoffset: -100; opacity: 1; }
+  32%, 100% { stroke-dashoffset: -100; opacity: 0; }
+}
+
+.flow-pulse-left-1 {
+  stroke-dasharray: 12 120;
+  animation: pulseLeft1 5.5s ease-in-out infinite;
+}
+.flow-pulse-left-2 {
+  stroke-dasharray: 12 120;
+  animation: pulseLeft2 5.5s ease-in-out infinite;
+}
+.flow-pulse-left-3 {
+  stroke-dasharray: 12 120;
+  animation: pulseLeft3 5.5s ease-in-out infinite;
+}
+
+/* Pulses along Right Bus to Bottom Card (normalized pathLength=100) */
+@keyframes pulseRight1 {
+  0%, 46% { stroke-dashoffset: 0; opacity: 0; }
+  49% { opacity: 1; }
+  70% { stroke-dashoffset: -100; opacity: 1; }
+  72%, 100% { stroke-dashoffset: -100; opacity: 0; }
+}
+@keyframes pulseRight2 {
+  0%, 49% { stroke-dashoffset: 0; opacity: 0; }
+  52% { opacity: 1; }
+  73% { stroke-dashoffset: -100; opacity: 1; }
+  75%, 100% { stroke-dashoffset: -100; opacity: 0; }
+}
+@keyframes pulseRight3 {
+  0%, 52% { stroke-dashoffset: 0; opacity: 0; }
+  55% { opacity: 1; }
+  76% { stroke-dashoffset: -100; opacity: 1; }
+  78%, 100% { stroke-dashoffset: -100; opacity: 0; }
+}
+
+.flow-pulse-right-1 {
+  stroke-dasharray: 14 140;
+  animation: pulseRight1 5.5s ease-in-out infinite;
+}
+.flow-pulse-right-2 {
+  stroke-dasharray: 14 140;
+  animation: pulseRight2 5.5s ease-in-out infinite;
+}
+.flow-pulse-right-3 {
+  stroke-dasharray: 14 140;
+  animation: pulseRight3 5.5s ease-in-out infinite;
+}
+
+/* Card Flow Highlights */
+@keyframes cardJobFlow {
+  0%, 100% {
+    border-color: #E0DED4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  4%, 18% {
+    border-color: #CDC9BD;
+    box-shadow: 0 0 14px rgba(220, 38, 38, 0.07), 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+  25% {
+    border-color: #E0DED4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+}
+
+@keyframes cardWarnFlow1 {
+  0%, 22% {
+    border-color: #F8B7B0;
+    background-color: #FDECE9;
+    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
+  }
+  26%, 44% {
+    border-color: #F87171;
+    background-color: #FCE7E4;
+    box-shadow: 0 0 14px rgba(220, 38, 38, 0.16), 0 1px 4px rgba(220, 38, 38, 0.06);
+  }
+  49%, 100% {
+    border-color: #F8B7B0;
+    background-color: #FDECE9;
+    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
+  }
+}
+
+@keyframes cardWarnFlow2 {
+  0%, 25% {
+    border-color: #F8B7B0;
+    background-color: #FDECE9;
+    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
+  }
+  29%, 47% {
+    border-color: #F87171;
+    background-color: #FCE7E4;
+    box-shadow: 0 0 14px rgba(220, 38, 38, 0.16), 0 1px 4px rgba(220, 38, 38, 0.06);
+  }
+  52%, 100% {
+    border-color: #F8B7B0;
+    background-color: #FDECE9;
+    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
+  }
+}
+
+@keyframes cardWarnFlow3 {
+  0%, 28% {
+    border-color: #F8B7B0;
+    background-color: #FDECE9;
+    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
+  }
+  32%, 50% {
+    border-color: #F87171;
+    background-color: #FCE7E4;
+    box-shadow: 0 0 14px rgba(220, 38, 38, 0.16), 0 1px 4px rgba(220, 38, 38, 0.06);
+  }
+  55%, 100% {
+    border-color: #F8B7B0;
+    background-color: #FDECE9;
+    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
+  }
+}
+
+@keyframes cardBottomFlow {
+  0%, 68% {
+    border-color: #F09489;
+    background-color: #F8D4CF;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.06);
+  }
+  73%, 93% {
+    border-color: #DC2626;
+    background-color: #F7CEC8;
+    box-shadow: 0 0 18px rgba(220, 38, 38, 0.2), 0 2px 8px rgba(220, 38, 38, 0.08);
+  }
+  98%, 100% {
+    border-color: #F09489;
+    background-color: #F8D4CF;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.06);
+  }
+}
+
+@keyframes badgeHighRiskPulse {
+  0%, 71% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+  76%, 90% {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(220, 38, 38, 0.45);
+  }
+  95%, 100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+@keyframes riskWheelShimmer {
+  0%, 72% {
+    filter: drop-shadow(0 0 0 rgba(220, 38, 38, 0));
+  }
+  76%, 92% {
+    filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.4));
+  }
+  96%, 100% {
+    filter: drop-shadow(0 0 0 rgba(220, 38, 38, 0));
+  }
+}
+
+.flow-anim-job {
+  animation: cardJobFlow 5.5s ease-in-out infinite;
+}
+.flow-anim-warn-1 {
+  animation: cardWarnFlow1 5.5s ease-in-out infinite;
+}
+.flow-anim-warn-2 {
+  animation: cardWarnFlow2 5.5s ease-in-out infinite;
+}
+.flow-anim-warn-3 {
+  animation: cardWarnFlow3 5.5s ease-in-out infinite;
+}
+.flow-anim-bottom {
+  animation: cardBottomFlow 5.5s ease-in-out infinite;
+}
+.flow-anim-badge {
+  animation: badgeHighRiskPulse 5.5s ease-in-out infinite;
+}
+.flow-anim-wheel {
+  animation: riskWheelShimmer 5.5s ease-in-out infinite;
+}
+
+/* Node Pings */
+@keyframes nodePingLeft {
+  0%, 3% { fill: #FAF9F5; stroke: #77746C; }
+  6%, 13% { fill: #DC2626; stroke: #991B1B; }
+  16%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes nodePingC1L {
+  0%, 22% { fill: #FAF9F5; stroke: #77746C; }
+  25%, 33% { fill: #DC2626; stroke: #991B1B; }
+  36%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes nodePingC2L {
+  0%, 25% { fill: #FAF9F5; stroke: #77746C; }
+  28%, 36% { fill: #DC2626; stroke: #991B1B; }
+  39%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes nodePingC3L {
+  0%, 28% { fill: #FAF9F5; stroke: #77746C; }
+  31%, 39% { fill: #DC2626; stroke: #991B1B; }
+  42%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes nodePingC1R {
+  0%, 46% { fill: #FAF9F5; stroke: #77746C; }
+  49%, 57% { fill: #DC2626; stroke: #991B1B; }
+  60%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes nodePingC2R {
+  0%, 49% { fill: #FAF9F5; stroke: #77746C; }
+  52%, 60% { fill: #DC2626; stroke: #991B1B; }
+  63%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes nodePingC3R {
+  0%, 52% { fill: #FAF9F5; stroke: #77746C; }
+  55%, 63% { fill: #DC2626; stroke: #991B1B; }
+  66%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+@keyframes nodePingBottom {
+  0%, 69% { fill: #FAF9F5; stroke: #77746C; }
+  72%, 84% { fill: #DC2626; stroke: #991B1B; }
+  87%, 100% { fill: #FAF9F5; stroke: #77746C; }
+}
+
+.node-ping-j { animation: nodePingLeft 5.5s ease-in-out infinite; }
+.node-ping-c1l { animation: nodePingC1L 5.5s ease-in-out infinite; }
+.node-ping-c2l { animation: nodePingC2L 5.5s ease-in-out infinite; }
+.node-ping-c3l { animation: nodePingC3L 5.5s ease-in-out infinite; }
+.node-ping-c1r { animation: nodePingC1R 5.5s ease-in-out infinite; }
+.node-ping-c2r { animation: nodePingC2R 5.5s ease-in-out infinite; }
+.node-ping-c3r { animation: nodePingC3R 5.5s ease-in-out infinite; }
+.node-ping-b { animation: nodePingBottom 5.5s ease-in-out infinite; }
+
 /* Keep analysis content readable with long URLs and narrow viewports. */
 main { min-width: 0; }
 main a, main p, main pre, [role="dialog"] p, [role="dialog"] span { overflow-wrap: anywhere; }
