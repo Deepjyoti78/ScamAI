@@ -8,27 +8,33 @@ export default function HeroSection() {
 
   return (
     <section className="w-full pt-4 pb-6 sm:pt-6 sm:pb-8 lg:pt-6 lg:pb-8 px-4 sm:px-6 lg:px-8 xl:px-10 overflow-hidden">
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,440px)_1fr] xl:grid-cols-[minmax(0,460px)_1fr] gap-6 lg:gap-8 xl:gap-10 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,440px)_1fr] xl:grid-cols-[minmax(0,460px)_1fr] gap-6 lg:gap-8 xl:gap-10 items-start">
 
           {/* ── Left column ── */}
-          <div className="flex flex-col">
-            {/* Main headline — large editorial serif with sequential word reveal */}
-            <h1
-              className="font-serif leading-[1.06] tracking-[-0.025em] text-[#141413] mb-4 lg:mb-4.5"
-              style={{ fontSize: 'clamp(34px, 4.8vw, 62px)' }}
-            >
-              <span className="block animate-text-reveal stagger-1">Scams evolve every day.</span>
-              <span className="block text-[#77746C] font-normal animate-text-reveal stagger-2">So does your defense.</span>
+          <div className="flex flex-col lg:pt-1">
+            {/* Main headline — differentiated editorial scale */}
+            <h1 className="flex flex-col mb-4 lg:mb-5">
+              <span
+                className="font-serif text-[#77746C] font-normal leading-[1.15] tracking-[-0.015em] block animate-text-reveal stagger-1 text-[24px] sm:text-[28px] lg:text-[32px]"
+              >
+                Scams evolve every day.
+              </span>
+              <span
+                className="font-serif font-bold text-[#141413] leading-[1.04] tracking-[-0.03em] block animate-text-reveal stagger-2 text-[38px] sm:text-[46px] lg:text-[56px] xl:text-[60px]"
+              >
+                So does your defense.
+              </span>
             </h1>
 
-            {/* Supporting description — smaller in size */}
-            <p className="text-[13px] sm:text-[13.5px] text-[#625F58] leading-[1.55] max-w-[410px] mb-6 animate-text-reveal stagger-3">
-              Analyse job postings, cross-check key details, and
-              detect potential recruitment scams with clear,
-              explainable AI.
+            {/* Supporting description — expanded context */}
+            <p className="text-[13px] sm:text-[13.5px] text-[#625F58] leading-[1.65] max-w-[450px] mb-7 lg:mb-8 animate-text-reveal stagger-3">
+              Analyse suspicious job postings, cross-check employer legitimacy,
+              and detect recruitment fraud across multiple public intelligence
+              signals — from domain mismatches to upfront payment demands —
+              before you commit your career and personal details.
             </p>
 
-            {/* CTA buttons */}
+            {/* CTA buttons — positioned a little lower */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto animate-card-entrance stagger-5">
               <button
                 type="button"
