@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { AlertTriangle, Mail, Building2, Link2 } from 'lucide-react';
 
 interface PointCoords {
+  xApply: number;
+  yApply: number;
   xJ: number;
   yJ: number;
   xMid: number;
@@ -52,12 +54,15 @@ const riskFactors = [
 export default function JobAnalysisMockup() {
   const containerRef = useRef<HTMLDivElement>(null);
   const jobCardRef = useRef<HTMLDivElement>(null);
+  const applyBtnRef = useRef<HTMLButtonElement>(null);
   const c1Ref = useRef<HTMLDivElement>(null);
   const c2Ref = useRef<HTMLDivElement>(null);
   const c3Ref = useRef<HTMLDivElement>(null);
   const bottomCardRef = useRef<HTMLDivElement>(null);
 
   const [points, setPoints] = useState<PointCoords>({
+    xApply: 0,
+    yApply: 0,
     xJ: 0,
     yJ: 0,
     xMid: 0,
@@ -84,6 +89,7 @@ export default function JobAnalysisMockup() {
     if (
       !containerRef.current ||
       !jobCardRef.current ||
+      !applyBtnRef.current ||
       !c1Ref.current ||
       !c2Ref.current ||
       !c3Ref.current ||
@@ -94,10 +100,15 @@ export default function JobAnalysisMockup() {
 
     const container = containerRef.current.getBoundingClientRect();
     const job = jobCardRef.current.getBoundingClientRect();
+    const apply = applyBtnRef.current.getBoundingClientRect();
     const c1 = c1Ref.current.getBoundingClientRect();
     const c2 = c2Ref.current.getBoundingClientRect();
     const c3 = c3Ref.current.getBoundingClientRect();
     const bottom = bottomCardRef.current.getBoundingClientRect();
+
+    // Apply button right-edge center
+    const xApply = Math.round(apply.right - container.left);
+    const yApply = Math.round(apply.top + apply.height / 2 - container.top);
 
     const xC1L = Math.round(c1.left - container.left);
     const yC1L = Math.round(c1.top + c1.height / 2 - container.top);
@@ -133,6 +144,8 @@ export default function JobAnalysisMockup() {
     const yTurn = Math.round(yC3R + (yB - yC3R) * 0.46);
 
     setPoints({
+      xApply,
+      yApply,
       xJ,
       yJ,
       xMid,
@@ -209,15 +222,17 @@ export default function JobAnalysisMockup() {
         >
           {points.ready && (
             <g key={`${points.xJ}-${points.xB}`}>
-              {/* Underlying marching dashed lines: constant smooth conveyor stream */}
-              <g stroke="#A8A29E" strokeWidth="1" className="flow-dash-line">
-                {/* Left Branch Network: from Job Card right edge to 3 annotation cards */}
-                <line
-                  x1={points.xJ}
-                  y1={points.yJ}
-                  x2={points.xMid}
-                  y2={points.yJ}
+              {/* Underlying marching dashed lines: segmented and revealed on demand (ZERO lines initially!) */}
+              {/* Segment 1: From Apply button to Right Edge Junction (reveals when button is clicked) */}
+              <g stroke="#A8A29E" strokeWidth="1" className="flow-dash-line line-anim-apply">
+                <path
+                  d={`M ${points.xApply} ${points.yApply} L ${points.xJ} ${points.yApply} L ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ}`}
+                  fill="none"
                 />
+              </g>
+
+              {/* Segment 2: Left Branch Network (from junction dividing into 3 warning cards) */}
+              <g stroke="#A8A29E" strokeWidth="1" className="flow-dash-line line-anim-left-branch">
                 <line
                   x1={points.xMid}
                   y1={points.yJ}
@@ -232,8 +247,10 @@ export default function JobAnalysisMockup() {
                   d={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
                   fill="none"
                 />
+              </g>
 
-                {/* Right Bus Network: from 3 cards right edges to vertical bus line */}
+              {/* Segment 3: Right Bus Network (from 3 cards into vertical bus line and down into bottom card) */}
+              <g stroke="#A8A29E" strokeWidth="1" className="flow-dash-line line-anim-right-bus">
                 <line
                   x1={points.xC1R}
                   y1={points.yC1R}
@@ -252,69 +269,86 @@ export default function JobAnalysisMockup() {
                   x2={points.xTrunk}
                   y2={points.yC3R}
                 />
-
-                {/* Vertical trunk line, turn 90 deg left across, then down into top border of bottom card */}
                 <path
                   d={`M ${points.xTrunk} ${points.yC1R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
                   fill="none"
                 />
               </g>
 
-              {/* Traveling crimson data pulses: flowing sequentially from card to card */}
+              {/* Traveling crimson data pulses: flowing sequentially across the 12s narrative */}
               <g className="pointer-events-none">
-                {/* Left Branch: Job Card -> Card 1 (Domain mismatch) */}
+                {/* Pulse 0: Point arises from 'Apply Now' and travels to the junction point */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
-                    path={`M ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC1L} L ${points.xC1L} ${points.yC1L}`}
-                    dur="10s"
+                    path={`M ${points.xApply} ${points.yApply} L ${points.xJ} ${points.yApply} L ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ}`}
+                    dur="12s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.04;0.14;0.16;1"
+                    keyTimes="0;0.146;0.217;0.230;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.035;0.055;0.135;0.155;1"
-                    dur="10s"
+                    keyTimes="0;0.142;0.155;0.210;0.225;1"
+                    dur="12s"
                     repeatCount="indefinite"
                   />
                 </circle>
 
-                {/* Left Branch: Job Card -> Card 2 (Payment request) - 100% straight horizontal */}
+                {/* Pulse 1: At junction, point divides into three -> Branch 1 to Card 1 (Domain mismatch) */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
-                    path={`M ${points.xJ} ${points.yJ} L ${points.xC2L} ${points.yC2L}`}
-                    dur="10s"
+                    path={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC1L} L ${points.xC1L} ${points.yC1L}`}
+                    dur="12s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.20;0.30;0.32;1"
+                    keyTimes="0;0.217;0.300;0.315;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.195;0.215;0.295;0.315;1"
-                    dur="10s"
+                    keyTimes="0;0.212;0.225;0.295;0.310;1"
+                    dur="12s"
                     repeatCount="indefinite"
                   />
                 </circle>
 
-                {/* Left Branch: Job Card -> Card 3 (Unverified employer) */}
+                {/* Pulse 2: Branch 2 to Card 2 (Payment request) - 100% straight horizontal */}
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
-                    path={`M ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
-                    dur="10s"
+                    path={`M ${points.xMid} ${points.yJ} L ${points.xC2L} ${points.yC2L}`}
+                    dur="12s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.36;0.46;0.48;1"
+                    keyTimes="0;0.317;0.400;0.415;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.355;0.375;0.455;0.475;1"
-                    dur="10s"
+                    keyTimes="0;0.312;0.325;0.395;0.410;1"
+                    dur="12s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+
+                {/* Pulse 3: Branch 3 to Card 3 (Unverified employer) */}
+                <circle r="2.8" fill="#DC2626">
+                  <animateMotion
+                    path={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
+                    dur="12s"
+                    repeatCount="indefinite"
+                    keyTimes="0;0.417;0.500;0.515;1"
+                    keyPoints="0;0;1;1;1"
+                    calcMode="linear"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0;1;1;0;0"
+                    keyTimes="0;0.412;0.425;0.495;0.510;1"
+                    dur="12s"
                     repeatCount="indefinite"
                   />
                 </circle>
@@ -323,17 +357,17 @@ export default function JobAnalysisMockup() {
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC1R} ${points.yC1R} L ${points.xTrunk} ${points.yC1R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
-                    dur="10s"
+                    dur="12s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.52;0.64;0.66;1"
+                    keyTimes="0;0.533;0.625;0.640;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.515;0.535;0.635;0.655;1"
-                    dur="10s"
+                    keyTimes="0;0.528;0.540;0.620;0.635;1"
+                    dur="12s"
                     repeatCount="indefinite"
                   />
                 </circle>
@@ -342,17 +376,17 @@ export default function JobAnalysisMockup() {
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC2R} ${points.yC2R} L ${points.xTrunk} ${points.yC2R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
-                    dur="10s"
+                    dur="12s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.54;0.65;0.67;1"
+                    keyTimes="0;0.550;0.638;0.650;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.535;0.555;0.645;0.665;1"
-                    dur="10s"
+                    keyTimes="0;0.545;0.558;0.632;0.647;1"
+                    dur="12s"
                     repeatCount="indefinite"
                   />
                 </circle>
@@ -361,17 +395,17 @@ export default function JobAnalysisMockup() {
                 <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC3R} ${points.yC3R} L ${points.xTrunk} ${points.yC3R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
-                    dur="10s"
+                    dur="12s"
                     repeatCount="indefinite"
-                    keyTimes="0;0.56;0.66;0.68;1"
+                    keyTimes="0;0.567;0.650;0.665;1"
                     keyPoints="0;0;1;1;1"
                     calcMode="linear"
                   />
                   <animate
                     attributeName="opacity"
                     values="0;0;1;1;0;0"
-                    keyTimes="0;0.555;0.575;0.655;0.675;1"
-                    dur="10s"
+                    keyTimes="0;0.562;0.575;0.645;0.660;1"
+                    dur="12s"
                     repeatCount="indefinite"
                   />
                 </circle>
@@ -439,13 +473,37 @@ export default function JobAnalysisMockup() {
               and get hands-on experience.
             </p>
 
-            {/* Apply Button */}
-            <button
-              type="button"
-              className="text-[11px] font-semibold bg-[#141413] text-[#FAF9F5] rounded-none px-3.5 py-1.5 hover:bg-[#30302D] transition-colors cursor-pointer"
-            >
-              Apply Now
-            </button>
+            {/* Apply Button with Animated Synthetic Cursor & Click Simulation */}
+            <div className="relative inline-block">
+              <button
+                ref={applyBtnRef}
+                type="button"
+                className="text-[11px] font-semibold bg-[#141413] text-[#FAF9F5] rounded-none px-3.5 py-1.5 transition-colors cursor-pointer flow-anim-apply-btn"
+              >
+                Apply Now
+              </button>
+
+              {/* Synthetic Dragging Mouse Cursor */}
+              <div className="flow-anim-mouse-cursor absolute top-0 left-0 pointer-events-none z-30">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+                >
+                  <path
+                    d="M4 2L15.5 13.5L10 14.5L13 20.5L10.5 21.8L7.5 15.8L3.5 19.8V2Z"
+                    fill="#141413"
+                    stroke="#FAF9F5"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                {/* Click ripple ring */}
+                <span className="flow-anim-click-ripple absolute top-0.5 left-0.5 w-4 h-4 rounded-full border-2 border-[#DC2626] pointer-events-none" />
+              </div>
+            </div>
           </div>
 
           {/* 2. Three Annotation Cards Column with razor-sharp clean edges and lighter reddish background */}
@@ -644,6 +702,9 @@ export default function JobAnalysisMockup() {
         >
           {points.ready && (
             <g fill="#FAF9F5" stroke="#77746C" strokeWidth="1.2">
+              {/* Origin node at Apply Now button */}
+              <circle cx={points.xApply} cy={points.yApply} r="2.8" className="node-ping-apply" />
+
               {/* Left connection nodes: small delicate r=2.8 with telemetry pulse synchronization */}
               <circle cx={points.xJ} cy={points.yJ} r="2.8" className="node-ping-j" />
               <circle cx={points.xMid} cy={points.yJ} r="2.8" className="node-ping-j" />

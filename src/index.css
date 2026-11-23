@@ -386,50 +386,169 @@ a, button {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HERO ANALYSIS SEQUENTIAL PROGRESSIVE REVEAL (10s synchronized cycle)
-   1. Dot 1 departs Job Card (4%) -> hits Card 1 (14%) -> Card 1 reveals
-   2. Dot 2 departs Job Card (20%) -> hits Card 2 (30%) -> Card 2 reveals
-   3. Dot 3 departs Job Card (36%) -> hits Card 3 (46%) -> Card 3 reveals
-   4. Dots 4, 5, 6 exit Cards 1, 2, 3 (52-56%) -> plunge into Bottom Card (64-68%)
-   5. Bottom Card reveals (66%) + Circular Risk Wheel spins/draws in + Score pops
-   6. Full analysis dossier completely visible for reading (72% - 94%)
-   7. Graceful fade-out reset (95% - 98%) -> repeats smoothly at 0%
+   HERO ANALYSIS STORY FLOW (12s synchronized cycle)
+   1. Initial clean state: NO dotted lines, NO extra nodes, NO empty card shapes.
+   2. Cursor glides in (1.5% - 11.5%) & clicks 'Apply Now' button (12.5% - 14.5%).
+   3. Telemetry point arises from 'Apply Now' (14.6% - 21.7%) & dividing line appears.
+   4. At junction, point divides into three:
+      - Point 1 (21.7% - 30%) -> reveals Domain Mismatch (Card 1)
+      - Point 2 (31.7% - 40%) -> reveals Payment Request (Card 2) - 100% straight
+      - Point 3 (41.7% - 50%) -> reveals Unverified Employer (Card 3)
+   5. Signals from all 3 cards stream down right bus (53.3% - 65%) to bottom card.
+   6. Bottom card ('Likely Suspicious') materializes (65% - 68%) + Circular Risk Wheel
+      animates/spins in + +0.88 RISK readout pops + legend cascades.
+   7. Full analysis dossier completely visible for reading (72% - 94%).
+   8. Graceful reset (94% - 97%) back to clean initial state.
    ══════════════════════════════════════════════════════════════════════════ */
+
+/* Animated Mouse Cursor Drag & Click */
+@keyframes mouseCursorGlideClick {
+  0% {
+    opacity: 0;
+    transform: translate(65px, 55px) scale(1);
+  }
+  1.5% {
+    opacity: 1;
+    transform: translate(58px, 48px) scale(1);
+  }
+  9.5% {
+    opacity: 1;
+    transform: translate(14px, 10px) scale(1);
+  }
+  11.5% {
+    opacity: 1;
+    transform: translate(14px, 10px) scale(1);
+  }
+  12.5% {
+    opacity: 1;
+    transform: translate(14px, 10px) scale(0.85);
+  }
+  14.5% {
+    opacity: 1;
+    transform: translate(14px, 10px) scale(1);
+  }
+  17.5% {
+    opacity: 0;
+    transform: translate(32px, 22px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(65px, 55px) scale(1);
+  }
+}
+
+/* Apply Now Button Click Press Animation */
+@keyframes applyButtonClick {
+  0%, 12% {
+    transform: scale(1);
+    background-color: #141413;
+  }
+  12.8% {
+    transform: scale(0.93);
+    background-color: #2D2D2A;
+  }
+  14.5% {
+    transform: scale(1.03);
+    background-color: #141413;
+  }
+  15.5%, 100% {
+    transform: scale(1);
+    background-color: #141413;
+  }
+}
+
+/* Click Ripple Ring */
+@keyframes clickRippleEffect {
+  0%, 12.5% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  13.2% {
+    opacity: 0.85;
+    transform: scale(0.6);
+  }
+  15.5% {
+    opacity: 0;
+    transform: scale(2.0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+.flow-anim-mouse-cursor {
+  animation: mouseCursorGlideClick 12s cubic-bezier(0.2, 0.8, 0.25, 1) infinite;
+}
+.flow-anim-apply-btn {
+  animation: applyButtonClick 12s ease-in-out infinite;
+}
+.flow-anim-click-ripple {
+  animation: clickRippleEffect 12s ease-out infinite;
+}
+
+/* ── Dotted Lines Visibility (ZERO lines in the initial part!) ── */
+@keyframes revealLineApply {
+  0%, 14% {
+    opacity: 0;
+  }
+  15.5%, 94% {
+    opacity: 1;
+  }
+  97%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes revealLineLeft {
+  0%, 21% {
+    opacity: 0;
+  }
+  22.5%, 94% {
+    opacity: 1;
+  }
+  97%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes revealLineRight {
+  0%, 52.5% {
+    opacity: 0;
+  }
+  54%, 94% {
+    opacity: 1;
+  }
+  97%, 100% {
+    opacity: 0;
+  }
+}
+
+.line-anim-apply {
+  animation: revealLineApply 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+.line-anim-left-branch {
+  animation: revealLineLeft 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+.line-anim-right-bus {
+  animation: revealLineRight 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
 
 /* Job Card: subtle boundary indicator during active pulse emissions */
 @keyframes cardJobFlow {
   0%, 100% {
     border-color: #E0DED4;
   }
-  3%, 40% {
+  12%, 50% {
     border-color: #D6D3D1;
   }
-  45% {
+  55% {
     border-color: #E0DED4;
   }
 }
 
 /* Card 1: Domain Mismatch Reveal */
 @keyframes revealCard1Seq {
-  0%, 13.5% {
-    opacity: 0;
-    transform: translateX(8px);
-    pointer-events: none;
-  }
-  17%, 94% {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-  97%, 100% {
-    opacity: 0;
-    transform: translateX(8px);
-    pointer-events: none;
-  }
-}
-
-/* Card 2: Payment Request Reveal */
-@keyframes revealCard2Seq {
   0%, 29.5% {
     opacity: 0;
     transform: translateX(8px);
@@ -447,14 +566,33 @@ a, button {
   }
 }
 
-/* Card 3: Unverified Employer Reveal */
-@keyframes revealCard3Seq {
-  0%, 45.5% {
+/* Card 2: Payment Request Reveal */
+@keyframes revealCard2Seq {
+  0%, 39.5% {
     opacity: 0;
     transform: translateX(8px);
     pointer-events: none;
   }
-  49%, 94% {
+  43%, 94% {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  97%, 100% {
+    opacity: 0;
+    transform: translateX(8px);
+    pointer-events: none;
+  }
+}
+
+/* Card 3: Unverified Employer Reveal */
+@keyframes revealCard3Seq {
+  0%, 49.5% {
+    opacity: 0;
+    transform: translateX(8px);
+    pointer-events: none;
+  }
+  53%, 94% {
     opacity: 1;
     transform: translateX(0);
     pointer-events: auto;
@@ -468,12 +606,12 @@ a, button {
 
 /* Bottom Card: Likely Suspicious Assessment Card Reveal */
 @keyframes revealBottomCardSeq {
-  0%, 65% {
+  0%, 64.5% {
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
   }
-  69%, 94% {
+  68%, 94% {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
@@ -487,15 +625,15 @@ a, button {
 
 /* HIGH RISK Badge Pop */
 @keyframes badgePopSeq {
-  0%, 67% {
+  0%, 66% {
     opacity: 0;
     transform: scale(0.8);
   }
-  70% {
+  69% {
     opacity: 1;
     transform: scale(1.08);
   }
-  73%, 94% {
+  72%, 94% {
     opacity: 1;
     transform: scale(1);
   }
@@ -507,11 +645,11 @@ a, button {
 
 /* Circular Risk Wheel Animation (Draws and unfurls from -180deg to -90deg) */
 @keyframes wheelSpinDrawSeq {
-  0%, 67% {
+  0%, 66% {
     opacity: 0;
     transform: rotate(-180deg) scale(0.7);
   }
-  73%, 94% {
+  72%, 94% {
     opacity: 1;
     transform: rotate(-90deg) scale(1);
   }
@@ -523,15 +661,15 @@ a, button {
 
 /* Wheel Center Readout (+0.88 RISK) Pop */
 @keyframes scorePopSeq {
-  0%, 71% {
+  0%, 70% {
     opacity: 0;
     transform: scale(0.5);
   }
-  74% {
+  73% {
     opacity: 1;
     transform: scale(1.1);
   }
-  77%, 94% {
+  76%, 94% {
     opacity: 1;
     transform: scale(1);
   }
@@ -543,11 +681,11 @@ a, button {
 
 /* Factor Legend Staggered Cascade */
 @keyframes legendCascadeSeq {
-  0%, 70% {
+  0%, 69% {
     opacity: 0;
     transform: translateX(6px);
   }
-  74%, 94% {
+  73%, 94% {
     opacity: 1;
     transform: translateX(0);
   }
@@ -558,103 +696,121 @@ a, button {
 }
 
 .flow-anim-job {
-  animation: cardJobFlow 10s ease-in-out infinite;
+  animation: cardJobFlow 12s ease-in-out infinite;
 }
 .flow-anim-warn-1 {
-  animation: revealCard1Seq 10s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: revealCard1Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 .flow-anim-warn-2 {
-  animation: revealCard2Seq 10s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: revealCard2Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 .flow-anim-warn-3 {
-  animation: revealCard3Seq 10s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: revealCard3Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 .flow-anim-bottom {
-  animation: revealBottomCardSeq 10s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: revealBottomCardSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 .flow-anim-badge {
-  animation: badgePopSeq 10s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: badgePopSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 .flow-anim-wheel {
-  animation: wheelSpinDrawSeq 10s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: wheelSpinDrawSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   transform-origin: center;
 }
 .flow-anim-score {
-  animation: scorePopSeq 10s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: scorePopSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 .flow-anim-legend {
-  animation: legendCascadeSeq 10s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: legendCascadeSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
-/* Node Pings across the 10s timeline */
-/* Left side: Job Card exit & midpoint pings when pulses depart/cross */
+/* ── Node Pings across the 12s timeline (opacity 0 initially!) ── */
+/* Node at Apply Now button exit */
+@keyframes nodePingApply {
+  0%, 14% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  14.6%, 19% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
+  21%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+}
+
+/* Left side: Job Card exit & midpoint pings when pulses depart/cross/divide */
 @keyframes nodePingLeft {
-  0%, 2% { fill: #FAF9F5; stroke: #77746C; }
-  4%, 8% { fill: #DC2626; stroke: #991B1B; }
-  10%, 18% { fill: #FAF9F5; stroke: #77746C; }
-  20%, 24% { fill: #DC2626; stroke: #991B1B; }
-  26%, 34% { fill: #FAF9F5; stroke: #77746C; }
-  36%, 40% { fill: #DC2626; stroke: #991B1B; }
-  42%, 100% { fill: #FAF9F5; stroke: #77746C; }
+  0%, 15% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  16%, 20% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  21.7%, 26% { opacity: 1; fill: #DC2626; stroke: #991B1B; } /* Pings as point divides into 3 */
+  28%, 31% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  31.7%, 35% { opacity: 1; fill: #DC2626; stroke: #991B1B; } /* Pings as point 2 departs */
+  37%, 41% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  41.7%, 45% { opacity: 1; fill: #DC2626; stroke: #991B1B; } /* Pings as point 3 departs */
+  47%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
 }
 
-/* Card 1 Left Node: pings red when Dot 1 arrives (14% - 20%) */
+/* Card 1 Left Node: pings red when Point 1 arrives (30% - 36%) */
 @keyframes nodePingC1L {
-  0%, 13.5% { fill: #FAF9F5; stroke: #77746C; }
-  14%, 22% { fill: #DC2626; stroke: #991B1B; }
-  24%, 100% { fill: #FAF9F5; stroke: #77746C; }
+  0%, 29% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  30%, 37% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
+  39%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
 }
 
-/* Card 2 Left Node: pings red when Dot 2 arrives (30% - 36%) */
+/* Card 2 Left Node: pings red when Point 2 arrives (40% - 46%) */
 @keyframes nodePingC2L {
-  0%, 29.5% { fill: #FAF9F5; stroke: #77746C; }
-  30%, 38% { fill: #DC2626; stroke: #991B1B; }
-  40%, 100% { fill: #FAF9F5; stroke: #77746C; }
+  0%, 39% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  40%, 47% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
+  49%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
 }
 
-/* Card 3 Left Node: pings red when Dot 3 arrives (46% - 52%) */
+/* Card 3 Left Node: pings red when Point 3 arrives (50% - 56%) */
 @keyframes nodePingC3L {
-  0%, 45.5% { fill: #FAF9F5; stroke: #77746C; }
-  46%, 54% { fill: #DC2626; stroke: #991B1B; }
-  56%, 100% { fill: #FAF9F5; stroke: #77746C; }
+  0%, 49% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  50%, 57% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
+  59%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
 }
 
-/* Card 1 Right Node: pings red when Dot 4 departs (52% - 58%) */
+/* Card 1 Right Node: pings red when Point 4 departs (53.3% - 60%) */
 @keyframes nodePingC1R {
-  0%, 51.5% { fill: #FAF9F5; stroke: #77746C; }
-  52%, 59% { fill: #DC2626; stroke: #991B1B; }
-  61%, 100% { fill: #FAF9F5; stroke: #77746C; }
+  0%, 52% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  53.3%, 60% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
+  62%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
 }
 
-/* Card 2 Right Node: pings red when Dot 5 departs (54% - 60%) */
+/* Card 2 Right Node: pings red when Point 5 departs (55% - 61%) */
 @keyframes nodePingC2R {
-  0%, 53.5% { fill: #FAF9F5; stroke: #77746C; }
-  54%, 61% { fill: #DC2626; stroke: #991B1B; }
-  63%, 100% { fill: #FAF9F5; stroke: #77746C; }
+  0%, 53.5% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  55%, 61.5% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
+  63.5%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
 }
 
-/* Card 3 Right Node: pings red when Dot 6 departs (56% - 62%) */
+/* Card 3 Right Node: pings red when Point 6 departs (56.7% - 63%) */
 @keyframes nodePingC3R {
-  0%, 55.5% { fill: #FAF9F5; stroke: #77746C; }
-  56%, 63% { fill: #DC2626; stroke: #991B1B; }
-  65%, 100% { fill: #FAF9F5; stroke: #77746C; }
+  0%, 55% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  56.7%, 63% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
+  65%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
 }
 
-/* Bottom Card Top Node: pings red when signals plunge in (64% - 73%) */
+/* Bottom Card Top Node: pings red when signals plunge in (63.5% - 73%) */
 @keyframes nodePingBottom {
-  0%, 63.5% { fill: #FAF9F5; stroke: #77746C; }
-  64%, 73% { fill: #DC2626; stroke: #991B1B; }
-  76%, 100% { fill: #FAF9F5; stroke: #77746C; }
+  0%, 63% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
+  64%, 73% { opacity: 1; fill: #DC2626; stroke: #991B1B; }
+  76%, 94% { opacity: 1; fill: #FAF9F5; stroke: #77746C; }
+  97%, 100% { opacity: 0; fill: #FAF9F5; stroke: #77746C; }
 }
 
-.node-ping-j { animation: nodePingLeft 10s ease-in-out infinite; }
-.node-ping-c1l { animation: nodePingC1L 10s ease-in-out infinite; }
-.node-ping-c2l { animation: nodePingC2L 10s ease-in-out infinite; }
-.node-ping-c3l { animation: nodePingC3L 10s ease-in-out infinite; }
-.node-ping-c1r { animation: nodePingC1R 10s ease-in-out infinite; }
-.node-ping-c2r { animation: nodePingC2R 10s ease-in-out infinite; }
-.node-ping-c3r { animation: nodePingC3R 10s ease-in-out infinite; }
-.node-ping-b { animation: nodePingBottom 10s ease-in-out infinite; }
+.node-ping-apply { animation: nodePingApply 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.node-ping-j { animation: nodePingLeft 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.node-ping-c1l { animation: nodePingC1L 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.node-ping-c2l { animation: nodePingC2L 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.node-ping-c3l { animation: nodePingC3L 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.node-ping-c1r { animation: nodePingC1R 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.node-ping-c2r { animation: nodePingC2R 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.node-ping-c3r { animation: nodePingC3R 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.node-ping-b { animation: nodePingBottom 12s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
 
 /* Keep analysis content readable with long URLs and narrow viewports. */
 main { min-width: 0; }
