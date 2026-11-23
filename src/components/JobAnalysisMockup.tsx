@@ -51,6 +51,54 @@ const riskFactors = [
   { label: 'Positive Signals', val: '-0.12', color: '#16A34A', pct: '12%' },
 ];
 
+function DigitColumn({ digit, delay = 0, active }: { digit: string; delay?: number; active: boolean }) {
+  const num = parseInt(digit, 10);
+  if (isNaN(num)) {
+    return <span className="inline-block h-[1.2em] leading-[1.2em] align-middle">{digit}</span>;
+  }
+
+  const digitsArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  return (
+    <span className="inline-block overflow-hidden h-[1.2em] leading-[1.2em] align-middle relative">
+      <span
+        className="block transition-transform duration-[850ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{
+          transform: active ? `translateY(-${(10 + num) * 5}%)` : 'translateY(0%)',
+          transitionDelay: `${delay}ms`,
+        }}
+      >
+        {digitsArray.map((n, idx) => (
+          <span key={idx} className="block h-[1.2em] leading-[1.2em] text-center">
+            {n}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function RollingText({
+  text,
+  active,
+  baseDelay = 0,
+}: {
+  text: string;
+  active: boolean;
+  baseDelay?: number;
+}) {
+  let digitIndex = 0;
+  return (
+    <span className="inline-flex items-center align-middle">
+      {text.split('').map((char, i) => {
+        const isDigit = /\d/.test(char);
+        const delay = isDigit ? baseDelay + digitIndex++ * 35 : 0;
+        return <DigitColumn key={i} digit={char} delay={delay} active={active} />;
+      })}
+    </span>
+  );
+}
+
 export default function JobAnalysisMockup() {
   const containerRef = useRef<HTMLDivElement>(null);
   const jobCardRef = useRef<HTMLDivElement>(null);
@@ -60,6 +108,7 @@ export default function JobAnalysisMockup() {
   const c3Ref = useRef<HTMLDivElement>(null);
   const bottomCardRef = useRef<HTMLDivElement>(null);
 
+  const [telemetryActive, setTelemetryActive] = useState(false);
   const [points, setPoints] = useState<PointCoords>({
     xApply: 0,
     yApply: 0,
@@ -196,12 +245,16 @@ export default function JobAnalysisMockup() {
 
     const timer1 = setTimeout(updateCoordinates, 150);
     const timer2 = setTimeout(updateCoordinates, 450);
+    const telemetryTimer = setTimeout(() => {
+      setTelemetryActive(true);
+    }, 6400);
 
     return () => {
       window.removeEventListener('resize', handleResize);
       if (resizeObserver) resizeObserver.disconnect();
       clearTimeout(timer1);
       clearTimeout(timer2);
+      clearTimeout(telemetryTimer);
     };
   }, []);
 
@@ -213,20 +266,34 @@ export default function JobAnalysisMockup() {
         className="relative min-w-[500px] sm:min-w-0 pr-6 sm:pr-8 pt-1 pb-1 animate-card-entrance stagger-3"
       >
         {/* ── TOP SYSTEM TELEMETRY BAR ── */}
-        <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-mono mb-3.5 px-1 select-none text-[#77746C] whitespace-nowrap">
+        <div
+          className={`flex items-center justify-between text-[10px] sm:text-[10.5px] font-mono mb-3.5 px-1 select-none text-[#77746C] whitespace-nowrap transition-all duration-700 ease-out ${
+            telemetryActive ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+          }`}
+        >
           <div className="flex items-center gap-2 sm:gap-3.5">
             <span className="text-[#8C887E]">JOB_839204</span>
-            <span className="font-semibold text-[#2563EB]">$2,680.00</span>
+            <span className="font-semibold text-[#2563EB]">
+              <RollingText text="$2,680.00" active={telemetryActive} baseDelay={0} />
+            </span>
             <span className="text-[#8C887E]">SG → BR</span>
-            <span className="font-semibold text-[#DC2626]">RISK +0.88</span>
+            <span className="font-semibold text-[#DC2626]">
+              RISK <RollingText text="+0.88" active={telemetryActive} baseDelay={140} />
+            </span>
           </div>
           <div className="hidden sm:flex items-center gap-2 sm:gap-3.5">
             <span className="text-[#8C887E]">JOB_839205</span>
-            <span className="font-semibold text-[#141413]">$75.30</span>
+            <span className="font-semibold text-[#141413]">
+              <RollingText text="$75.30" active={telemetryActive} baseDelay={240} />
+            </span>
             <span className="text-[#8C887E]">AE → AE</span>
-            <span className="font-semibold text-[#DC2626]">+0.28</span>
+            <span className="font-semibold text-[#DC2626]">
+              <RollingText text="+0.28" active={telemetryActive} baseDelay={340} />
+            </span>
           </div>
-          <div className="font-mono text-[#8C887E] tracking-wider">22:41:08</div>
+          <div className="font-mono text-[#8C887E] tracking-wider">
+            <RollingText text="22:41:08" active={telemetryActive} baseDelay={420} />
+          </div>
         </div>
 
         {/* ── LAYER 1: BEHIND CARDS (z-0) — Flowing dashed lines & traveling telemetry pulses ── */}
@@ -745,10 +812,20 @@ export default function JobAnalysisMockup() {
         </div>
 
         {/* ── BOTTOM LIVE SYSTEM TELEMETRY TICKER ── */}
-        <div className="flex items-center justify-around mt-4 pt-3 border-t border-[#E8E6DE]/70 text-[10.5px] sm:text-[11.5px] font-mono select-none">
-          <span className="text-[#77746C] font-medium tracking-wide">18,492 TXNS</span>
-          <span className="text-[#DC2626] font-bold tracking-wide">27 THREATS</span>
-          <span className="text-[#77746C] font-medium tracking-wide">99.98% UPTIME</span>
+        <div
+          className={`flex items-center justify-around mt-4 pt-3 border-t border-[#E8E6DE]/70 text-[10.5px] sm:text-[11.5px] font-mono select-none transition-all duration-700 ease-out ${
+            telemetryActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+          }`}
+        >
+          <span className="text-[#77746C] font-medium tracking-wide">
+            <RollingText text="18,492" active={telemetryActive} baseDelay={0} /> TXNS
+          </span>
+          <span className="text-[#DC2626] font-bold tracking-wide">
+            <RollingText text="27" active={telemetryActive} baseDelay={160} /> THREATS
+          </span>
+          <span className="text-[#77746C] font-medium tracking-wide">
+            <RollingText text="99.98%" active={telemetryActive} baseDelay={300} /> UPTIME
+          </span>
         </div>
 
         {/* ── LAYER 3: FOREGROUND CIRCLE NODES (z-20) — Smaller, lighter, and delicate ── */}

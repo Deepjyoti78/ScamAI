@@ -11,7 +11,7 @@ export default function HeroSection() {
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,440px)_1fr] xl:grid-cols-[minmax(0,470px)_1fr] gap-6 lg:gap-8 xl:gap-10 items-start">
 
           {/* ── Left column ── */}
-          <div className="flex flex-col pt-8 sm:pt-12 lg:pt-14 xl:pt-16">
+          <div className="flex flex-col pt-16 sm:pt-20 lg:pt-36 xl:pt-40">
             {/* Eyebrow with red left dash and right dividing rule */}
             <div className="flex items-center gap-2.5 mb-4 lg:mb-5 animate-text-reveal stagger-1">
               <span className="w-5 h-[2px] bg-[#DC2626] flex-shrink-0" />
@@ -40,7 +40,7 @@ export default function HeroSection() {
             </p>
 
             {/* CTA buttons — positioned lower downward as requested */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6 sm:mb-7 lg:mb-8 w-full sm:w-auto animate-card-entrance stagger-5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8 sm:mb-9 lg:mb-10 w-full sm:w-auto animate-card-entrance stagger-5">
               <button
                 type="button"
                 onClick={() => navigate('/investigate')}
@@ -67,7 +67,7 @@ export default function HeroSection() {
             </div>
 
             {/* Value propositions — 3 items with icons matching reference layout */}
-            <div className="flex flex-wrap items-center gap-6 sm:gap-8 pt-1 animate-card-entrance stagger-6">
+            <div className="flex flex-wrap items-center gap-6 sm:gap-8 pt-3 sm:pt-4 animate-card-entrance stagger-6">
               <div className="flex items-center gap-2.5">
                 <Layers className="w-4 h-4 text-[#77746C] flex-shrink-0" strokeWidth={1.6} />
                 <div className="flex flex-col">
