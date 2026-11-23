@@ -14,28 +14,15 @@ export default function HeroSection() {
           <div className="flex flex-col">
             {/* Main headline — large editorial serif with sequential word reveal */}
             <h1
-              className="font-serif leading-[1.05] tracking-[-0.025em] text-[#141413] mb-2"
-              style={{ fontSize: 'clamp(36px, 5.2vw, 68px)' }}
+              className="font-serif leading-[1.06] tracking-[-0.025em] text-[#141413] mb-4 lg:mb-4.5"
+              style={{ fontSize: 'clamp(34px, 4.8vw, 62px)' }}
             >
-              <span className="block animate-text-reveal stagger-1">Know the</span>
-              <span className="block animate-text-reveal stagger-2">opportunity.</span>
+              <span className="block animate-text-reveal stagger-1">Scams evolve every day.</span>
+              <span className="block text-[#77746C] font-normal animate-text-reveal stagger-2">So does your defense.</span>
             </h1>
 
-            {/* Tagline / Category moved directly below Opportunity with decreased text size */}
-            <p className="flex items-center gap-2 text-[10px] sm:text-[9.5px] font-semibold tracking-[0.2em] uppercase text-[#77746C] my-2 animate-text-reveal stagger-3">
-              <span>Recruitment Fraud Investigation</span>
-              <span className="inline-block w-4 h-[1px] bg-[#77746C]/60" />
-            </p>
-
-            <p
-              className="font-serif leading-[1.05] tracking-[-0.025em] text-[#77746C] font-normal mb-4 lg:mb-4.5 animate-text-reveal stagger-3"
-              style={{ fontSize: 'clamp(36px, 5.2vw, 68px)' }}
-            >
-              Before you trust it.
-            </p>
-
-            {/* Supporting description */}
-            <p className="text-[15px] sm:text-[15.5px] lg:text-[16px] text-[#625F58] leading-[1.6] max-w-[440px] mb-5 lg:mb-6 animate-text-reveal stagger-4">
+            {/* Supporting description — smaller in size */}
+            <p className="text-[13px] sm:text-[13.5px] text-[#625F58] leading-[1.55] max-w-[410px] mb-6 animate-text-reveal stagger-3">
               Analyse job postings, cross-check key details, and
               detect potential recruitment scams with clear,
               explainable AI.
