@@ -263,7 +263,7 @@ export default function JobAnalysisMockup() {
               {/* Traveling crimson data pulses: flowing sequentially from card to card */}
               <g className="pointer-events-none">
                 {/* Left Branch: Job Card -> Card 1 */}
-                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC1L} L ${points.xC1L} ${points.yC1L}`}
                     dur="5.5s"
@@ -282,7 +282,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Left Branch: Job Card -> Card 2 */}
-                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xJ} ${points.yJ} L ${points.xC2L} ${points.yC2L}`}
                     dur="5.5s"
@@ -301,7 +301,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Left Branch: Job Card -> Card 3 */}
-                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
                     dur="5.5s"
@@ -320,7 +320,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Right Bus: Card 1 -> Bottom Card */}
-                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC1R} ${points.yC1R} L ${points.xTrunk} ${points.yC1R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
                     dur="5.5s"
@@ -339,7 +339,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Right Bus: Card 2 -> Bottom Card */}
-                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC2R} ${points.yC2R} L ${points.xTrunk} ${points.yC2R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
                     dur="5.5s"
@@ -358,7 +358,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Right Bus: Card 3 -> Bottom Card */}
-                <circle r="2.8" fill="#DC2626" className="filter drop-shadow-[0_0_4px_rgba(220,38,38,0.85)]">
+                <circle r="2.8" fill="#DC2626">
                   <animateMotion
                     path={`M ${points.xC3R} ${points.yC3R} L ${points.xTrunk} ${points.yC3R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
                     dur="5.5s"
@@ -453,7 +453,7 @@ export default function JobAnalysisMockup() {
             {/* Card 1: Domain mismatch */}
             <div
               ref={c1Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive flow-anim-warn-1"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-none flex items-start gap-2.5 card-interactive flow-anim-warn-1"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[0].icon}</div>
               <div className="min-w-0">
@@ -469,7 +469,7 @@ export default function JobAnalysisMockup() {
             {/* Card 2: Payment request */}
             <div
               ref={c2Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive flow-anim-warn-2"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-none flex items-start gap-2.5 card-interactive flow-anim-warn-2"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[1].icon}</div>
               <div className="min-w-0">
@@ -485,7 +485,7 @@ export default function JobAnalysisMockup() {
             {/* Card 3: Unverified employer */}
             <div
               ref={c3Ref}
-              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-[0_1px_4px_rgba(220,38,38,0.04)] flex items-start gap-2.5 card-interactive flow-anim-warn-3"
+              className="bg-[#FDECE9] border border-[#F8B7B0] rounded-none p-3 pr-4 sm:pr-5 shadow-none flex items-start gap-2.5 card-interactive flow-anim-warn-3"
             >
               <div className="mt-0.5 flex-shrink-0">{annotations[2].icon}</div>
               <div className="min-w-0">
@@ -504,7 +504,7 @@ export default function JobAnalysisMockup() {
         <div className="relative z-10 mt-8 sm:mt-9">
           <div
             ref={bottomCardRef}
-            className="bg-[#F8D4CF] border border-[#F09489] rounded-none p-4 sm:p-5 shadow-[0_2px_8px_rgba(220,38,38,0.06)] card-interactive flow-anim-bottom"
+            className="bg-[#F8D4CF] border border-[#F09489] rounded-none p-4 sm:p-5 shadow-none card-interactive flow-anim-bottom"
           >
             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-4 sm:gap-6 items-center">
               {/* Left Column: Verdict & Narrative */}

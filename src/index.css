@@ -385,19 +385,16 @@ a, button {
   animation: pulseRight3 5.5s ease-in-out infinite;
 }
 
-/* Card Flow Highlights */
+/* Card Flow Highlights (Crisp, flat editorial transitions - NO diffuse red glow) */
 @keyframes cardJobFlow {
   0%, 100% {
     border-color: #E0DED4;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   }
   4%, 18% {
     border-color: #CDC9BD;
-    box-shadow: 0 0 14px rgba(220, 38, 38, 0.07), 0 2px 8px rgba(0, 0, 0, 0.03);
   }
   25% {
     border-color: #E0DED4;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   }
 }
 
@@ -405,17 +402,14 @@ a, button {
   0%, 22% {
     border-color: #F8B7B0;
     background-color: #FDECE9;
-    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
   }
   26%, 44% {
-    border-color: #F87171;
-    background-color: #FCE7E4;
-    box-shadow: 0 0 14px rgba(220, 38, 38, 0.16), 0 1px 4px rgba(220, 38, 38, 0.06);
+    border-color: #DC2626;
+    background-color: #FBD7D1;
   }
   49%, 100% {
     border-color: #F8B7B0;
     background-color: #FDECE9;
-    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
   }
 }
 
@@ -423,17 +417,14 @@ a, button {
   0%, 25% {
     border-color: #F8B7B0;
     background-color: #FDECE9;
-    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
   }
   29%, 47% {
-    border-color: #F87171;
-    background-color: #FCE7E4;
-    box-shadow: 0 0 14px rgba(220, 38, 38, 0.16), 0 1px 4px rgba(220, 38, 38, 0.06);
+    border-color: #DC2626;
+    background-color: #FBD7D1;
   }
   52%, 100% {
     border-color: #F8B7B0;
     background-color: #FDECE9;
-    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
   }
 }
 
@@ -441,17 +432,14 @@ a, button {
   0%, 28% {
     border-color: #F8B7B0;
     background-color: #FDECE9;
-    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
   }
   32%, 50% {
-    border-color: #F87171;
-    background-color: #FCE7E4;
-    box-shadow: 0 0 14px rgba(220, 38, 38, 0.16), 0 1px 4px rgba(220, 38, 38, 0.06);
+    border-color: #DC2626;
+    background-color: #FBD7D1;
   }
   55%, 100% {
     border-color: #F8B7B0;
     background-color: #FDECE9;
-    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.04);
   }
 }
 
@@ -459,44 +447,38 @@ a, button {
   0%, 68% {
     border-color: #F09489;
     background-color: #F8D4CF;
-    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.06);
   }
   73%, 93% {
     border-color: #DC2626;
-    background-color: #F7CEC8;
-    box-shadow: 0 0 18px rgba(220, 38, 38, 0.2), 0 2px 8px rgba(220, 38, 38, 0.08);
+    background-color: #F6C8C1;
   }
   98%, 100% {
     border-color: #F09489;
     background-color: #F8D4CF;
-    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.06);
   }
 }
 
 @keyframes badgeHighRiskPulse {
   0%, 71% {
     transform: scale(1);
-    box-shadow: none;
   }
   76%, 90% {
-    transform: scale(1.05);
-    box-shadow: 0 0 8px rgba(220, 38, 38, 0.45);
+    transform: scale(1.04);
   }
   95%, 100% {
     transform: scale(1);
-    box-shadow: none;
   }
 }
 
 @keyframes riskWheelShimmer {
   0%, 72% {
-    filter: drop-shadow(0 0 0 rgba(220, 38, 38, 0));
+    opacity: 0.95;
   }
   76%, 92% {
-    filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.4));
+    opacity: 1;
   }
   96%, 100% {
-    filter: drop-shadow(0 0 0 rgba(220, 38, 38, 0));
+    opacity: 0.95;
   }
 }
 
