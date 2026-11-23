@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Layers, BarChart3, Shield } from 'lucide-react';
 import Button from './Button';
 import JobAnalysisMockup from './JobAnalysisMockup';
 
@@ -8,34 +8,39 @@ export default function HeroSection() {
 
   return (
     <section className="w-full pt-4 pb-6 sm:pt-6 sm:pb-8 lg:pt-6 lg:pb-8 px-4 sm:px-6 lg:px-8 xl:px-10 overflow-hidden">
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,440px)_1fr] xl:grid-cols-[minmax(0,460px)_1fr] gap-6 lg:gap-8 xl:gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,440px)_1fr] xl:grid-cols-[minmax(0,470px)_1fr] gap-6 lg:gap-8 xl:gap-10 items-start">
 
           {/* ── Left column ── */}
           <div className="flex flex-col lg:pt-1">
-            {/* Main headline — differentiated editorial scale */}
-            <h1 className="flex flex-col mb-4 lg:mb-5">
-              <span
-                className="font-serif text-[#77746C] font-normal leading-[1.15] tracking-[-0.015em] block animate-text-reveal stagger-1 text-[24px] sm:text-[28px] lg:text-[32px]"
-              >
+            {/* Eyebrow with red left dash and right dividing rule */}
+            <div className="flex items-center gap-2.5 mb-4 lg:mb-5 animate-text-reveal stagger-1">
+              <span className="w-5 h-[2px] bg-[#DC2626] flex-shrink-0" />
+              <span className="text-[11px] sm:text-[11.5px] font-mono uppercase tracking-[0.18em] text-[#77746C] font-semibold">
+                Recruitment Fraud Investigation
+              </span>
+              <span className="w-8 sm:w-12 h-[1px] bg-[#E0DED4] flex-shrink-0" />
+            </div>
+
+            {/* Main headline matching reference image layout */}
+            <h1
+              className="font-serif leading-[1.08] tracking-[-0.025em] mb-4 lg:mb-5"
+              style={{ fontSize: 'clamp(36px, 5.2vw, 62px)' }}
+            >
+              <span className="block text-[#141413] animate-text-reveal stagger-2">
                 Scams evolve every day.
               </span>
-              <span
-                className="font-serif font-bold text-[#141413] leading-[1.04] tracking-[-0.03em] block animate-text-reveal stagger-2 text-[38px] sm:text-[46px] lg:text-[56px] xl:text-[60px]"
-              >
-                So does your defense.
+              <span className="block text-[#7F1D1D] animate-text-reveal stagger-3">
+                So does our defense.
               </span>
             </h1>
 
-            {/* Supporting description — expanded context */}
-            <p className="text-[13px] sm:text-[13.5px] text-[#625F58] leading-[1.65] max-w-[450px] mb-7 lg:mb-8 animate-text-reveal stagger-3">
-              Analyse suspicious job postings, cross-check employer legitimacy,
-              and detect recruitment fraud across multiple public intelligence
-              signals — from domain mismatches to upfront payment demands —
-              before you commit your career and personal details.
+            {/* Supporting description matching exact copy */}
+            <p className="text-[14px] sm:text-[14.5px] lg:text-[15px] text-[#55524B] leading-[1.6] max-w-[440px] mb-6 lg:mb-7 animate-text-reveal stagger-4">
+              Spot, verify, and avoid recruitment fraud before you share your details or commit to an opportunity.
             </p>
 
-            {/* CTA buttons — positioned a little lower */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto animate-card-entrance stagger-5">
+            {/* CTA buttons — exact UI/UX preserved */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-7 sm:mb-8 lg:mb-9 w-full sm:w-auto animate-card-entrance stagger-5">
               <button
                 type="button"
                 onClick={() => navigate('/investigate')}
@@ -59,6 +64,31 @@ export default function HeroSection() {
               >
                 How it works
               </Button>
+            </div>
+
+            {/* Value propositions — 3 items with icons matching reference layout */}
+            <div className="flex flex-wrap items-center gap-6 sm:gap-8 pt-1 animate-card-entrance stagger-6">
+              <div className="flex items-center gap-2.5">
+                <Layers className="w-4 h-4 text-[#77746C] flex-shrink-0" strokeWidth={1.6} />
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-bold text-[#141413] leading-tight">4+</span>
+                  <span className="text-[11px] text-[#77746C] leading-snug">Evidence sources</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <BarChart3 className="w-4 h-4 text-[#77746C] flex-shrink-0" strokeWidth={1.6} />
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-bold text-[#141413] leading-tight">Explainable</span>
+                  <span className="text-[11px] text-[#77746C] leading-snug">AI insights</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Shield className="w-4 h-4 text-[#77746C] flex-shrink-0" strokeWidth={1.6} />
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-bold text-[#141413] leading-tight">Safer</span>
+                  <span className="text-[11px] text-[#77746C] leading-snug">Decisions</span>
+                </div>
+              </div>
             </div>
           </div>
 
