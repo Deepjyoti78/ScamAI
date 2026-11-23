@@ -362,7 +362,7 @@ export default function JobAnalysisMockup() {
               {/* Traveling crimson data pulses: One-time pulse 0 from Apply Now + Continuous Telemetry Loop */}
               <g className="pointer-events-none">
                 {/* One-time Pulse 0: Point arises from 'Apply Now' and travels to junction */}
-                <circle r="2.8" fill="#DC2626">
+                <circle r="2.8" fill="#DC2626" opacity="0">
                   <animateMotion
                     path={`M ${points.xApply} ${points.yApply} L ${points.xJ} ${points.yApply} L ${points.xJ} ${points.yJ} L ${points.xMid} ${points.yJ}`}
                     begin="1.6s"
@@ -383,7 +383,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Continuous Pulse 1: Branch 1 -> Card 1 (Domain mismatch) */}
-                <circle r="2.8" fill="#DC2626">
+                <circle r="2.8" fill="#DC2626" opacity="0">
                   <animateMotion
                     path={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC1L} L ${points.xC1L} ${points.yC1L}`}
                     begin="2.4s"
@@ -404,7 +404,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Continuous Pulse 2: Branch 2 -> Card 2 (Payment request) - 100% straight horizontal */}
-                <circle r="2.8" fill="#DC2626">
+                <circle r="2.8" fill="#DC2626" opacity="0">
                   <animateMotion
                     path={`M ${points.xMid} ${points.yJ} L ${points.xC2L} ${points.yC2L}`}
                     begin="2.4s"
@@ -425,7 +425,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Continuous Pulse 3: Branch 3 -> Card 3 (Unverified employer) */}
-                <circle r="2.8" fill="#DC2626">
+                <circle r="2.8" fill="#DC2626" opacity="0">
                   <animateMotion
                     path={`M ${points.xMid} ${points.yJ} L ${points.xMid} ${points.yC3L} L ${points.xC3L} ${points.yC3L}`}
                     begin="2.4s"
@@ -446,7 +446,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Continuous Right Bus: Card 1 -> Bottom Card */}
-                <circle r="2.8" fill="#DC2626">
+                <circle r="2.8" fill="#DC2626" opacity="0">
                   <animateMotion
                     path={`M ${points.xC1R} ${points.yC1R} L ${points.xTrunk} ${points.yC1R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
                     begin="2.4s"
@@ -467,7 +467,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Continuous Right Bus: Card 2 -> Bottom Card */}
-                <circle r="2.8" fill="#DC2626">
+                <circle r="2.8" fill="#DC2626" opacity="0">
                   <animateMotion
                     path={`M ${points.xC2R} ${points.yC2R} L ${points.xTrunk} ${points.yC2R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
                     begin="2.4s"
@@ -488,7 +488,7 @@ export default function JobAnalysisMockup() {
                 </circle>
 
                 {/* Continuous Right Bus: Card 3 -> Bottom Card */}
-                <circle r="2.8" fill="#DC2626">
+                <circle r="2.8" fill="#DC2626" opacity="0">
                   <animateMotion
                     path={`M ${points.xC3R} ${points.yC3R} L ${points.xTrunk} ${points.yC3R} L ${points.xTrunk} ${points.yTurn} L ${points.xB} ${points.yTurn} L ${points.xB} ${points.yB}`}
                     begin="2.4s"
