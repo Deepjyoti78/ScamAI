@@ -1043,20 +1043,9 @@ export default function WorkflowSection() {
                       </g>
                     )}
 
-                    {/* Downward Straight Dotted Line from bottom of brain orbit to bottom boundary of card */}
+                    {/* Docking dot at bottom boundary of circular brain orbit */}
                     {s3RingActive && (
-                      <g>
-                        <line
-                          x1="230"
-                          y1="231"
-                          x2="230"
-                          y2="280"
-                          stroke="#A8A29E"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
-                        <circle cx="230" cy="231" r="2" fill="#A8A29E" />
-                      </g>
+                      <circle cx="230" cy="231" r="2" fill="#A8A29E" />
                     )}
 
                     {/* SVG foreignObject: Perfectly centered Brain illustration & ScamShield Engine typography */}
@@ -1191,12 +1180,12 @@ export default function WorkflowSection() {
                 {/* Connector canvas matching right visual column (Pure SVG with exact flow-dash-line styling) */}
                 <div className="flex-1 relative h-full">
                   <svg className="w-full h-full absolute inset-0 overflow-visible" fill="none">
-                    {/* Top Feeder line from ScamShield AI brain (at 63.35%, y=0 to y=52) */}
+                    {/* Continuous feeder line connecting the Section 03 circle bottom dot directly to Section 04 junction dot */}
                     {s4FeederActive && (
                       <>
                         <line
                           x1="63.35%"
-                          y1="0"
+                          y1="-78"
                           x2="63.35%"
                           y2="52"
                           stroke="#A8A29E"
