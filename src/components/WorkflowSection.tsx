@@ -48,6 +48,40 @@ function useStepInView(threshold = 0.12, rootMargin = '0px 0px -80px 0px') {
   return [ref, isInView] as const;
 }
 
+/* ── SMOOTH TYPEWRITER ANIMATION HOOK ── */
+function useTypewriter(fullText: string, shouldStart: boolean, speed = 32, delayMs = 120) {
+  const [displayedText, setDisplayedText] = useState('');
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    if (!shouldStart) {
+      setDisplayedText('');
+      setIsComplete(false);
+      return;
+    }
+
+    let intervalId: any;
+    const timeoutId = setTimeout(() => {
+      let idx = 0;
+      intervalId = setInterval(() => {
+        idx += 1;
+        setDisplayedText(fullText.slice(0, idx));
+        if (idx >= fullText.length) {
+          clearInterval(intervalId);
+          setIsComplete(true);
+        }
+      }, speed);
+    }, delayMs);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [fullText, shouldStart, speed, delayMs]);
+
+  return { displayedText, isComplete };
+}
+
 /* ── REUSABLE CRISP JOB POSTING CARD ── */
 function JobPostingCard({
   className = '',
@@ -133,6 +167,58 @@ export default function WorkflowSection() {
   const [step4Ref, step4InView] = useStepInView(0.12, '0px 0px -80px 0px');
   const [step5Ref, step5InView] = useStepInView(0.12, '0px 0px -80px 0px');
 
+  /* ── TYPEWRITER ANIMATIONS FOR STEP 01 & 02 META HEADINGS ── */
+  const s1Title = useTypewriter('Submit a job posting', step1InView, 32, 100);
+  const s1Desc = useTypewriter(
+    'Paste a job URL to turn it into readable, structured job content.',
+    s1Title.isComplete,
+    14,
+    30
+  );
+
+  const s2Title = useTypewriter('Extract signals', step2InView, 36, 100);
+  const s2Desc = useTypewriter(
+    'Analyze the job posting and extract key signals that help assess risk.',
+    s2Title.isComplete,
+    14,
+    30
+  );
+
+  /* ── SCROLL-DRIVEN CONNECTING LINE FROM STEP 01 TO STEP 02 ── */
+  const [s1ToS2Progress, setS1ToS2Progress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const s1 = step1Ref.current;
+      const s2 = step2Ref.current;
+      if (!s1 || !s2) return;
+
+      const r1 = s1.getBoundingClientRect();
+      const r2 = s2.getBoundingClientRect();
+
+      // Dot 1 center Y relative to viewport
+      const dot1Y = r1.top + 34;
+      // Dot 2 center Y relative to viewport
+      const dot2Y = r2.top + 34;
+      const triggerY = window.innerHeight * 0.72;
+
+      if (dot1Y >= triggerY) {
+        setS1ToS2Progress(0);
+      } else if (dot2Y <= triggerY) {
+        setS1ToS2Progress(1);
+      } else {
+        const total = dot2Y - dot1Y;
+        const current = triggerY - dot1Y;
+        const p = Math.max(0, Math.min(1, current / total));
+        setS1ToS2Progress(p);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   /* ── STEP 01 ANIMATION STATE ── */
   const FULL_URL = 'careers-rapidtech.com/jobs/product-designer';
   const [typedUrl, setTypedUrl] = useState('');
@@ -200,7 +286,7 @@ export default function WorkflowSection() {
   const [s3PillsCount, setS3PillsCount] = useState(0);
   const [s3Converged, setS3Converged] = useState(false);
   const [s3RingActive, setS3RingActive] = useState(false);
-  const [s3SatellitesActive, setS3SatellitesActive] = useState(false);
+  const [s3SatellitesStep, setS3SatellitesStep] = useState(0);
 
   useEffect(() => {
     if (!step3InView) return;
@@ -218,13 +304,19 @@ export default function WorkflowSection() {
     // 3. Circular ring and ScamShield brain appear
     const tRing = setTimeout(() => setS3RingActive(true), 1550);
 
-    // 4. 4 satellite badges and connectors appear
-    const tSat = setTimeout(() => setS3SatellitesActive(true), 2000);
+    // 4. 4 satellite badges and connectors appear one by one
+    const tSat1 = setTimeout(() => setS3SatellitesStep(1), 1900); // 1. Pattern scoring
+    const tSat2 = setTimeout(() => setS3SatellitesStep(2), 2350); // 2. Text analysis
+    const tSat3 = setTimeout(() => setS3SatellitesStep(3), 2800); // 3. Feature explanation
+    const tSat4 = setTimeout(() => setS3SatellitesStep(4), 3250); // 4. Risk synthesis
 
     return () => {
       clearTimeout(tConv);
       clearTimeout(tRing);
-      clearTimeout(tSat);
+      clearTimeout(tSat1);
+      clearTimeout(tSat2);
+      clearTimeout(tSat3);
+      clearTimeout(tSat4);
     };
   }, [step3InView]);
 
@@ -351,6 +443,22 @@ export default function WorkflowSection() {
               }`} />
             </div>
 
+            {/* Scroll-Driven Dynamic Dotted Line connecting Dot 01 to Dot 02 */}
+            <div
+              className="hidden md:block absolute left-[9px] top-[44px] pointer-events-none z-10"
+              style={{
+                bottom: '-64px',
+              }}
+            >
+              {/* Subtle guide line */}
+              <div className="w-[2px] h-full border-l-2 border-dotted border-[#E0DED4]" />
+              {/* Active black dotted line that extends downward on scroll */}
+              <div
+                className="absolute top-0 left-0 w-[2px] border-l-2 border-dotted border-[#141413] transition-[height] duration-75 ease-out"
+                style={{ height: `${s1ToS2Progress * 100}%` }}
+              />
+            </div>
+
             {/* Step Left Meta Column */}
             <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0">
               <div className="inline-flex items-center gap-2 mb-3">
@@ -361,11 +469,17 @@ export default function WorkflowSection() {
                   Job Input
                 </span>
               </div>
-              <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2">
-                Submit a job posting
+              <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2 min-h-[34px] flex items-center">
+                <span>{s1Title.displayedText}</span>
+                {step1InView && !s1Title.isComplete && (
+                  <span className="inline-block w-[2px] h-[1em] bg-[#141413] ml-0.5 animate-pulse" />
+                )}
               </h3>
-              <p className="text-[13px] sm:text-[13.5px] text-[#55524B] leading-relaxed mb-4">
-                Paste a job URL to turn it into readable, structured job content.
+              <p className="text-[13px] sm:text-[13.5px] text-[#55524B] leading-relaxed mb-4 min-h-[44px]">
+                <span>{s1Desc.displayedText}</span>
+                {s1Title.isComplete && !s1Desc.isComplete && (
+                  <span className="inline-block w-[1.5px] h-[0.9em] bg-[#55524B] ml-0.5 animate-pulse" />
+                )}
               </p>
               {/* 4-dash pagination indicator */}
               <div className="flex items-center gap-1.5 pt-1">
@@ -502,13 +616,19 @@ export default function WorkflowSection() {
             }`}
           >
             {/* Timeline node dot (md+) */}
-            <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
-              <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                s2RevealedCount >= 6 ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
+            <div className={`hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0 transition-all duration-300 ${
+              s1ToS2Progress >= 0.98 || step2InView
+                ? 'border-[#141413] shadow-xs'
+                : 'border-[#D0CDC2]'
+            }`}>
+              <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                s1ToS2Progress >= 0.98 || step2InView
+                  ? 'bg-[#141413] scale-125'
+                  : 'bg-[#99968E]'
               }`} />
             </div>
 
-            {/* Step Left Meta Column */}
+            {/* Step Left Meta Column with Typewriter Effect */}
             <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0">
               <div className="inline-flex items-center gap-2 mb-3">
                 <span className="px-2 py-0.5 rounded-none border border-[#D0CDC2] bg-[#FAF9F6] font-mono text-[11px] font-bold text-[#141413]">
@@ -518,11 +638,17 @@ export default function WorkflowSection() {
                   Extract Signals
                 </span>
               </div>
-              <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2">
-                Extract signals
+              <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2 min-h-[34px] flex items-center">
+                <span>{s2Title.displayedText}</span>
+                {step2InView && !s2Title.isComplete && (
+                  <span className="inline-block w-[2px] h-[1em] bg-[#141413] ml-0.5 animate-pulse" />
+                )}
               </h3>
-              <p className="text-[13px] sm:text-[13.5px] text-[#55524B] leading-relaxed mb-4">
-                Analyze the job posting and extract key signals that help assess risk.
+              <p className="text-[13px] sm:text-[13.5px] text-[#55524B] leading-relaxed mb-4 min-h-[44px]">
+                <span>{s2Desc.displayedText}</span>
+                {s2Title.isComplete && !s2Desc.isComplete && (
+                  <span className="inline-block w-[1.5px] h-[0.9em] bg-[#55524B] ml-0.5 animate-pulse" />
+                )}
               </p>
             </div>
 
@@ -663,7 +789,7 @@ export default function WorkflowSection() {
             {/* Timeline node dot (md+) */}
             <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                s3SatellitesActive ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
+                s3SatellitesStep >= 4 ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
             </div>
 
@@ -685,15 +811,15 @@ export default function WorkflowSection() {
               </p>
             </div>
 
-            {/* Step Right Visual Card: Unified Canvas with Smaller Circular Ring */}
+            {/* Step Right Visual Card: Unified Canvas with Precise Pill Dots, Cornered Lines & Centered Brain */}
             <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
               {/* Specular hairline at top edge */}
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
-              <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6 relative">
+              <div className="flex flex-col lg:flex-row items-center relative">
 
-                {/* Left: 6 Input Feature Pills appearing one by one */}
-                <div className="w-full lg:w-[200px] space-y-2 flex-shrink-0">
+                {/* Left: 6 Input Feature Pills appearing one by one with protruding black node dots */}
+                <div className="w-full lg:w-[205px] space-y-2.5 flex-shrink-0 relative z-20">
                   {[
                     { icon: <FileText size={12} />, title: 'Job content' },
                     { icon: <LinkIcon size={12} />, title: 'Domain & URL' },
@@ -706,73 +832,115 @@ export default function WorkflowSection() {
                     return (
                       <div
                         key={i}
-                        className={`bg-[#FFFFFF] border rounded-none px-3 py-2 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all duration-300 relative ${
+                        className={`bg-[#FFFFFF] border rounded-none px-3.5 h-[38px] flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 relative ${
                           isVisible
                             ? 'opacity-100 translate-x-0 border-[#E0DED4]'
-                            : 'opacity-0 -translate-x-2'
+                            : 'opacity-0 -translate-x-2 border-dashed border-[#E0DED4]'
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0 pr-2">
                           <span className="text-[#141413] flex-shrink-0">{sig.icon}</span>
                           <span className="w-[1px] h-3 bg-[#E0DED4] flex-shrink-0" />
                           <span className="text-[11.5px] font-medium text-[#141413] truncate">
                             {sig.title}
                           </span>
                         </div>
-                        {/* Right connection dot */}
-                        <span className={`w-2 h-2 rounded-full transition-colors ${
-                          s3Converged ? 'bg-[#141413]' : 'bg-[#141413]'
-                        }`} />
+
+                        {/* PROMINENT BLACK DOT ON THE RIGHT BOUNDARY OF THE PILL CARD */}
+                        <div className="hidden lg:flex absolute -right-[4.5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-30 shadow-xs" />
                       </div>
                     );
                   })}
                 </div>
 
-                {/* Center & Right: Unified Canvas with Straight Lines, Smaller Circular Ring & Satellites */}
-                <div className="flex-1 relative w-full h-[280px] flex items-center">
-                  <svg className="w-full h-full absolute inset-0 overflow-visible" viewBox="0 0 440 280" fill="none">
-                    {/* 6 Straight dotted lines from pills (x=0) to central junction node (x=55, y=140) */}
-                    {s3Converged && [19, 67, 115, 163, 211, 259].map((yOrigin, i) => (
-                      <g key={i}>
-                        <line
-                          x1="0"
-                          y1={yOrigin}
-                          x2="55"
-                          y2="140"
+                {/* Center & Right: Unified Canvas with Dotted Corner Lines, Centered Brain & Staggered Satellites */}
+                <div className="hidden lg:block flex-1 relative w-full h-[280px]">
+                  <svg className="w-full h-full absolute inset-0 overflow-visible" viewBox="0 0 460 280" fill="none">
+                    {/* 6 Dotted lines arising directly from pill dots, turning with corners, and merging into central junction (76, 139) */}
+                    {s3Converged && (
+                      <>
+                        {/* Pill 0: Job content (y=19) -> goes straight to 42, turns down, curves into junction */}
+                        <path
+                          d="M -12 19 L 42 19 Q 54 19 54 31 L 54 127 Q 54 139 64 139 L 76 139"
                           stroke="#141413"
                           strokeWidth="1.5"
-                          strokeDasharray="4 4"
+                          strokeDasharray="3 3"
                           className="animate-flow-dash"
                         />
-                        <circle cx="0" cy={yOrigin} r="2.5" fill="#141413" />
-                      </g>
-                    ))}
+                        {/* Pill 1: Domain & URL (y=67) */}
+                        <path
+                          d="M -12 67 L 42 67 Q 54 67 54 79 L 54 127 Q 54 139 64 139 L 76 139"
+                          stroke="#141413"
+                          strokeWidth="1.5"
+                          strokeDasharray="3 3"
+                          className="animate-flow-dash"
+                        />
+                        {/* Pill 2: Recruiter email (y=115) */}
+                        <path
+                          d="M -12 115 L 44 115 Q 54 115 54 125 L 54 129 Q 54 139 64 139 L 76 139"
+                          stroke="#141413"
+                          strokeWidth="1.5"
+                          strokeDasharray="3 3"
+                          className="animate-flow-dash"
+                        />
+                        {/* Pill 3: Application destination (y=163) */}
+                        <path
+                          d="M -12 163 L 44 163 Q 54 163 54 153 L 54 149 Q 54 139 64 139 L 76 139"
+                          stroke="#141413"
+                          strokeWidth="1.5"
+                          strokeDasharray="3 3"
+                          className="animate-flow-dash"
+                        />
+                        {/* Pill 4: Payment request (y=211) */}
+                        <path
+                          d="M -12 211 L 42 211 Q 54 211 54 199 L 54 151 Q 54 139 64 139 L 76 139"
+                          stroke="#141413"
+                          strokeWidth="1.5"
+                          strokeDasharray="3 3"
+                          className="animate-flow-dash"
+                        />
+                        {/* Pill 5: Employer & web evidence (y=259) */}
+                        <path
+                          d="M -12 259 L 42 259 Q 54 259 54 247 L 54 151 Q 54 139 64 139 L 76 139"
+                          stroke="#141413"
+                          strokeWidth="1.5"
+                          strokeDasharray="3 3"
+                          className="animate-flow-dash"
+                        />
+                      </>
+                    )}
 
                     {/* Central junction point dot */}
                     {s3Converged && (
-                      <circle cx="55" cy="140" r="4" fill="#141413" className="animate-pulse" />
+                      <>
+                        <circle cx="76" cy="139" r="4.5" fill="#141413" />
+                        <circle cx="76" cy="139" r="1.5" fill="#FAF9F5" />
+                      </>
                     )}
 
-                    {/* Horizontal dotted line into the circular ring at x=95 (180 - 85) */}
+                    {/* Horizontal dotted line into the circular ring at x=136 (230 - 94) */}
                     {s3RingActive && (
-                      <line
-                        x1="55"
-                        y1="140"
-                        x2="95"
-                        y2="140"
-                        stroke="#141413"
-                        strokeWidth="1.5"
-                        strokeDasharray="4 4"
-                        className="animate-flow-dash"
-                      />
+                      <>
+                        <line
+                          x1="76"
+                          y1="139"
+                          x2="136"
+                          y2="139"
+                          stroke="#141413"
+                          strokeWidth="1.75"
+                          strokeDasharray="3 3"
+                          className="animate-flow-dash"
+                        />
+                        <circle cx="136" cy="139" r="2.5" fill="#141413" />
+                      </>
                     )}
 
-                    {/* SMALLER Circular Orbit Ring around Brain (cx=180, cy=140, r=85) */}
+                    {/* Circular Orbit Ring around Brain (cx=230, cy=139, r=94) */}
                     {s3RingActive && (
                       <circle
-                        cx="180"
-                        cy="140"
-                        r="85"
+                        cx="230"
+                        cy="139"
+                        r="94"
                         stroke="#141413"
                         strokeWidth="1.75"
                         strokeDasharray="4 4"
@@ -781,90 +949,114 @@ export default function WorkflowSection() {
                       />
                     )}
 
-                    {/* 4 Satellite Connectors */}
-                    {s3SatellitesActive && (
-                      <>
-                        {/* 1. Pattern scoring */}
-                        <line x1="100" y1="52" x2="122" y2="80" stroke="#77746C" strokeWidth="1.2" strokeDasharray="3 3" />
-                        <circle cx="100" cy="52" r="2.5" fill="#141413" />
+                    {/* 4 Satellite Connectors appearing one by one */}
+                    {/* 1. Pattern scoring connector */}
+                    {s3SatellitesStep >= 1 && (
+                      <g className="transition-opacity duration-300">
+                        <line x1="163" y1="72" x2="122" y2="44" stroke="#141413" strokeWidth="1.2" strokeDasharray="3 3" />
+                        <circle cx="122" cy="44" r="2.5" fill="#141413" />
+                      </g>
+                    )}
 
-                        {/* 2. Text analysis */}
-                        <line x1="180" y1="18" x2="180" y2="55" stroke="#77746C" strokeWidth="1.2" strokeDasharray="3 3" />
-                        <circle cx="180" cy="18" r="2.5" fill="#141413" />
+                    {/* 2. Text analysis connector */}
+                    {s3SatellitesStep >= 2 && (
+                      <g className="transition-opacity duration-300">
+                        <line x1="230" y1="45" x2="230" y2="20" stroke="#141413" strokeWidth="1.2" strokeDasharray="3 3" />
+                        <circle cx="230" cy="20" r="2.5" fill="#141413" />
+                      </g>
+                    )}
 
-                        {/* 3. Feature explanation */}
-                        <line x1="238" y1="80" x2="260" y2="52" stroke="#77746C" strokeWidth="1.2" strokeDasharray="3 3" />
-                        <circle cx="260" cy="52" r="2.5" fill="#141413" />
+                    {/* 3. Feature explanation connector */}
+                    {s3SatellitesStep >= 3 && (
+                      <g className="transition-opacity duration-300">
+                        <line x1="296" y1="73" x2="330" y2="44" stroke="#141413" strokeWidth="1.2" strokeDasharray="3 3" />
+                        <circle cx="330" cy="44" r="2.5" fill="#141413" />
+                      </g>
+                    )}
 
-                        {/* 4. Risk synthesis */}
-                        <line x1="265" y1="140" x2="295" y2="140" stroke="#77746C" strokeWidth="1.2" strokeDasharray="3 3" />
-                        <circle cx="295" cy="140" r="2.5" fill="#141413" />
+                    {/* 4. Risk synthesis connector */}
+                    {s3SatellitesStep >= 4 && (
+                      <g className="transition-opacity duration-300">
+                        <line x1="324" y1="139" x2="360" y2="139" stroke="#DC2626" strokeWidth="1.2" strokeDasharray="3 3" />
+                        <circle cx="360" cy="139" r="2.5" fill="#DC2626" />
+                      </g>
+                    )}
 
-                        {/* Downward Straight Dotted Line from bottom of brain orbit into Section 04 */}
+                    {/* Downward Straight Dotted Line from bottom of brain orbit into Section 04 */}
+                    {s3RingActive && (
+                      <g>
                         <line
-                          x1="180"
-                          y1="225"
-                          x2="180"
-                          y2="300"
+                          x1="230"
+                          y1="233"
+                          x2="230"
+                          y2="280"
                           stroke="#141413"
                           strokeWidth="2"
                           strokeDasharray="4 4"
                           className="animate-flow-dash"
                         />
-                        <circle cx="180" cy="225" r="3" fill="#141413" />
-                      </>
+                        <circle cx="230" cy="233" r="3" fill="#141413" />
+                      </g>
                     )}
                   </svg>
 
-                  {/* HTML Overlay: Brain illustration, title and satellite badges */}
+                  {/* HTML Overlay: Centered Brain illustration & Satellite Badges appearing one by one */}
                   <div className="absolute inset-0 pointer-events-none">
                     {/* Badge 1: Pattern scoring */}
-                    {s3SatellitesActive && (
-                      <div className="absolute left-[10px] top-[40px] transition-all duration-300">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
-                          Pattern scoring
-                        </span>
-                      </div>
-                    )}
+                    <div
+                      className={`absolute left-[72px] top-[28px] transition-all duration-500 ease-out ${
+                        s3SatellitesStep >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+                      }`}
+                    >
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                        Pattern scoring
+                      </span>
+                    </div>
 
                     {/* Badge 2: Text analysis */}
-                    {s3SatellitesActive && (
-                      <div className="absolute left-[180px] -translate-x-1/2 top-[2px] transition-all duration-300">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
-                          Text analysis
-                        </span>
-                      </div>
-                    )}
+                    <div
+                      className={`absolute left-[230px] -translate-x-1/2 top-[0px] transition-all duration-500 ease-out ${
+                        s3SatellitesStep >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+                      }`}
+                    >
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                        Text analysis
+                      </span>
+                    </div>
 
                     {/* Badge 3: Feature explanation */}
-                    {s3SatellitesActive && (
-                      <div className="absolute right-[20px] top-[40px] transition-all duration-300">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
-                          Feature explanation
-                        </span>
-                      </div>
-                    )}
+                    <div
+                      className={`absolute left-[332px] top-[28px] transition-all duration-500 ease-out ${
+                        s3SatellitesStep >= 3 ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+                      }`}
+                    >
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                        Feature explanation
+                      </span>
+                    </div>
 
                     {/* Badge 4: Risk synthesis */}
-                    {s3SatellitesActive && (
-                      <div className="absolute right-[8px] top-[128px] transition-all duration-300">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#DC2626] text-[#DC2626] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
-                          Risk synthesis
-                        </span>
-                      </div>
-                    )}
+                    <div
+                      className={`absolute left-[366px] top-[126px] transition-all duration-500 ease-out ${
+                        s3SatellitesStep >= 4 ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+                      }`}
+                    >
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#DC2626] text-[#DC2626] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                        Risk synthesis
+                      </span>
+                    </div>
 
-                    {/* Center Brain Engine Block inside the Smaller Ring */}
+                    {/* Center Brain Engine Block inside the Ring — Centered & Enlarged */}
                     {s3RingActive && (
-                      <div className="absolute left-[180px] top-[138px] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center transition-all duration-500">
-                        <div className="relative w-[105px] sm:w-[115px] h-[70px] sm:h-[78px] flex items-center justify-center">
+                      <div className="absolute left-[230px] top-[134px] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center transition-all duration-500">
+                        <div className="relative w-[124px] sm:w-[136px] h-[78px] sm:h-[84px] flex items-center justify-center">
                           <img
                             src="/Detailed Ivory Brain Illustration.png"
                             alt="ScamShield Analysis Engine"
-                            className="w-full h-full object-contain mix-blend-multiply select-none pointer-events-none drop-shadow-[0_6px_14px_rgba(20,20,19,0.1)]"
+                            className="w-full h-full object-contain mix-blend-multiply select-none pointer-events-none drop-shadow-[0_8px_18px_rgba(20,20,19,0.12)]"
                           />
                         </div>
-                        <span className="font-serif font-bold text-[12.5px] sm:text-[13.5px] text-[#141413] tracking-tight mt-0.5 text-center leading-tight">
+                        <span className="font-serif font-bold text-[13px] sm:text-[14px] text-[#141413] tracking-tight mt-0.5 text-center leading-tight">
                           ScamShield<br />Analysis Engine
                         </span>
                       </div>
