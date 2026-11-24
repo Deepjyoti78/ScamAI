@@ -164,8 +164,8 @@ export default function WorkflowSection() {
   const [step1Ref, step1InView] = useStepInView(0.12, '0px 0px -80px 0px');
   const [step2Ref, step2InView] = useStepInView(0.12, '0px 0px -80px 0px');
   const [step3Ref, step3InView] = useStepInView(0.12, '0px 0px -80px 0px');
-  const [step4Ref, step4InView] = useStepInView(0.12, '0px 0px -80px 0px');
-  const [step5Ref, step5InView] = useStepInView(0.01, '0px 0px 200px 0px');
+  const [step4Ref, step4InView] = useStepInView(0.08, '0px 0px 80px 0px');
+  const [step5Ref, step5InView] = useStepInView(0.05, '0px 0px 180px 0px');
 
   /* ── TYPEWRITER ANIMATIONS FOR STEP 01 & 02 META HEADINGS ── */
   const s1Title = useTypewriter('Submit a job posting', step1InView, 32, 100);
@@ -354,27 +354,9 @@ export default function WorkflowSection() {
     };
   }, [step3InView]);
 
-  /* ── STEP 04 ANIMATION STATE ── */
+  /* ── STEP 04 & 05 CHOREOGRAPHED ANIMATION PIPELINE ── */
   const [s4FeederActive, setS4FeederActive] = useState(false);
   const [s4CardsCount, setS4CardsCount] = useState(0);
-
-  useEffect(() => {
-    if (!step4InView) return;
-
-    // 1. Dotted line streams down from brain and branches into 4 lines
-    const tFeed = setTimeout(() => setS4FeederActive(true), 250);
-
-    // 2. 4 evidence cards reveal in sequence
-    for (let i = 1; i <= 4; i++) {
-      setTimeout(() => {
-        setS4CardsCount(i);
-      }, 500 + i * 180);
-    }
-
-    return () => clearTimeout(tFeed);
-  }, [step4InView]);
-
-  /* ── STEP 05 ANIMATION STATE ── */
   const [s5GatherActive, setS5GatherActive] = useState(false);
   const [s5CardRevealed, setS5CardRevealed] = useState(false);
   const [s5Score, setS5Score] = useState(0);
@@ -382,16 +364,25 @@ export default function WorkflowSection() {
   const isStep5Visible = step4InView || step5InView;
 
   useEffect(() => {
-    if (!isStep5Visible) return;
+    if (!step4InView && !step5InView) return;
 
-    // 1. Gathering lines drop down and merge
-    const tGather = setTimeout(() => setS5GatherActive(true), 150);
+    // 1. Feeder line streams down from Section 03 circle to junction point
+    const tFeed = setTimeout(() => setS4FeederActive(true), 150);
 
-    // 2. Section 05 card forms and reveals
-    const tCard = setTimeout(() => {
+    // 2. From junction point, branch lines reveal the 4 evidence cards sequentially
+    const tC1 = setTimeout(() => setS4CardsCount(1), 550);
+    const tC2 = setTimeout(() => setS4CardsCount(2), 800);
+    const tC3 = setTimeout(() => setS4CardsCount(3), 1050);
+    const tC4 = setTimeout(() => setS4CardsCount(4), 1300);
+
+    // 3. AFTER all 4 cards are generated in cross-check evidence: exit lines drop down and gather together into junction
+    const tGather = setTimeout(() => setS5GatherActive(true), 1650);
+
+    // 4. From convergence junction point, feed trunk into Step 05 and generate High Risk verdict card
+    const tVerdict = setTimeout(() => {
       setS5CardRevealed(true);
 
-      // 3. Score counts up smoothly from 0 to 94
+      // 5. Model score counts up smoothly to 94
       let curScore = 0;
       const scoreInterval = setInterval(() => {
         curScore += 3;
@@ -400,14 +391,19 @@ export default function WorkflowSection() {
           clearInterval(scoreInterval);
         }
         setS5Score(curScore);
-      }, 30);
-    }, 300);
+      }, 25);
+    }, 2150);
 
     return () => {
+      clearTimeout(tFeed);
+      clearTimeout(tC1);
+      clearTimeout(tC2);
+      clearTimeout(tC3);
+      clearTimeout(tC4);
       clearTimeout(tGather);
-      clearTimeout(tCard);
+      clearTimeout(tVerdict);
     };
-  }, [isStep5Visible]);
+  }, [step4InView, step5InView]);
 
   return (
     <section
@@ -492,12 +488,9 @@ export default function WorkflowSection() {
 
             {/* Step Left Meta Column */}
             <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0">
-              <div className="inline-flex items-center gap-2 mb-3">
+              <div className="mb-3">
                 <span className="px-2 py-0.5 rounded-none border border-[#D0CDC2] bg-[#FAF9F6] font-mono text-[11px] font-bold text-[#141413]">
                   01
-                </span>
-                <span className="px-2 py-0.5 rounded-none bg-[#F0EEE6] border border-[#E2DFD7] font-mono text-[9.5px] uppercase tracking-wider text-[#625F58] font-semibold">
-                  Job Input
                 </span>
               </div>
               <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2 min-h-[34px] flex items-center">
@@ -682,12 +675,9 @@ export default function WorkflowSection() {
 
             {/* Step Left Meta Column with Typewriter Effect */}
             <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0">
-              <div className="inline-flex items-center gap-2 mb-3">
+              <div className="mb-3">
                 <span className="px-2 py-0.5 rounded-none border border-[#D0CDC2] bg-[#FAF9F6] font-mono text-[11px] font-bold text-[#141413]">
                   02
-                </span>
-                <span className="px-2 py-0.5 rounded-none bg-[#F0EEE6] border border-[#E2DFD7] font-mono text-[9.5px] uppercase tracking-wider text-[#625F58] font-semibold">
-                  Extract Signals
                 </span>
               </div>
               <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2 min-h-[34px] flex items-center">
@@ -722,76 +712,59 @@ export default function WorkflowSection() {
                     }}
                   />
 
-                  {/* PROMINENT NODE DOT ON THE RIGHT BOUNDARY IN EXACT VERTICAL MIDDLE */}
-                  <div className={`hidden lg:flex absolute -right-[7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white items-center justify-center z-30 shadow transition-all duration-300 ${
-                    s2DotActive ? 'bg-[#141413] ring-2 ring-[#141413]/25 scale-110' : 'bg-[#141413]'
-                  }`}>
-                    <span className="w-1 h-1 rounded-full bg-[#FAF9F5]" />
-                  </div>
+                  {/* Node dot on the right boundary in exact vertical middle matching Section 03 style */}
+                  <div className={`hidden lg:flex absolute -right-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-30 shadow-xs transition-transform duration-300 ${
+                    s2DotActive ? 'scale-110' : ''
+                  }`} />
                 </div>
 
-                {/* Center: 1-to-6 Junction SVG Network (Landing Page Flow Architecture) */}
+                {/* Center: 1-to-6 Junction SVG Network (Structured Corner Architecture matching Section 03) */}
                 <div className="hidden lg:block w-[96px] h-[276px] relative flex-shrink-0 -mx-[1px]">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 96 276" fill="none">
-                    <defs>
-                      <linearGradient id="s2-fade-trunk" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#A8A29E" stopOpacity="0.4" />
-                        <stop offset="40%" stopColor="#A8A29E" stopOpacity="0.95" />
-                        <stop offset="100%" stopColor="#A8A29E" stopOpacity="0.95" />
-                      </linearGradient>
-                      <linearGradient id="s2-fade-branch" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#A8A29E" stopOpacity="0.95" />
-                        <stop offset="75%" stopColor="#A8A29E" stopOpacity="0.85" />
-                        <stop offset="100%" stopColor="#A8A29E" stopOpacity="0.4" />
-                      </linearGradient>
-                    </defs>
-
-                    {/* Step 1: Single Horizontal Trunk from Card Middle Dot (x=0, y=138) to Junction (x=40, y=138) */}
+                    {/* Step 1: Single Horizontal Trunk from Card Middle Dot (x=0, y=138) to Junction (x=36, y=138) */}
                     {s2DotActive && (
                       <>
                         <line
                           x1="0"
                           y1="138"
-                          x2="40"
+                          x2="36"
                           y2="138"
-                          stroke="url(#s2-fade-trunk)"
+                          stroke="#A8A29E"
                           strokeWidth="1"
                           className="flow-dash-line"
                         />
                         {/* Central Junction Node Dot */}
-                        <circle cx="40" cy="138" r="3" fill="#A8A29E" />
-                        <circle cx="40" cy="138" r="1.2" fill="#FAF9F5" />
+                        <circle cx="36" cy="138" r="2.5" fill="#141413" />
+                        <circle cx="36" cy="138" r="1" fill="#FAF9F5" />
                       </>
                     )}
 
-                    {/* Step 2: 6 S-Curved Branch Lines departing from Junction Node into each Pill */}
-                    {[19, 65, 111, 165, 211, 257].map((yTarget, i) => {
+                    {/* Step 2: 6 Corner-Turn Branch Lines departing from Junction Node into each Pill */}
+                    {[
+                      { y: 19, path: 'M 36 138 L 42 138 Q 48 138 48 130 L 48 29 Q 48 19 58 19 L 96 19' },
+                      { y: 65, path: 'M 36 138 L 42 138 Q 48 138 48 130 L 48 75 Q 48 65 58 65 L 96 65' },
+                      { y: 111, path: 'M 36 138 L 42 138 Q 48 138 48 132 L 48 119 Q 48 111 56 111 L 96 111' },
+                      { y: 165, path: 'M 36 138 L 42 138 Q 48 138 48 144 L 48 157 Q 48 165 56 165 L 96 165' },
+                      { y: 211, path: 'M 36 138 L 42 138 Q 48 138 48 146 L 48 201 Q 48 211 58 211 L 96 211' },
+                      { y: 257, path: 'M 36 138 L 42 138 Q 48 138 48 146 L 48 247 Q 48 257 58 257 L 96 257' },
+                    ].map((branch, i) => {
                       const isLineActive = s2RevealedCount > i;
-                      const branchPath = `M 40 138 C 62 138, 74 ${yTarget}, 96 ${yTarget}`;
                       return (
                         <g key={i}>
                           {isLineActive && (
                             <>
                               <path
-                                d={branchPath}
-                                stroke="url(#s2-fade-branch)"
+                                d={branch.path}
+                                stroke="#A8A29E"
                                 strokeWidth="1"
                                 className="flow-dash-line"
                                 fill="none"
                               />
-                              {/* Docking dot touching the left edge of each pill */}
-                              <circle
-                                cx="96"
-                                cy={yTarget}
-                                r="2"
-                                fill="#A8A29E"
-                                className="transition-all duration-300"
-                              />
                               {/* Traveling crimson data pulse */}
-                              <circle r="2.2" fill="#DC2626" opacity="0">
+                              <circle r="2" fill="#DC2626" opacity="0">
                                 <animateMotion
-                                  path={branchPath}
-                                  dur="2.2s"
+                                  path={branch.path}
+                                  dur="2.4s"
                                   begin={`${i * 0.35}s`}
                                   repeatCount="indefinite"
                                   calcMode="linear"
@@ -799,8 +772,8 @@ export default function WorkflowSection() {
                                 <animate
                                   attributeName="opacity"
                                   values="0;0.9;0.9;0"
-                                  keyTimes="0;0.15;0.82;1"
-                                  dur="2.2s"
+                                  keyTimes="0;0.12;0.85;1"
+                                  dur="2.4s"
                                   begin={`${i * 0.35}s`}
                                   repeatCount="indefinite"
                                 />
@@ -833,6 +806,8 @@ export default function WorkflowSection() {
                             : 'opacity-0 translate-x-3 pointer-events-none border-dashed border-[#E0DED4]'
                         }`}
                       >
+                        {/* Node dot on left boundary touching the incoming dotted line */}
+                        <div className="hidden lg:flex absolute -left-[4.5px] top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-30 shadow-xs" />
                         <div className="flex items-center gap-2.5">
                           <span className="flex items-center justify-center text-[#141413] flex-shrink-0">
                             {sig.icon}
@@ -877,12 +852,9 @@ export default function WorkflowSection() {
 
             {/* Step Left Meta Column */}
             <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0">
-              <div className="inline-flex items-center gap-2 mb-3">
+              <div className="mb-3">
                 <span className="px-2 py-0.5 rounded-none border border-[#D0CDC2] bg-[#FAF9F6] font-mono text-[11px] font-bold text-[#141413]">
                   03
-                </span>
-                <span className="px-2 py-0.5 rounded-none bg-[#F0EEE6] border border-[#E2DFD7] font-mono text-[9.5px] uppercase tracking-wider text-[#625F58] font-semibold">
-                  Analysis Engine
                 </span>
               </div>
               <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2">
@@ -1218,28 +1190,28 @@ export default function WorkflowSection() {
                 <div className="flex-1 relative h-full">
                   {/* Top Feeder line from ScamShield AI brain (at 63.35%) */}
                   <div
-                    className={`absolute top-0 w-[1px] h-[52px] border-l border-dashed transition-colors duration-300 ${
+                    className={`absolute top-0 w-[1px] border-l border-dashed border-[#A8A29E] transition-all duration-400 ease-out ${
                       s4FeederActive
-                        ? 'border-[#A8A29E] animate-flow-dash'
-                        : 'border-[#A8A29E]/40'
+                        ? 'h-[52px] opacity-100 animate-flow-dash'
+                        : 'h-0 opacity-0'
                     }`}
                     style={{ left: '63.35%' }}
                   />
 
                   {/* Single Junction node dot */}
                   <div
-                    className={`absolute top-[52px] -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-white shadow-xs z-10 transition-colors duration-300 ${
-                      s4FeederActive ? 'bg-[#141413]' : 'bg-[#A8A29E]'
+                    className={`absolute top-[52px] -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-white shadow-xs z-10 transition-all duration-300 ease-out ${
+                      s4FeederActive ? 'scale-100 opacity-100 bg-[#141413]' : 'scale-0 opacity-0 bg-[#A8A29E]'
                     }`}
                     style={{ left: '63.35%' }}
                   />
 
                   {/* Horizontal distribution bus line spanning across the 4 cards */}
                   <div
-                    className={`absolute top-[52px] left-[11.82%] right-[11.82%] h-[1px] border-t border-dashed transition-colors duration-300 ${
-                      s4FeederActive
-                        ? 'border-[#A8A29E] animate-flow-dash'
-                        : 'border-[#A8A29E]/40'
+                    className={`absolute top-[52px] left-[11.82%] right-[11.82%] h-[1px] border-t border-dashed border-[#A8A29E] transition-all duration-400 ease-out ${
+                      s4CardsCount >= 1
+                        ? 'opacity-100 animate-flow-dash'
+                        : 'opacity-0'
                     }`}
                   />
 
@@ -1251,10 +1223,10 @@ export default function WorkflowSection() {
                         <div key={colIdx} className="relative flex flex-col items-center h-full">
                           {/* Drop line from horizontal bus (y=52px) down to card top (y=120px) */}
                           <div
-                            className={`absolute top-[52px] bottom-0 w-[1px] border-l border-dashed transition-colors duration-300 ${
+                            className={`absolute top-[52px] w-[1px] border-l border-dashed border-[#A8A29E] transition-all duration-300 ease-out ${
                               isActive
-                                ? 'border-[#A8A29E] animate-flow-dash'
-                                : 'border-[#A8A29E]/40'
+                                ? 'h-[68px] opacity-100 animate-flow-dash'
+                                : 'h-0 opacity-0'
                             }`}
                           />
                         </div>
@@ -1273,12 +1245,9 @@ export default function WorkflowSection() {
 
             {/* Step Left Meta Column */}
             <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0">
-              <div className="inline-flex items-center gap-2 mb-3">
+              <div className="mb-3">
                 <span className="px-2 py-0.5 rounded-none border border-[#D0CDC2] bg-[#FAF9F6] font-mono text-[11px] font-bold text-[#141413]">
                   04
-                </span>
-                <span className="px-2 py-0.5 rounded-none bg-[#F0EEE6] border border-[#E2DFD7] font-mono text-[9.5px] uppercase tracking-wider text-[#625F58] font-semibold">
-                  Cross-Check Evidence
                 </span>
               </div>
               <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2">
@@ -1467,10 +1436,10 @@ export default function WorkflowSection() {
                       <div key={colIdx} className="relative flex flex-col items-center h-full">
                         {/* Exit line from card bottom (y=0) down to gathering bus (y=64px) */}
                         <div
-                          className={`absolute top-0 h-[64px] w-[1px] border-l border-dashed transition-colors duration-300 ${
+                          className={`absolute top-0 w-[1px] border-l border-dashed border-[#A8A29E] transition-all duration-400 ease-out ${
                             s5GatherActive
-                              ? 'border-[#A8A29E] animate-flow-dash'
-                              : 'border-[#A8A29E]/40'
+                              ? 'h-[64px] opacity-100 animate-flow-dash'
+                              : 'h-0 opacity-0'
                           }`}
                         />
                       </div>
@@ -1479,26 +1448,26 @@ export default function WorkflowSection() {
 
                   {/* Horizontal gathering bus line joining all 4 lines together at y=64px */}
                   <div
-                    className={`absolute top-[64px] left-[11.82%] right-[11.82%] h-[1px] border-t border-dashed transition-colors duration-300 ${
+                    className={`absolute top-[64px] left-[11.82%] right-[11.82%] h-[1px] border-t border-dashed border-[#A8A29E] transition-all duration-400 ease-out ${
                       s5GatherActive
-                        ? 'border-[#A8A29E] animate-flow-dash'
-                        : 'border-[#A8A29E]/40'
+                        ? 'opacity-100 animate-flow-dash'
+                        : 'opacity-0'
                     }`}
                   />
 
                   {/* Central convergence node dot at y=64px, left: 50% */}
                   <div
-                    className={`absolute top-[64px] left-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-white shadow-xs z-10 transition-colors duration-300 ${
-                      s5GatherActive ? 'bg-[#141413]' : 'bg-[#A8A29E]'
+                    className={`absolute top-[64px] left-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-white shadow-xs z-10 transition-all duration-300 ease-out ${
+                      s5GatherActive ? 'scale-100 opacity-100 bg-[#141413]' : 'scale-0 opacity-0 bg-[#A8A29E]'
                     }`}
                   />
 
                   {/* Vertical trunk line feeding into Step 05 (from y=64px down to y=120px) */}
                   <div
-                    className={`absolute top-[64px] bottom-0 left-1/2 -translate-x-1/2 w-[1px] border-l border-dashed transition-colors duration-300 ${
+                    className={`absolute top-[64px] w-[1px] left-1/2 -translate-x-1/2 border-l border-dashed border-[#A8A29E] transition-all duration-300 ease-out ${
                       s5GatherActive
-                        ? 'border-[#A8A29E] animate-flow-dash'
-                        : 'border-[#A8A29E]/40'
+                        ? 'h-[56px] opacity-100 animate-flow-dash'
+                        : 'h-0 opacity-0'
                     }`}
                   />
                 </div>
@@ -1511,12 +1480,9 @@ export default function WorkflowSection() {
 
             {/* Step Left Meta Column */}
             <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0">
-              <div className="inline-flex items-center gap-2 mb-3">
+              <div className="mb-3">
                 <span className="px-2 py-0.5 rounded-none border border-[#F4B2A8] bg-[#FEECE8] font-mono text-[11px] font-bold text-[#DC2626]">
                   05
-                </span>
-                <span className="px-2 py-0.5 rounded-none bg-[#FEECE8] border border-[#F6C6BF] font-mono text-[9.5px] uppercase tracking-wider text-[#991B1B] font-semibold">
-                  Final Verdict
                 </span>
               </div>
               <h3 className="text-[23px] sm:text-[26px] font-serif font-normal text-[#141413] tracking-tight leading-snug mb-2">
@@ -1527,12 +1493,16 @@ export default function WorkflowSection() {
               </p>
             </div>
 
-            {/* Step Right Visual Card: Warm Rose-Porcelain Verdict Card */}
-            <div className={`flex-1 bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(220,38,38,0.12)] border-[#DC2626] ring-1 ring-[#DC2626]/20 relative overflow-hidden transition-all duration-700 ${
-              isStep5Visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            {/* Step Right Visual Card: Warm Rose-Porcelain Verdict Card (Generated from convergence junction) */}
+            <div className={`flex-1 bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border rounded-none p-5 sm:p-7 border-[#DC2626] ring-1 ring-[#DC2626]/20 relative overflow-hidden transition-all duration-700 ease-out ${
+              s5CardRevealed
+                ? 'opacity-100 translate-y-0 scale-100 shadow-[0_8px_30px_rgba(220,38,38,0.12)]'
+                : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
             }`}>
               {/* Receiver node dot where gathering trunk plugs into Section 05 */}
-              <span className="hidden lg:block absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white shadow-xs z-20" />
+              <span className={`hidden lg:block absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white shadow-xs z-20 transition-all duration-300 ${
+                s5CardRevealed ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+              }`} />
 
               {/* Elevated specular highlight line */}
               <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
