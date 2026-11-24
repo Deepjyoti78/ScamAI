@@ -4,39 +4,39 @@ import { Shield, Brain, Search, Lock, ArrowRight, CheckCircle2 } from 'lucide-re
 const pillars = [
   {
     icon: <Brain className="w-4 h-4 text-[#141413]" strokeWidth={1.75} />,
-    title: 'Calibrated ML Classifier',
+    title: 'Historical ML Classifier',
     subtitle: 'EMSCAD Benchmark Model',
     description:
-      'Trained on 17,880 real recruitment records with TF-IDF linguistic feature weighting, detecting high-risk phrase patterns, urgency cues, and compensation anomalies.',
+      'Uses a saved TF-IDF and Logistic Regression model developed on historical EMSCAD postings. Its score is uncalibrated and does not establish whether a current offer is genuine.',
   },
   {
     icon: <Lock className="w-4 h-4 text-[#141413]" strokeWidth={1.75} />,
-    title: '7-Point Trust Chain',
-    subtitle: 'Cross-Domain Audit',
+    title: 'Five Trust Chain Checks',
+    subtitle: 'Text and Supplied Domains',
     description:
-      'Inspects alignment between claimed employers, recruiter email providers (flagging free domains like Gmail), advance fee demands, and credential collection forms.',
+      'Inspects fee demands, credential requests, supplied recruiter and application domains, and missing metadata. These observations do not authenticate an employer.',
   },
   {
     icon: <Search className="w-4 h-4 text-[#141413]" strokeWidth={1.75} />,
-    title: 'Live Web Research',
-    subtitle: 'Tavily Search Engine',
+    title: 'Optional Web Research',
+    subtitle: 'Provider Configuration Required',
     description:
-      'Searches official company domains, corporate career portals, and leading ATS platforms (Workday, Greenhouse, Lever) to cross-reference vacancy authenticity.',
+      'Optional search requires a configured backend provider. The controlled local demo performs no external employer search; missing search evidence is shown explicitly.',
   },
   {
     icon: <Shield className="w-4 h-4 text-[#141413]" strokeWidth={1.75} />,
     title: 'Transparent Evidence',
     subtitle: 'Actionable Safety Dossiers',
     description:
-      'Delivers transparent impact attributions, safety guidance, and direct employer verification paths—helping job seekers make confident, informed career decisions.',
+      'Shows model feature contributions, separate rule observations and unavailable checks so users can decide what to investigate independently.',
   },
 ];
 
 const stats = [
-  { value: '17,880', label: 'Benchmark postings trained' },
-  { value: '5 Stages', label: 'Automated verification pipeline' },
-  { value: '7 Points', label: 'Trust Chain integrity checks' },
-  { value: '100%', label: 'Verifiable evidence citations' },
+  { value: '17,880', label: 'Historical corpus postings' },
+  { value: '5 Stages', label: 'Investigation workflow' },
+  { value: '5 Checks', label: 'Trust Chain observations' },
+  { value: 'Local Demo', label: 'Pasted-text analysis' },
 ];
 
 export default function AboutSection() {
@@ -48,24 +48,26 @@ export default function AboutSection() {
           About ScamShield AI
         </span>
         <h2 className="font-serif text-[26px] sm:text-[34px] md:text-[38px] font-normal tracking-[-0.01em] text-[#141413] leading-[1.15] mb-3.5">
-          Empowering job seekers with verifiable AI recruitment defense
+          Explainable text analysis for recruitment review
         </h2>
         <p className="text-[14px] sm:text-[14px] text-[#625F58] leading-relaxed max-w-[760px]">
-          Recruitment fraud causes billions in losses each year through counterfeit interview portals, advance fee scams, and identity theft. ScamShield AI unites calibrated machine learning, cross-domain integrity audits, and real-time external web research to protect applicants before they share sensitive credentials or funds.
+          ScamShield AI combines a historical text classifier with separate fee, credential and supplied-domain checks. Review its uncalibrated model score, operational tier and evidence limitations together. A Legitimate classifier prediction does not guarantee safety, and employer identity is not independently verified by the local demo.
         </p>
       </div>
 
-      {/* 4 Pillars Grid (Sharp Square Cards) */}
+      {/* 4 Pillars Grid (Warm Porcelain Product Designer Style) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 sm:mb-10">
         {pillars.map((pillar, index) => (
           <div
             key={index}
-            className={`p-5 border border-[#E0DED4] bg-[#FAF9F5] rounded-none card-interactive flex flex-col justify-between group shadow-[0_1px_3px_rgba(0,0,0,0.02)] animate-card-entrance ${
+            className={`p-5 border border-[#E2DFD7] bg-[#FAF9F6] rounded-none relative overflow-hidden flex flex-col justify-between group shadow-[0_8px_24px_-4px_rgba(20,20,19,0.06),0_2px_6px_-1px_rgba(20,20,19,0.02),inset_0_1px_0_0_#FFFFFF] animate-card-entrance ${
               index === 0 ? 'stagger-1' : index === 1 ? 'stagger-2' : index === 2 ? 'stagger-3' : 'stagger-4'
             }`}
           >
+            {/* Top specular hairline */}
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
             <div>
-              <div className="w-9 h-9 sm:w-8 sm:h-8 rounded-none border border-[#E0DED4] bg-[#FAF9F5] flex items-center justify-center mb-4 group-hover:border-[#141413] group-hover:scale-105 transition-all">
+              <div className="w-9 h-9 sm:w-8 sm:h-8 rounded-none border border-[#E2DFD7] bg-[#F5F4EE] flex items-center justify-center mb-4 group-hover:border-[#141413] group-hover:scale-105 transition-all">
                 {pillar.icon}
               </div>
               <span className="text-[11px] sm:text-[10px] font-mono font-medium text-[#77746C] uppercase tracking-wider block mb-1">
@@ -99,10 +101,12 @@ export default function AboutSection() {
       </div>
 
       {/* Bottom CTA Box */}
-      <div className="p-5 sm:p-8 border border-[#E0DED4] bg-[#FAF9F5] rounded-none flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 animate-card-entrance stagger-5 card-interactive">
+      <div className="relative overflow-hidden p-5 sm:p-8 border border-[#E2DFD7] bg-[#FAF9F6] rounded-none flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 animate-card-entrance stagger-5 shadow-[0_8px_26px_-4px_rgba(20,20,19,0.06),0_2px_6px_-1px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]">
+        {/* Specular hairline at top edge */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <CheckCircle2 size={16} className="text-[#137333]" />
+            <CheckCircle2 size={16} className="text-[#141413]" strokeWidth={2} />
             <span className="text-[13.5px] sm:text-[12px] font-semibold tracking-tight text-[#141413]">
               Free and open career protection
             </span>

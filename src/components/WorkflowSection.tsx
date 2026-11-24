@@ -96,14 +96,14 @@ function JobPostingCard({
 
   return (
     <div
-      className={`bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-4 sm:p-5 relative transition-all duration-300 ${
+      className={`relative overflow-hidden bg-[#FAF9F6] border border-[#E2DFD7] rounded-none p-4 sm:p-5 transition-all duration-300 ${
         isApplyActive
-          ? 'shadow-[0_8px_24px_rgba(20,20,19,0.07)]'
-          : 'shadow-[0_2px_12px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]'
+          ? 'shadow-[0_8px_26px_-4px_rgba(20,20,19,0.09),0_2px_6px_-1px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]'
+          : 'shadow-[0_8px_24px_-4px_rgba(20,20,19,0.06),0_2px_6px_-1px_rgba(20,20,19,0.02),inset_0_1px_0_0_#FFFFFF]'
       } ${className}`}
     >
-      {/* Specular top highlight */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10" />
+      {/* Elevated top specular white highlight line matching Product Designer card */}
+      <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
       {/* Header with avatar */}
       <div className="flex items-start gap-3 mb-3">
@@ -445,7 +445,7 @@ export default function WorkflowSection() {
             How It Works
           </h2>
           <p className="text-[12.5px] sm:text-[13.5px] text-[#625F58] font-normal leading-relaxed max-w-md mx-auto">
-            From job posting to informed decision through connected, explainable AI verification.
+            From pasted job text to model output and separate rule observations. The walkthrough below is illustrative, not a live employer check.
           </p>
         </div>
 
@@ -516,10 +516,10 @@ export default function WorkflowSection() {
               </div>
             </div>
 
-            {/* Step Right Visual Card: Enhanced Pure Porcelain Background with Soft Neutral Border */}
-            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
-              {/* Specular hairline at top edge */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+            {/* Step Right Visual Card: Warm Porcelain Background matching Product Designer style */}
+            <div className="flex-1 bg-[#FAF9F6] border border-[#E2DFD7] rounded-none p-5 sm:p-7 shadow-[0_8px_26px_-4px_rgba(20,20,19,0.06),0_2px_6px_-1px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500">
+              {/* Elevated specular hairline at top edge */}
+              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
               <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-6 items-center relative min-h-[250px]">
                 {/* Left: 3D Minimal Laptop Mockup with Floating URL Input Box */}
@@ -694,10 +694,10 @@ export default function WorkflowSection() {
               </p>
             </div>
 
-            {/* Step Right Visual Card: 1-to-6 Junction Network Architecture */}
-            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
-              {/* Specular hairline at top edge */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+            {/* Step Right Visual Card: 1-to-6 Junction Network Architecture (Warm Porcelain Product Designer style) */}
+            <div className="flex-1 bg-[#FAF9F6] border border-[#E2DFD7] rounded-none p-5 sm:p-7 shadow-[0_8px_26px_-4px_rgba(20,20,19,0.06),0_2px_6px_-1px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500">
+              {/* Elevated specular hairline at top edge */}
+              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
               <div className="flex flex-col lg:flex-row items-center relative">
 
@@ -802,10 +802,10 @@ export default function WorkflowSection() {
                     return (
                       <div
                         key={i}
-                        className={`bg-[#FFFFFF] border rounded-none px-3.5 py-2 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
+                        className={`bg-[#FAF9F6] border rounded-none px-3.5 py-2 flex items-center justify-between transition-all duration-500 relative ${
                           isRevealed
-                            ? 'opacity-100 translate-x-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]'
-                            : 'opacity-0 translate-x-3 pointer-events-none border-dashed border-[#E0DED4]'
+                            ? 'opacity-100 translate-x-0 border-[#E2DFD7] shadow-[0_2px_8px_rgba(20,20,19,0.04),inset_0_1px_0_0_#FFFFFF]'
+                            : 'opacity-0 translate-x-3 pointer-events-none border-dashed border-[#E2DFD7]'
                         }`}
                       >
                         {/* Node dot on left boundary touching the incoming dotted line */}
@@ -814,13 +814,13 @@ export default function WorkflowSection() {
                           <span className="flex items-center justify-center text-[#141413] flex-shrink-0">
                             {sig.icon}
                           </span>
-                          <span className="w-[1px] h-3.5 bg-[#E0DED4] flex-shrink-0" />
+                          <span className="w-[1px] h-3.5 bg-[#E2DFD7] flex-shrink-0" />
                           <span className="text-[12.5px] font-medium text-[#141413]">
                             {sig.title}
                           </span>
                         </div>
                         {isRevealed && (
-                          <span className="text-[9px] font-mono text-[#55524B] bg-[#F5F4EE] border border-[#E0DED4] px-1.5 py-0.5 font-semibold uppercase tracking-wider">
+                          <span className="text-[9px] font-mono text-[#55524B] bg-[#F5F4EE] border border-[#E2DFD7] px-1.5 py-0.5 font-semibold uppercase tracking-wider">
                             Extracted
                           </span>
                         )}
@@ -867,10 +867,10 @@ export default function WorkflowSection() {
               </p>
             </div>
 
-            {/* Step Right Visual Card: Unified Canvas with Landing Page Flow Lines, Centered Brain & Continuous Exit Pipeline */}
-            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden lg:overflow-visible transition-all duration-500">
-              {/* Specular hairline at top edge */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+            {/* Step Right Visual Card: Warm Porcelain Product Designer style with Centered Brain & Continuous Exit Pipeline */}
+            <div className="flex-1 bg-[#FAF9F6] border border-[#E2DFD7] rounded-none p-5 sm:p-7 shadow-[0_8px_26px_-4px_rgba(20,20,19,0.06),0_2px_6px_-1px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden lg:overflow-visible transition-all duration-500">
+              {/* Elevated specular hairline at top edge */}
+              <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
               <div className="flex flex-col lg:flex-row items-center relative">
 
@@ -888,15 +888,15 @@ export default function WorkflowSection() {
                     return (
                       <div
                         key={i}
-                        className={`bg-[#FFFFFF] border rounded-none px-3.5 h-[38px] flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 relative ${
+                        className={`bg-[#FAF9F6] border rounded-none px-3.5 h-[38px] flex items-center justify-between transition-all duration-300 relative ${
                           isVisible
-                            ? 'opacity-100 translate-x-0 border-[#E0DED4]'
-                            : 'opacity-0 -translate-x-2 border-dashed border-[#E0DED4]'
+                            ? 'opacity-100 translate-x-0 border-[#E2DFD7] shadow-[0_2px_6px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]'
+                            : 'opacity-0 -translate-x-2 border-dashed border-[#E2DFD7]'
                         }`}
                       >
                         <div className="flex items-center gap-2.5 min-w-0 pr-2">
                           <span className="text-[#141413] flex-shrink-0">{sig.icon}</span>
-                          <span className="w-[1px] h-3 bg-[#E0DED4] flex-shrink-0" />
+                          <span className="w-[1px] h-3 bg-[#E2DFD7] flex-shrink-0" />
                           <span className="text-[11.5px] font-medium text-[#141413] truncate">
                             {sig.title}
                           </span>
@@ -981,26 +981,26 @@ export default function WorkflowSection() {
                       </>
                     )}
 
-                    {/* Horizontal dotted line into the circular ring at x=138 (230 - 92) */}
+                    {/* Horizontal dotted line into the circular ring at x=133.4 (225.4 - 92) */}
                     {s3RingActive && (
                       <>
                         <line
                           x1="76"
                           y1="139"
-                          x2="138"
+                          x2="133.4"
                           y2="139"
                           stroke="#A8A29E"
                           strokeWidth="1"
                           className="flow-dash-line"
                         />
-                        <circle cx="138" cy="139" r="2" fill="#A8A29E" />
+                        <circle cx="133.4" cy="139" r="2" fill="#A8A29E" />
                       </>
                     )}
 
-                    {/* Circular Orbit Ring around Brain (cx=230, cy=139, r=92) */}
+                    {/* Circular Orbit Ring around Brain (cx=225.4, cy=139, r=92) aligned directly with Step 04 Web Corroboration */}
                     {s3RingActive && (
                       <circle
-                        cx="230"
+                        cx="225.4"
                         cy="139"
                         r="92"
                         stroke="#A8A29E"
@@ -1014,44 +1014,44 @@ export default function WorkflowSection() {
                     {/* 1. Pattern scoring connector */}
                     {s3SatellitesStep >= 1 && (
                       <g className="transition-opacity duration-300">
-                        <line x1="165" y1="74" x2="126" y2="44" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
-                        <circle cx="126" cy="44" r="2" fill="#A8A29E" />
+                        <line x1="160.4" y1="74" x2="121.4" y2="44" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
+                        <circle cx="121.4" cy="44" r="2" fill="#A8A29E" />
                       </g>
                     )}
 
                     {/* 2. Text analysis connector */}
                     {s3SatellitesStep >= 2 && (
                       <g className="transition-opacity duration-300">
-                        <line x1="230" y1="47" x2="230" y2="22" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
-                        <circle cx="230" cy="22" r="2" fill="#A8A29E" />
+                        <line x1="225.4" y1="47" x2="225.4" y2="22" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
+                        <circle cx="225.4" cy="22" r="2" fill="#A8A29E" />
                       </g>
                     )}
 
                     {/* 3. Feature explanation connector */}
                     {s3SatellitesStep >= 3 && (
                       <g className="transition-opacity duration-300">
-                        <line x1="295" y1="74" x2="334" y2="44" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
-                        <circle cx="334" cy="44" r="2" fill="#A8A29E" />
+                        <line x1="290.4" y1="74" x2="329.4" y2="44" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
+                        <circle cx="329.4" cy="44" r="2" fill="#A8A29E" />
                       </g>
                     )}
 
                     {/* 4. Risk synthesis connector */}
                     {s3SatellitesStep >= 4 && (
                       <g className="transition-opacity duration-300">
-                        <line x1="322" y1="139" x2="358" y2="139" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
-                        <circle cx="358" cy="139" r="2" fill="#DC2626" />
+                        <line x1="317.4" y1="139" x2="353.4" y2="139" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
+                        <circle cx="353.4" cy="139" r="2" fill="#DC2626" />
                       </g>
                     )}
 
-                    {/* Docking dot at bottom boundary of circular brain orbit */}
+                    {/* Docking dot at bottom boundary of circular brain orbit (cx=225.4, cy=231) directly vertically collinear with Web Corroboration */}
                     {s3RingActive && (
-                      <circle cx="230" cy="231" r="2" fill="#A8A29E" />
+                      <circle cx="225.4" cy="231" r="2" fill="#A8A29E" />
                     )}
 
                     {/* SVG foreignObject: Perfectly centered Brain illustration & ScamShield Engine typography */}
                     {s3RingActive && (
                       <foreignObject
-                        x="140"
+                        x="135.4"
                         y="55"
                         width="180"
                         height="168"
@@ -1075,7 +1075,7 @@ export default function WorkflowSection() {
                     {/* Satellite Badges rendered directly inside SVG coordinate space */}
                     {/* Badge 1: Pattern scoring */}
                     <foreignObject
-                      x="32"
+                      x="28"
                       y="24"
                       width="120"
                       height="34"
@@ -1086,7 +1086,7 @@ export default function WorkflowSection() {
                           s3SatellitesStep >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
                         }`}
                       >
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FAF9F6] text-[10.5px] font-mono font-medium shadow-[0_2px_6px_rgba(20,20,19,0.06),inset_0_1px_0_0_#FFFFFF]">
                           Pattern scoring
                         </span>
                       </div>
@@ -1094,7 +1094,7 @@ export default function WorkflowSection() {
 
                     {/* Badge 2: Text analysis */}
                     <foreignObject
-                      x="175"
+                      x="171"
                       y="0"
                       width="110"
                       height="34"
@@ -1105,7 +1105,7 @@ export default function WorkflowSection() {
                           s3SatellitesStep >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
                         }`}
                       >
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-none border border-[#141413] bg-[#FAF9F6] text-[10.5px] font-mono font-medium shadow-[0_2px_6px_rgba(20,20,19,0.06),inset_0_1px_0_0_#FFFFFF]">
                           Text analysis
                         </span>
                       </div>
@@ -1113,7 +1113,7 @@ export default function WorkflowSection() {
 
                     {/* Badge 3: Feature explanation */}
                     <foreignObject
-                      x="312"
+                      x="308"
                       y="24"
                       width="138"
                       height="34"
@@ -1124,7 +1124,7 @@ export default function WorkflowSection() {
                           s3SatellitesStep >= 3 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
                         }`}
                       >
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FAF9F6] text-[10.5px] font-mono font-medium shadow-[0_2px_6px_rgba(20,20,19,0.06),inset_0_1px_0_0_#FFFFFF]">
                           Feature explanation
                         </span>
                       </div>
@@ -1132,7 +1132,7 @@ export default function WorkflowSection() {
 
                     {/* Badge 4: Risk synthesis */}
                     <foreignObject
-                      x="360"
+                      x="356"
                       y="122"
                       width="100"
                       height="34"
@@ -1143,7 +1143,7 @@ export default function WorkflowSection() {
                           s3SatellitesStep >= 4 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
                         }`}
                       >
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#DC2626] text-[#DC2626] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#DC2626] text-[#DC2626] bg-[#FAF9F6] text-[10.5px] font-mono font-medium shadow-[0_2px_6px_rgba(220,38,38,0.06),inset_0_1px_0_0_#FFFFFF]">
                           Risk synthesis
                         </span>
                       </div>
@@ -1180,21 +1180,21 @@ export default function WorkflowSection() {
                 {/* Connector canvas matching right visual column (Pure SVG with exact flow-dash-line styling) */}
                 <div className="flex-1 relative h-full">
                   <svg className="w-full h-full absolute inset-0 overflow-visible" fill="none">
-                    {/* Continuous feeder line connecting the Section 03 circle bottom dot directly to Section 04 junction dot */}
+                    {/* Continuous feeder line connecting the Section 03 circle bottom dot directly to Section 04 junction dot (100% straight vertical) */}
                     {s4FeederActive && (
                       <>
                         <line
-                          x1="63.35%"
+                          x1="62.73%"
                           y1="-78"
-                          x2="63.35%"
+                          x2="62.73%"
                           y2="52"
                           stroke="#A8A29E"
                           strokeWidth="1"
                           className="flow-dash-line"
                         />
                         {/* Single central junction node dot */}
-                        <circle cx="63.35%" cy="52" r="2.5" fill="#141413" />
-                        <circle cx="63.35%" cy="52" r="1" fill="#FAF9F5" />
+                        <circle cx="62.73%" cy="52" r="2.5" fill="#141413" />
+                        <circle cx="62.73%" cy="52" r="1" fill="#FAF9F5" />
                       </>
                     )}
 
@@ -1262,10 +1262,12 @@ export default function WorkflowSection() {
             <div className="flex-1 relative transition-all duration-500">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
 
-                {/* Card 1: Domain consistency */}
-                <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
-                  s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E0DED4]'
+                {/* Card 1: Domain consistency (Warm Porcelain Product Designer Style) */}
+                <div className={`relative overflow-hidden bg-[#FAF9F6] border rounded-none p-4 flex flex-col justify-between transition-all duration-500 ${
+                  s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#E2DFD7] shadow-[0_8px_24px_-4px_rgba(20,20,19,0.07),0_2px_6px_-1px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E2DFD7]'
                 }`}>
+                  {/* Top specular hairline */}
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
                   {/* Top docking node */}
                   <div className="hidden lg:flex absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
                   {/* Bottom docking node */}
@@ -1274,12 +1276,12 @@ export default function WorkflowSection() {
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-none bg-[#F5F4EE] border border-[#E0DED4] flex items-center justify-center text-[#141413]">
+                        <div className="w-7 h-7 rounded-none bg-[#F5F4EE] border border-[#E2DFD7] flex items-center justify-center text-[#141413]">
                           <Globe size={14} />
                         </div>
-                        <span className="w-[1px] h-3.5 bg-[#E0DED4]" />
+                        <span className="w-[1px] h-3.5 bg-[#E2DFD7]" />
                       </div>
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-none bg-[#F5F4EE] border border-[#E0DED4] text-[#141413]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-none bg-[#F5F4EE] border border-[#E2DFD7] text-[#141413]">
                         <Check size={12} strokeWidth={2.5} />
                       </span>
                     </div>
@@ -1290,17 +1292,19 @@ export default function WorkflowSection() {
                       Recruiter domain matched against certified ICANN DNS records.
                     </p>
                   </div>
-                  <div className="mt-3 pt-2 border-t border-[#F0EEE6]">
+                  <div className="mt-3 pt-2 border-t border-[#E8E6DE]">
                     <span className="text-[9.5px] font-mono text-[#55524B] font-semibold uppercase">
                       Check complete
                     </span>
                   </div>
                 </div>
 
-                {/* Card 2: Credential verification (Concern) */}
-                <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(220,38,38,0.03)] transition-all duration-500 relative ${
-                  s4CardsCount >= 2 ? 'opacity-100 translate-y-0 border-[#DC2626] ring-1 ring-[#DC2626]/25 bg-[#FFF5F4]' : 'opacity-0 translate-y-4 pointer-events-none border-[#F6C6BF]'
+                {/* Card 2: Credential verification (Warm Rose-Porcelain Concern Style) */}
+                <div className={`relative overflow-hidden bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border rounded-none p-4 flex flex-col justify-between transition-all duration-500 ${
+                  s4CardsCount >= 2 ? 'opacity-100 translate-y-0 border-[#F6C6BF] shadow-[0_8px_24px_-4px_rgba(180,50,50,0.07),inset_0_1px_0_0_#FFFFFF]' : 'opacity-0 translate-y-4 pointer-events-none border-[#F6C6BF]'
                 }`}>
+                  {/* Top specular hairline */}
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
                   {/* Top docking node */}
                   <div className="hidden lg:flex absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
                   {/* Bottom docking node */}
@@ -1325,17 +1329,19 @@ export default function WorkflowSection() {
                       Free Gmail address used instead of company domain; registration fee cited.
                     </p>
                   </div>
-                  <div className="mt-3 pt-2 border-t border-[#FEECE8]">
+                  <div className="mt-3 pt-2 border-t border-[#F8D2CC]">
                     <span className="text-[9.5px] font-mono text-rose-700 font-semibold uppercase">
                       Concern found
                     </span>
                   </div>
                 </div>
 
-                {/* Card 3: Web corroboration */}
-                <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
-                  s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E0DED4]'
+                {/* Card 3: Web corroboration (Warm Porcelain Product Designer Style) */}
+                <div className={`relative overflow-hidden bg-[#FAF9F6] border rounded-none p-4 flex flex-col justify-between transition-all duration-500 ${
+                  s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#E2DFD7] shadow-[0_8px_24px_-4px_rgba(20,20,19,0.07),0_2px_6px_-1px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E2DFD7]'
                 }`}>
+                  {/* Top specular hairline */}
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
                   {/* Top docking node */}
                   <div className="hidden lg:flex absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
                   {/* Bottom docking node */}
@@ -1344,12 +1350,12 @@ export default function WorkflowSection() {
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-none bg-[#F5F4EE] border border-[#E0DED4] flex items-center justify-center text-[#141413]">
+                        <div className="w-7 h-7 rounded-none bg-[#F5F4EE] border border-[#E2DFD7] flex items-center justify-center text-[#141413]">
                           <Layers size={14} />
                         </div>
-                        <span className="w-[1px] h-3.5 bg-[#E0DED4]" />
+                        <span className="w-[1px] h-3.5 bg-[#E2DFD7]" />
                       </div>
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-none bg-[#F5F4EE] border border-[#E0DED4] text-[#141413]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-none bg-[#F5F4EE] border border-[#E2DFD7] text-[#141413]">
                         <Check size={12} strokeWidth={2.5} />
                       </span>
                     </div>
@@ -1357,20 +1363,22 @@ export default function WorkflowSection() {
                       Web corroboration
                     </h5>
                     <p className="text-[11px] text-[#625F58] leading-relaxed">
-                      Cross-referenced against verified company career pages.
+                      Illustrative optional search; external research is unavailable in the local demo.
                     </p>
                   </div>
-                  <div className="mt-3 pt-2 border-t border-[#F0EEE6]">
+                  <div className="mt-3 pt-2 border-t border-[#E8E6DE]">
                     <span className="text-[9.5px] font-mono text-[#55524B] font-semibold uppercase">
                       Check complete
                     </span>
                   </div>
                 </div>
 
-                {/* Card 4: Employer legitimacy (Warning) */}
-                <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(217,119,6,0.03)] transition-all duration-500 relative ${
-                  s4CardsCount >= 4 ? 'opacity-100 translate-y-0 border-[#D97706] ring-1 ring-[#D97706]/25 bg-[#FFFBEB]' : 'opacity-0 translate-y-4 pointer-events-none border-[#FDE68A]'
+                {/* Card 4: Employer legitimacy (Warm Amber-Porcelain Review Style) */}
+                <div className={`relative overflow-hidden bg-gradient-to-b from-[#FFFDF7] via-[#FEF9EC] to-[#FDF3DE] border rounded-none p-4 flex flex-col justify-between transition-all duration-500 ${
+                  s4CardsCount >= 4 ? 'opacity-100 translate-y-0 border-[#FDE68A] shadow-[0_8px_24px_-4px_rgba(217,119,6,0.07),inset_0_1px_0_0_#FFFFFF]' : 'opacity-0 translate-y-4 pointer-events-none border-[#FDE68A]'
                 }`}>
+                  {/* Top specular hairline */}
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
                   {/* Top docking node */}
                   <div className="hidden lg:flex absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
                   {/* Bottom docking node */}
@@ -1395,7 +1403,7 @@ export default function WorkflowSection() {
                       Recent corporate incorporation; recruitment identity unverified.
                     </p>
                   </div>
-                  <div className="mt-3 pt-2 border-t border-[#FEF3C7]">
+                  <div className="mt-3 pt-2 border-t border-[#FDE68A]/60">
                     <span className="text-[9.5px] font-mono text-amber-700 font-semibold uppercase">
                       Needs review
                     </span>
@@ -1506,7 +1514,7 @@ export default function WorkflowSection() {
             {/* Step Right Visual Card: Warm Rose-Porcelain Verdict Card (Generated from convergence junction) */}
             <div className={`flex-1 bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border rounded-none p-5 sm:p-7 border-[#DC2626] ring-1 ring-[#DC2626]/20 relative overflow-hidden transition-all duration-700 ease-out ${
               s5CardRevealed
-                ? 'opacity-100 translate-y-0 scale-100 shadow-[0_8px_30px_rgba(220,38,38,0.12)]'
+                ? 'opacity-100 translate-y-0 scale-100 shadow-[0_8px_30px_rgba(220,38,38,0.12),inset_0_1px_0_0_#FFFFFF]'
                 : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
             }`}>
               {/* Receiver node dot where gathering trunk plugs into Section 05 */}

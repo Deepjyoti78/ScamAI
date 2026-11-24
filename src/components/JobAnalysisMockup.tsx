@@ -528,7 +528,7 @@ export default function JobAnalysisMockup() {
 
               {/* Browser URL Pill */}
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-[#F5F4EE] border border-[#E4E2D8] mb-3.5 w-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#141413] flex-shrink-0" />
                 <Lock size={10} className="text-[#141413]/70 flex-shrink-0" />
                 <span className="text-[9.5px] sm:text-[10px] font-mono text-[#141413]/80 tracking-tight truncate">
                   careers-rapidtech.com/jobs/product...

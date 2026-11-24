@@ -12,9 +12,9 @@ function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
   if (level === 'medium' && !text.includes('REVIEW')) text = 'NEEDS REVIEW';
 
   const styles: Record<RiskLevel, string> = {
-    low: 'text-[#16a34a] bg-[#f0fdf4] border-[#86efac]',
-    medium: 'text-[#d97706] bg-[#fffbeb] border-[#fed7aa]',
-    high: 'text-[#dc2626] bg-[#fef2f2] border-[#fca5a5]',
+    low: 'text-[#2E7D32] bg-[#F4F8F4] border-[#D1E7DD]',
+    medium: 'text-[#D97706] bg-[#FFFBEB] border-[#FED7AA]',
+    high: 'text-[#DC2626] bg-[#FEF2F2] border-[#FCA5A5]',
     unknown: 'text-[#625F58] bg-[#F0EEE6] border-[#E0DED4]',
   };
 
@@ -53,8 +53,8 @@ export default function RecentInvestigations() {
               {displayList.length} sample cases
             </span>
             {hasRealRecord && (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-none text-[10.5px] font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
-                <span className="w-1.5 h-1.5 bg-[#16a34a] animate-live-pulse" />
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-none text-[10.5px] font-medium bg-[#F0EEE6] text-[#141413] border border-[#D7D4C9]">
+                <span className="w-1.5 h-1.5 bg-[#141413]" />
                 Live Session Active
               </span>
             )}
@@ -76,9 +76,11 @@ export default function RecentInvestigations() {
         </button>
       </div>
 
-      {/* Card container with sharp, square edges and compact content */}
-      <div className="border border-[#E0DED4] rounded-none bg-[#FAF9F5] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)] animate-card-entrance stagger-2">
-        <div className="divide-y divide-[#E0DED4]">
+      {/* Card container with sharp, square edges and subtle warm porcelain background */}
+      <div className="relative overflow-hidden border border-[#E2DFD7] rounded-none bg-[#FAF9F6] shadow-[0_8px_26px_-4px_rgba(20,20,19,0.06),0_2px_6px_-1px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] animate-card-entrance stagger-2">
+        {/* Specular hairline at top edge */}
+        <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+        <div className="divide-y divide-[#E8E6DE]">
           {displayList.map((inv, idx) => {
             const probPct = inv.isRealAnalysis && inv.analysisStatus === 'completed' && typeof inv.fraudProbability === 'number' ? `${(inv.fraudProbability * 100).toFixed(1)}%` : inv.isRealAnalysis ? 'Not scored' : 'Example';
 
