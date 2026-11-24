@@ -184,39 +184,73 @@ export default function WorkflowSection() {
     30
   );
 
-  /* ── SCROLL-DRIVEN CONNECTING LINE FROM STEP 01 TO STEP 02 ── */
-  const [s1ToS2Progress, setS1ToS2Progress] = useState(0);
+  /* ── SMOOTH SCROLL-DRIVEN TIMELINE SPINE LINE (DOT 01 TO DOT 05) ── */
+  const activeSpineRef = useRef<HTMLDivElement | null>(null);
+  const trackSpineRef = useRef<HTMLDivElement | null>(null);
+  const [timelineProgress, setTimelineProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+
+    const updateSpine = () => {
       const s1 = step1Ref.current;
-      const s2 = step2Ref.current;
-      if (!s1 || !s2) return;
+      const s5 = step5Ref.current;
+      if (!s1 || !s5) return;
 
       const r1 = s1.getBoundingClientRect();
-      const r2 = s2.getBoundingClientRect();
+      const r5 = s5.getBoundingClientRect();
 
       // Dot 1 center Y relative to viewport
       const dot1Y = r1.top + 34;
-      // Dot 2 center Y relative to viewport
-      const dot2Y = r2.top + 34;
-      const triggerY = window.innerHeight * 0.72;
+      // Dot 5 center Y relative to viewport
+      const dot5Y = r5.top + 34;
+      // Viewport trigger line (68% down the screen)
+      const triggerY = window.innerHeight * 0.68;
 
+      const totalHeight = dot5Y - dot1Y;
+      if (totalHeight <= 0) return;
+
+      if (trackSpineRef.current) {
+        trackSpineRef.current.style.height = `${totalHeight}px`;
+      }
+
+      let currentHeight = 0;
       if (dot1Y >= triggerY) {
-        setS1ToS2Progress(0);
-      } else if (dot2Y <= triggerY) {
-        setS1ToS2Progress(1);
+        currentHeight = 0;
+      } else if (dot5Y <= triggerY) {
+        currentHeight = totalHeight;
       } else {
-        const total = dot2Y - dot1Y;
-        const current = triggerY - dot1Y;
-        const p = Math.max(0, Math.min(1, current / total));
-        setS1ToS2Progress(p);
+        const scrolled = triggerY - dot1Y;
+        currentHeight = Math.max(0, Math.min(totalHeight, scrolled));
+      }
+
+      if (activeSpineRef.current) {
+        activeSpineRef.current.style.height = `${currentHeight}px`;
+      }
+
+      const p = currentHeight / totalHeight;
+      setTimelineProgress(p);
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateSpine);
+        ticking = true;
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+    updateSpine();
+
+    const timer = setTimeout(updateSpine, 300);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      clearTimeout(timer);
+    };
   }, []);
 
   /* ── STEP 01 ANIMATION STATE ── */
@@ -420,10 +454,21 @@ export default function WorkflowSection() {
         {/* ── TIMELINE VERTICAL STACK (STEPS 01 - 05) ── */}
         <div className="relative flex flex-col gap-12 sm:gap-14 md:gap-16">
 
-          {/* Continuous Left Spine Line (visible on md+) */}
-          <div className={`hidden md:block absolute left-[10px] top-[24px] bottom-[30px] w-[1px] bg-[#E0DED4] pointer-events-none transition-opacity duration-700 ${
-            step1InView ? 'opacity-100' : 'opacity-0'
-          }`} />
+          {/* Single Unified Left Spine Line (anchored strictly from Dot 01 to Dot 05, NO line below Dot 05) */}
+          <div className="hidden md:block absolute left-[9.5px] top-[34px] pointer-events-none z-10">
+            {/* Base track ending exactly at Dot 05 */}
+            <div
+              ref={trackSpineRef}
+              className="w-[1.5px] bg-[#E0DED4] opacity-50"
+              style={{ height: '0px' }}
+            />
+            {/* Active smooth black line tracking scroll down to Dot 05 */}
+            <div
+              ref={activeSpineRef}
+              className="absolute top-0 left-0 w-[1.5px] bg-[#141413]"
+              style={{ height: '0px' }}
+            />
+          </div>
 
           {/* ══════════════════════════════════════════════════════════════
               STEP 01: SUBMIT A JOB POSTING
@@ -441,22 +486,6 @@ export default function WorkflowSection() {
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
                 s1CardRevealed ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
-            </div>
-
-            {/* Scroll-Driven Dynamic Dotted Line connecting Dot 01 to Dot 02 */}
-            <div
-              className="hidden md:block absolute left-[9px] top-[44px] pointer-events-none z-10"
-              style={{
-                bottom: '-64px',
-              }}
-            >
-              {/* Subtle guide line */}
-              <div className="w-[2px] h-full border-l-2 border-dotted border-[#E0DED4]" />
-              {/* Active black dotted line that extends downward on scroll */}
-              <div
-                className="absolute top-0 left-0 w-[2px] border-l-2 border-dotted border-[#141413] transition-[height] duration-75 ease-out"
-                style={{ height: `${s1ToS2Progress * 100}%` }}
-              />
             </div>
 
             {/* Step Left Meta Column */}
@@ -550,33 +579,54 @@ export default function WorkflowSection() {
                           <Search size={11} />
                         </button>
 
-                        {/* Dotted Arrow emerging directly from Search Button center towards Apply Now */}
+                        {/* Dotted Arrow emerging directly from Search Button center towards Apply Now (Landing Page Style) */}
                         {s1ArrowVisible && (
                           <svg
-                            className="hidden lg:block absolute left-[calc(100%+2px)] top-[12px] w-[180px] h-[130px] pointer-events-none z-30 overflow-visible text-[#141413]"
+                            className="hidden lg:block absolute left-[calc(100%+2px)] top-[12px] w-[180px] h-[130px] pointer-events-none z-30 overflow-visible"
                             viewBox="0 0 180 130"
                             fill="none"
                           >
                             <defs>
                               <marker
-                                id="s1-arrowhead-black"
+                                id="s1-arrowhead-flow"
                                 markerWidth="6"
                                 markerHeight="6"
                                 refX="4"
                                 refY="3"
                                 orient="auto"
                               >
-                                <polygon points="0,0.5 5,3 0,5.5" fill="#141413" />
+                                <polygon points="0,1 4.5,3 0,5" fill="#A8A29E" />
                               </marker>
+                              <linearGradient id="s1-fade-line" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#A8A29E" stopOpacity="0.35" />
+                                <stop offset="35%" stopColor="#A8A29E" stopOpacity="0.95" />
+                                <stop offset="85%" stopColor="#A8A29E" stopOpacity="0.95" />
+                                <stop offset="100%" stopColor="#A8A29E" stopOpacity="0.4" />
+                              </linearGradient>
                             </defs>
                             <path
                               d="M 2 0 C 45 0, 72 74, 142 78"
-                              stroke="#141413"
-                              strokeWidth="1.75"
-                              strokeDasharray="4 4"
-                              className="animate-flow-dash"
-                              markerEnd="url(#s1-arrowhead-black)"
+                              stroke="url(#s1-fade-line)"
+                              strokeWidth="1"
+                              className="flow-dash-line"
+                              markerEnd="url(#s1-arrowhead-flow)"
                             />
+                            {/* Traveling crimson data pulse matching landing page */}
+                            <circle r="2.5" fill="#DC2626" opacity="0">
+                              <animateMotion
+                                path="M 2 0 C 45 0, 72 74, 142 78"
+                                dur="1.4s"
+                                repeatCount="indefinite"
+                                calcMode="linear"
+                              />
+                              <animate
+                                attributeName="opacity"
+                                values="0;1;1;0"
+                                keyTimes="0;0.12;0.88;1"
+                                dur="1.4s"
+                                repeatCount="indefinite"
+                              />
+                            </circle>
                           </svg>
                         )}
                       </div>
@@ -617,12 +667,12 @@ export default function WorkflowSection() {
           >
             {/* Timeline node dot (md+) */}
             <div className={`hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0 transition-all duration-300 ${
-              s1ToS2Progress >= 0.98 || step2InView
+              timelineProgress >= 0.22 || step2InView
                 ? 'border-[#141413] shadow-xs'
                 : 'border-[#D0CDC2]'
             }`}>
               <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                s1ToS2Progress >= 0.98 || step2InView
+                timelineProgress >= 0.22 || step2InView
                   ? 'bg-[#141413] scale-125'
                   : 'bg-[#99968E]'
               }`} />
@@ -678,9 +728,22 @@ export default function WorkflowSection() {
                   </div>
                 </div>
 
-                {/* Center: 1-to-6 Junction SVG Network (Hero Pattern) */}
+                {/* Center: 1-to-6 Junction SVG Network (Landing Page Flow Architecture) */}
                 <div className="hidden lg:block w-[96px] h-[276px] relative flex-shrink-0 -mx-[1px]">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 96 276" fill="none">
+                    <defs>
+                      <linearGradient id="s2-fade-trunk" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#A8A29E" stopOpacity="0.4" />
+                        <stop offset="40%" stopColor="#A8A29E" stopOpacity="0.95" />
+                        <stop offset="100%" stopColor="#A8A29E" stopOpacity="0.95" />
+                      </linearGradient>
+                      <linearGradient id="s2-fade-branch" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#A8A29E" stopOpacity="0.95" />
+                        <stop offset="75%" stopColor="#A8A29E" stopOpacity="0.85" />
+                        <stop offset="100%" stopColor="#A8A29E" stopOpacity="0.4" />
+                      </linearGradient>
+                    </defs>
+
                     {/* Step 1: Single Horizontal Trunk from Card Middle Dot (x=0, y=138) to Junction (x=40, y=138) */}
                     {s2DotActive && (
                       <>
@@ -689,40 +752,57 @@ export default function WorkflowSection() {
                           y1="138"
                           x2="40"
                           y2="138"
-                          stroke="#141413"
-                          strokeWidth="1.5"
-                          strokeDasharray="3 3"
-                          className="animate-flow-dash"
+                          stroke="url(#s2-fade-trunk)"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
                         {/* Central Junction Node Dot */}
-                        <circle cx="40" cy="138" r="3.5" fill="#141413" />
-                        <circle cx="40" cy="138" r="1.5" fill="#FAF9F5" />
+                        <circle cx="40" cy="138" r="3" fill="#A8A29E" />
+                        <circle cx="40" cy="138" r="1.2" fill="#FAF9F5" />
                       </>
                     )}
 
                     {/* Step 2: 6 S-Curved Branch Lines departing from Junction Node into each Pill */}
                     {[19, 65, 111, 165, 211, 257].map((yTarget, i) => {
                       const isLineActive = s2RevealedCount > i;
+                      const branchPath = `M 40 138 C 62 138, 74 ${yTarget}, 96 ${yTarget}`;
                       return (
                         <g key={i}>
                           {isLineActive && (
                             <>
                               <path
-                                d={`M 40 138 C 62 138, 74 ${yTarget}, 96 ${yTarget}`}
-                                stroke="#141413"
-                                strokeWidth="1.5"
-                                strokeDasharray="3 3"
-                                className="animate-flow-dash"
+                                d={branchPath}
+                                stroke="url(#s2-fade-branch)"
+                                strokeWidth="1"
+                                className="flow-dash-line"
                                 fill="none"
                               />
                               {/* Docking dot touching the left edge of each pill */}
                               <circle
                                 cx="96"
                                 cy={yTarget}
-                                r="2.5"
-                                fill="#141413"
+                                r="2"
+                                fill="#A8A29E"
                                 className="transition-all duration-300"
                               />
+                              {/* Traveling crimson data pulse */}
+                              <circle r="2.2" fill="#DC2626" opacity="0">
+                                <animateMotion
+                                  path={branchPath}
+                                  dur="2.2s"
+                                  begin={`${i * 0.35}s`}
+                                  repeatCount="indefinite"
+                                  calcMode="linear"
+                                />
+                                <animate
+                                  attributeName="opacity"
+                                  values="0;0.9;0.9;0"
+                                  keyTimes="0;0.15;0.82;1"
+                                  dur="2.2s"
+                                  begin={`${i * 0.35}s`}
+                                  repeatCount="indefinite"
+                                />
+                              </circle>
                             </>
                           )}
                         </g>
@@ -811,8 +891,8 @@ export default function WorkflowSection() {
               </p>
             </div>
 
-            {/* Step Right Visual Card: Unified Canvas with Precise Pill Dots, Cornered Lines & Centered Brain */}
-            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
+            {/* Step Right Visual Card: Unified Canvas with Landing Page Flow Lines, Centered Brain & Continuous Exit Pipeline */}
+            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden lg:overflow-visible transition-all duration-500">
               {/* Specular hairline at top edge */}
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
@@ -853,59 +933,66 @@ export default function WorkflowSection() {
                   })}
                 </div>
 
-                {/* Center & Right: Unified Canvas with Dotted Corner Lines, Centered Brain & Staggered Satellites */}
+                {/* Center & Right: Unified Canvas with Landing Page Flow Lines, Centered Brain & Staggered Satellites */}
                 <div className="hidden lg:block flex-1 relative w-full h-[280px]">
                   <svg className="w-full h-full absolute inset-0 overflow-visible" viewBox="0 0 460 280" fill="none">
+                    <defs>
+                      <linearGradient id="s3-fade-entry" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#A8A29E" stopOpacity="0.35" />
+                        <stop offset="35%" stopColor="#A8A29E" stopOpacity="0.95" />
+                        <stop offset="100%" stopColor="#A8A29E" stopOpacity="0.95" />
+                      </linearGradient>
+                      <linearGradient id="s3-fade-down" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#A8A29E" stopOpacity="0.95" />
+                        <stop offset="80%" stopColor="#A8A29E" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="#A8A29E" stopOpacity="0.4" />
+                      </linearGradient>
+                    </defs>
+
                     {/* 6 Dotted lines arising directly from pill dots, turning with corners, and merging into central junction (76, 139) */}
                     {s3Converged && (
                       <>
                         {/* Pill 0: Job content (y=19) -> goes straight to 42, turns down, curves into junction */}
                         <path
                           d="M -12 19 L 42 19 Q 54 19 54 31 L 54 127 Q 54 139 64 139 L 76 139"
-                          stroke="#141413"
-                          strokeWidth="1.5"
-                          strokeDasharray="3 3"
-                          className="animate-flow-dash"
+                          stroke="url(#s3-fade-entry)"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
                         {/* Pill 1: Domain & URL (y=67) */}
                         <path
                           d="M -12 67 L 42 67 Q 54 67 54 79 L 54 127 Q 54 139 64 139 L 76 139"
-                          stroke="#141413"
-                          strokeWidth="1.5"
-                          strokeDasharray="3 3"
-                          className="animate-flow-dash"
+                          stroke="url(#s3-fade-entry)"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
                         {/* Pill 2: Recruiter email (y=115) */}
                         <path
                           d="M -12 115 L 44 115 Q 54 115 54 125 L 54 129 Q 54 139 64 139 L 76 139"
-                          stroke="#141413"
-                          strokeWidth="1.5"
-                          strokeDasharray="3 3"
-                          className="animate-flow-dash"
+                          stroke="url(#s3-fade-entry)"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
                         {/* Pill 3: Application destination (y=163) */}
                         <path
                           d="M -12 163 L 44 163 Q 54 163 54 153 L 54 149 Q 54 139 64 139 L 76 139"
-                          stroke="#141413"
-                          strokeWidth="1.5"
-                          strokeDasharray="3 3"
-                          className="animate-flow-dash"
+                          stroke="url(#s3-fade-entry)"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
                         {/* Pill 4: Payment request (y=211) */}
                         <path
                           d="M -12 211 L 42 211 Q 54 211 54 199 L 54 151 Q 54 139 64 139 L 76 139"
-                          stroke="#141413"
-                          strokeWidth="1.5"
-                          strokeDasharray="3 3"
-                          className="animate-flow-dash"
+                          stroke="url(#s3-fade-entry)"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
                         {/* Pill 5: Employer & web evidence (y=259) */}
                         <path
                           d="M -12 259 L 42 259 Q 54 259 54 247 L 54 151 Q 54 139 64 139 L 76 139"
-                          stroke="#141413"
-                          strokeWidth="1.5"
-                          strokeDasharray="3 3"
-                          className="animate-flow-dash"
+                          stroke="url(#s3-fade-entry)"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
                       </>
                     )}
@@ -913,38 +1000,36 @@ export default function WorkflowSection() {
                     {/* Central junction point dot */}
                     {s3Converged && (
                       <>
-                        <circle cx="76" cy="139" r="4.5" fill="#141413" />
-                        <circle cx="76" cy="139" r="1.5" fill="#FAF9F5" />
+                        <circle cx="76" cy="139" r="3.5" fill="#A8A29E" />
+                        <circle cx="76" cy="139" r="1.2" fill="#FAF9F5" />
                       </>
                     )}
 
-                    {/* Horizontal dotted line into the circular ring at x=136 (230 - 94) */}
+                    {/* Horizontal dotted line into the circular ring at x=138 (230 - 92) */}
                     {s3RingActive && (
                       <>
                         <line
                           x1="76"
                           y1="139"
-                          x2="136"
+                          x2="138"
                           y2="139"
-                          stroke="#141413"
-                          strokeWidth="1.75"
-                          strokeDasharray="3 3"
-                          className="animate-flow-dash"
+                          stroke="#A8A29E"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
-                        <circle cx="136" cy="139" r="2.5" fill="#141413" />
+                        <circle cx="138" cy="139" r="2" fill="#A8A29E" />
                       </>
                     )}
 
-                    {/* Circular Orbit Ring around Brain (cx=230, cy=139, r=94) */}
+                    {/* Circular Orbit Ring around Brain (cx=230, cy=139, r=92) */}
                     {s3RingActive && (
                       <circle
                         cx="230"
                         cy="139"
-                        r="94"
-                        stroke="#141413"
-                        strokeWidth="1.75"
-                        strokeDasharray="4 4"
-                        className="animate-flow-dash transition-all duration-500"
+                        r="92"
+                        stroke="#A8A29E"
+                        strokeWidth="1"
+                        className="flow-dash-line"
                         fill="none"
                       />
                     )}
@@ -953,174 +1038,165 @@ export default function WorkflowSection() {
                     {/* 1. Pattern scoring connector */}
                     {s3SatellitesStep >= 1 && (
                       <g className="transition-opacity duration-300">
-                        <line x1="163" y1="72" x2="122" y2="44" stroke="#141413" strokeWidth="1.2" strokeDasharray="3 3" />
-                        <circle cx="122" cy="44" r="2.5" fill="#141413" />
+                        <line x1="165" y1="74" x2="126" y2="44" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
+                        <circle cx="126" cy="44" r="2" fill="#A8A29E" />
                       </g>
                     )}
 
                     {/* 2. Text analysis connector */}
                     {s3SatellitesStep >= 2 && (
                       <g className="transition-opacity duration-300">
-                        <line x1="230" y1="45" x2="230" y2="20" stroke="#141413" strokeWidth="1.2" strokeDasharray="3 3" />
-                        <circle cx="230" cy="20" r="2.5" fill="#141413" />
+                        <line x1="230" y1="47" x2="230" y2="22" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
+                        <circle cx="230" cy="22" r="2" fill="#A8A29E" />
                       </g>
                     )}
 
                     {/* 3. Feature explanation connector */}
                     {s3SatellitesStep >= 3 && (
                       <g className="transition-opacity duration-300">
-                        <line x1="296" y1="73" x2="330" y2="44" stroke="#141413" strokeWidth="1.2" strokeDasharray="3 3" />
-                        <circle cx="330" cy="44" r="2.5" fill="#141413" />
+                        <line x1="295" y1="74" x2="334" y2="44" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
+                        <circle cx="334" cy="44" r="2" fill="#A8A29E" />
                       </g>
                     )}
 
                     {/* 4. Risk synthesis connector */}
                     {s3SatellitesStep >= 4 && (
                       <g className="transition-opacity duration-300">
-                        <line x1="324" y1="139" x2="360" y2="139" stroke="#DC2626" strokeWidth="1.2" strokeDasharray="3 3" />
-                        <circle cx="360" cy="139" r="2.5" fill="#DC2626" />
+                        <line x1="322" y1="139" x2="358" y2="139" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
+                        <circle cx="358" cy="139" r="2" fill="#DC2626" />
                       </g>
                     )}
 
-                    {/* Downward Straight Dotted Line from bottom of brain orbit into Section 04 */}
+                    {/* Downward Straight Dotted Line from bottom of brain orbit through bottom of card */}
                     {s3RingActive && (
                       <g>
                         <line
                           x1="230"
-                          y1="233"
+                          y1="231"
                           x2="230"
-                          y2="280"
+                          y2="308"
                           stroke="#141413"
-                          strokeWidth="2"
+                          strokeWidth="1.5"
                           strokeDasharray="4 4"
                           className="animate-flow-dash"
                         />
-                        <circle cx="230" cy="233" r="3" fill="#141413" />
+                        <circle cx="230" cy="231" r="3" fill="#141413" />
+                        <circle cx="230" cy="308" r="3.5" fill="#141413" />
                       </g>
                     )}
-                  </svg>
 
-                  {/* HTML Overlay: Centered Brain illustration & Satellite Badges appearing one by one */}
-                  <div className="absolute inset-0 pointer-events-none">
-                    {/* Badge 1: Pattern scoring */}
-                    <div
-                      className={`absolute left-[72px] top-[28px] transition-all duration-500 ease-out ${
-                        s3SatellitesStep >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                      }`}
-                    >
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
-                        Pattern scoring
-                      </span>
-                    </div>
-
-                    {/* Badge 2: Text analysis */}
-                    <div
-                      className={`absolute left-[230px] -translate-x-1/2 top-[0px] transition-all duration-500 ease-out ${
-                        s3SatellitesStep >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                      }`}
-                    >
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
-                        Text analysis
-                      </span>
-                    </div>
-
-                    {/* Badge 3: Feature explanation */}
-                    <div
-                      className={`absolute left-[332px] top-[28px] transition-all duration-500 ease-out ${
-                        s3SatellitesStep >= 3 ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                      }`}
-                    >
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
-                        Feature explanation
-                      </span>
-                    </div>
-
-                    {/* Badge 4: Risk synthesis */}
-                    <div
-                      className={`absolute left-[366px] top-[126px] transition-all duration-500 ease-out ${
-                        s3SatellitesStep >= 4 ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                      }`}
-                    >
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#DC2626] text-[#DC2626] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
-                        Risk synthesis
-                      </span>
-                    </div>
-
-                    {/* Center Brain Engine Block inside the Ring — Centered & Enlarged */}
+                    {/* SVG foreignObject: Perfectly centered Brain illustration & ScamShield Engine typography */}
                     {s3RingActive && (
-                      <div className="absolute left-[230px] top-[134px] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center transition-all duration-500">
-                        <div className="relative w-[124px] sm:w-[136px] h-[78px] sm:h-[84px] flex items-center justify-center">
-                          <img
-                            src="/Detailed Ivory Brain Illustration.png"
-                            alt="ScamShield Analysis Engine"
-                            className="w-full h-full object-contain mix-blend-multiply select-none pointer-events-none drop-shadow-[0_8px_18px_rgba(20,20,19,0.12)]"
-                          />
+                      <foreignObject
+                        x="140"
+                        y="55"
+                        width="180"
+                        height="168"
+                        className="overflow-visible pointer-events-none"
+                      >
+                        <div className="w-full h-full flex flex-col items-center justify-center text-center select-none transition-all duration-500">
+                          <div className="relative w-[116px] h-[72px] flex items-center justify-center">
+                            <img
+                              src="/Detailed Ivory Brain Illustration.png"
+                              alt="ScamShield Analysis Engine"
+                              className="w-full h-full object-contain mix-blend-multiply select-none pointer-events-none drop-shadow-[0_8px_18px_rgba(20,20,19,0.12)]"
+                            />
+                          </div>
+                          <span className="font-serif font-bold text-[13px] sm:text-[14px] text-[#141413] tracking-tight mt-1 text-center leading-tight">
+                            ScamShield<br />Analysis Engine
+                          </span>
                         </div>
-                        <span className="font-serif font-bold text-[13px] sm:text-[14px] text-[#141413] tracking-tight mt-0.5 text-center leading-tight">
-                          ScamShield<br />Analysis Engine
+                      </foreignObject>
+                    )}
+
+                    {/* Satellite Badges rendered directly inside SVG coordinate space */}
+                    {/* Badge 1: Pattern scoring */}
+                    <foreignObject
+                      x="32"
+                      y="24"
+                      width="120"
+                      height="34"
+                      className="overflow-visible pointer-events-none"
+                    >
+                      <div
+                        className={`transition-all duration-500 ease-out ${
+                          s3SatellitesStep >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+                        }`}
+                      >
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                          Pattern scoring
                         </span>
                       </div>
-                    )}
-                  </div>
-                </div>
+                    </foreignObject>
 
-              </div>
-            </div>
-          </div>
-
-
-          {/* ══════════════════════════════════════════════════════════════
-              INTER-SECTION PIPELINE CONNECTOR (SECTION 03 -> SECTION 04)
-              (Bottom line of brain connects down and branches into all 4 cards below)
-          ══════════════════════════════════════════════════════════════ */}
-          <div className={`hidden lg:block relative -my-9 z-20 transition-all duration-700 ease-out ${
-            step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-          }`}>
-            <div className="flex items-center">
-              <div className="w-[280px] lg:w-[310px] pl-9 flex-shrink-0" />
-              <div className="flex-1 px-5 sm:px-7">
-                <div className="w-full relative py-1">
-                  {/* Top Feeder line from brain */}
-                  <div className="grid grid-cols-4 gap-3.5 w-full relative">
-                    <div className="col-start-3 flex justify-center h-4">
-                      <div className={`w-[2px] h-full border-l-2 border-dashed transition-colors duration-300 ${
-                        s4FeederActive ? 'border-[#141413]' : 'border-[#141413]'
-                      }`} />
-                    </div>
-                  </div>
-
-                  {/* Horizontal distribution bus line spanning across the 4 cards */}
-                  <div className="relative w-full h-[2px]">
-                    <div className="grid grid-cols-4 gap-3.5 w-full h-full">
-                      <div className="col-span-4 relative flex items-center">
-                        <div className={`w-[75%] mx-auto border-t-2 border-dashed transition-colors duration-300 ${
-                          s4FeederActive ? 'border-[#141413]' : 'border-[#141413]'
-                        }`} />
+                    {/* Badge 2: Text analysis */}
+                    <foreignObject
+                      x="175"
+                      y="0"
+                      width="110"
+                      height="34"
+                      className="overflow-visible pointer-events-none"
+                    >
+                      <div
+                        className={`flex justify-center transition-all duration-500 ease-out ${
+                          s3SatellitesStep >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+                        }`}
+                      >
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                          Text analysis
+                        </span>
                       </div>
-                    </div>
-                  </div>
+                    </foreignObject>
 
-                  {/* 4 Straight Dotted Drop Lines into the 4 evidence cards below */}
-                  <div className="grid grid-cols-4 gap-3.5 w-full pt-0.5">
-                    {[0, 1, 2, 3].map((colIdx) => {
-                      const isActive = s4CardsCount > colIdx;
-                      return (
-                        <div key={colIdx} className="flex flex-col items-center">
-                          <div className={`w-2 h-2 rounded-full mb-0.5 transition-colors duration-300 ${
-                            isActive ? 'bg-[#141413]' : 'bg-[#141413]'
-                          }`} />
-                          <div className={`w-[2px] h-5 border-l-2 border-dashed transition-colors duration-300 ${
-                            isActive ? 'border-[#141413]' : 'border-[#141413]'
-                          }`} />
-                          <div className={`w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[5px] transition-colors duration-300 ${
-                            isActive ? 'border-t-[#141413]' : 'border-t-[#141413]'
-                          }`} />
-                        </div>
-                      );
-                    })}
-                  </div>
+                    {/* Badge 3: Feature explanation */}
+                    <foreignObject
+                      x="312"
+                      y="24"
+                      width="138"
+                      height="34"
+                      className="overflow-visible pointer-events-none"
+                    >
+                      <div
+                        className={`transition-all duration-500 ease-out ${
+                          s3SatellitesStep >= 3 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+                        }`}
+                      >
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#141413] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                          Feature explanation
+                        </span>
+                      </div>
+                    </foreignObject>
+
+                    {/* Badge 4: Risk synthesis */}
+                    <foreignObject
+                      x="360"
+                      y="122"
+                      width="100"
+                      height="34"
+                      className="overflow-visible pointer-events-none"
+                    >
+                      <div
+                        className={`transition-all duration-500 ease-out ${
+                          s3SatellitesStep >= 4 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+                        }`}
+                      >
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-none border border-[#DC2626] text-[#DC2626] bg-[#FFFFFF] text-[10.5px] font-mono font-medium shadow-sm">
+                          Risk synthesis
+                        </span>
+                      </div>
+                    </foreignObject>
+                  </svg>
                 </div>
+
               </div>
+
+              {/* Bottom Docking Node at x=63.35% where dotted line exits into Step 04 */}
+              {s3RingActive && (
+                <span
+                  className="hidden lg:block absolute -bottom-1.5 -translate-x-1/2 w-3 h-3 rounded-full bg-[#141413] border-2 border-white shadow-xs z-20"
+                  style={{ left: '63.35%' }}
+                />
+              )}
             </div>
           </div>
 
@@ -1136,6 +1212,66 @@ export default function WorkflowSection() {
               step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
+            {/* ══════════════════════════════════════════════════════════════
+                INTER-SECTION PIPELINE CONNECTOR (SECTION 03 -> SECTION 04)
+                (Seamlessly bridges Step 03 bottom into the 4 evidence cards)
+            ══════════════════════════════════════════════════════════════ */}
+            <div className={`hidden lg:block absolute -top-16 left-0 right-0 h-16 pointer-events-none z-20 transition-all duration-700 ease-out ${
+              step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+            }`}>
+              <div className="flex items-stretch gap-6 md:gap-10 h-full">
+                {/* Spacer matching left meta column */}
+                <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0" />
+                {/* Connector grid matching right visual column */}
+                <div className="flex-1 relative h-full">
+                  {/* Top Feeder line from ScamShield AI brain (at 63.35%) */}
+                  <div
+                    className={`absolute top-0 w-[2px] h-[28px] border-l-2 border-dotted transition-colors duration-300 ${
+                      s4FeederActive
+                        ? 'border-[#141413] animate-flow-dash'
+                        : 'border-[#141413]/40'
+                    }`}
+                    style={{ left: '63.35%' }}
+                  />
+
+                  {/* Junction node dot */}
+                  <div
+                    className={`absolute top-[28px] -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-white shadow-xs z-10 transition-colors duration-300 ${
+                      s4FeederActive ? 'bg-[#141413]' : 'bg-[#A8A29E]'
+                    }`}
+                    style={{ left: '63.35%' }}
+                  />
+
+                  {/* Horizontal distribution bus line spanning across the 4 cards */}
+                  <div
+                    className={`absolute top-[28px] left-[11.82%] right-[11.82%] h-[2px] border-t-2 border-dotted transition-colors duration-300 ${
+                      s4FeederActive
+                        ? 'border-[#141413] animate-flow-dash'
+                        : 'border-[#141413]/40'
+                    }`}
+                  />
+
+                  {/* 4 Straight Dotted Drop Lines into the 4 evidence cards below */}
+                  <div className="grid grid-cols-4 gap-3.5 w-full h-full">
+                    {[0, 1, 2, 3].map((colIdx) => {
+                      const isActive = s4CardsCount > colIdx;
+                      return (
+                        <div key={colIdx} className="relative flex flex-col items-center h-full">
+                          {/* Drop line from horizontal bus (y=28px) down to card top (y=64px) */}
+                          <div
+                            className={`absolute top-[28px] bottom-0 w-[2px] border-l-2 border-dotted transition-colors duration-300 ${
+                              isActive
+                                ? 'border-[#141413] animate-flow-dash'
+                                : 'border-[#141413]/40'
+                            }`}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
             {/* Timeline node dot (md+) */}
             <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
@@ -1162,16 +1298,18 @@ export default function WorkflowSection() {
             </div>
 
             {/* Step Right Visual Card: 4-Column Evidence Cards */}
-            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
-              {/* Specular hairline at top edge */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
-
+            <div className="flex-1 relative transition-all duration-500">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
 
                 {/* Card 1: Domain consistency */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
                   s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E0DED4]'
                 }`}>
+                  {/* Top docking node */}
+                  <div className="hidden lg:flex absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
+                  {/* Bottom docking node */}
+                  <div className="hidden lg:flex absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white items-center justify-center z-20 shadow-xs" />
+
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
@@ -1202,6 +1340,11 @@ export default function WorkflowSection() {
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(220,38,38,0.03)] transition-all duration-500 relative ${
                   s4CardsCount >= 2 ? 'opacity-100 translate-y-0 border-[#DC2626] ring-1 ring-[#DC2626]/25 bg-[#FFF5F4]' : 'opacity-0 translate-y-4 pointer-events-none border-[#F6C6BF]'
                 }`}>
+                  {/* Top docking node */}
+                  <div className="hidden lg:flex absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
+                  {/* Bottom docking node */}
+                  <div className="hidden lg:flex absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white items-center justify-center z-20 shadow-xs" />
+
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
@@ -1232,6 +1375,11 @@ export default function WorkflowSection() {
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
                   s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E0DED4]'
                 }`}>
+                  {/* Top docking node */}
+                  <div className="hidden lg:flex absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
+                  {/* Bottom docking node */}
+                  <div className="hidden lg:flex absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white items-center justify-center z-20 shadow-xs" />
+
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
@@ -1262,6 +1410,11 @@ export default function WorkflowSection() {
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(217,119,6,0.03)] transition-all duration-500 relative ${
                   s4CardsCount >= 4 ? 'opacity-100 translate-y-0 border-[#D97706] ring-1 ring-[#D97706]/25 bg-[#FFFBEB]' : 'opacity-0 translate-y-4 pointer-events-none border-[#FDE68A]'
                 }`}>
+                  {/* Top docking node */}
+                  <div className="hidden lg:flex absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
+                  {/* Bottom docking node */}
+                  <div className="hidden lg:flex absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white items-center justify-center z-20 shadow-xs" />
+
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
@@ -1294,60 +1447,6 @@ export default function WorkflowSection() {
 
 
           {/* ══════════════════════════════════════════════════════════════
-              INTER-SECTION GATHERING PIPELINE (SECTION 04 -> SECTION 05)
-              (All 4 cards drop lines down into gathering bus and join to form Section 05)
-          ══════════════════════════════════════════════════════════════ */}
-          <div className={`hidden lg:block relative -my-9 z-20 transition-all duration-700 ease-out ${
-            step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-          }`}>
-            <div className="flex items-center">
-              <div className="w-[280px] lg:w-[310px] pl-9 flex-shrink-0" />
-              <div className="flex-1 px-5 sm:px-7">
-                <div className="w-full relative py-1">
-                  {/* 4 Straight Dotted Exit Lines from the 4 evidence cards above */}
-                  <div className="grid grid-cols-4 gap-3.5 w-full pb-0.5">
-                    {[0, 1, 2, 3].map((colIdx) => (
-                      <div key={colIdx} className="flex flex-col items-center">
-                        <div className={`w-[2px] h-5 border-l-2 border-dashed transition-colors duration-300 ${
-                          s5GatherActive ? 'border-[#DC2626]' : 'border-[#141413]'
-                        }`} />
-                        <div className={`w-2 h-2 rounded-full mt-0.5 transition-colors duration-300 ${
-                          s5GatherActive ? 'bg-[#DC2626]' : 'bg-[#141413]'
-                        }`} />
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Horizontal gathering bus line joining all 4 lines together */}
-                  <div className="relative w-full h-[2px]">
-                    <div className="grid grid-cols-4 gap-3.5 w-full h-full">
-                      <div className="col-span-4 relative flex items-center">
-                        <div className={`w-[75%] mx-auto border-t-2 border-dashed transition-colors duration-300 ${
-                          s5GatherActive ? 'border-[#DC2626]' : 'border-[#141413]'
-                        }`} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Central convergence node and vertical trunk line feeding into Section 05 */}
-                  <div className="flex flex-col items-center pt-0.5">
-                    <div className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${
-                      s5GatherActive ? 'bg-[#DC2626]' : 'bg-[#141413]'
-                    }`} />
-                    <div className={`w-[2px] h-6 border-l-2 border-dashed transition-colors duration-300 ${
-                      s5GatherActive ? 'border-[#DC2626]' : 'border-[#141413]'
-                    }`} />
-                    <div className={`w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] transition-colors duration-300 ${
-                      s5GatherActive ? 'border-t-[#DC2626]' : 'border-t-[#141413]'
-                    }`} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          {/* ══════════════════════════════════════════════════════════════
               STEP 05: RECEIVE AN EXPLAINABLE VERDICT
               (Formed from the 4 converged evidence cards, with live score count up)
           ══════════════════════════════════════════════════════════════ */}
@@ -1358,6 +1457,61 @@ export default function WorkflowSection() {
               step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
+            {/* ══════════════════════════════════════════════════════════════
+                INTER-SECTION GATHERING PIPELINE (SECTION 04 -> SECTION 05)
+                (All 4 cards drop lines down into gathering bus and join into Step 05)
+            ══════════════════════════════════════════════════════════════ */}
+            <div className={`hidden lg:block absolute -top-16 left-0 right-0 h-16 pointer-events-none z-20 transition-all duration-700 ease-out ${
+              step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+            }`}>
+              <div className="flex items-stretch gap-6 md:gap-10 h-full">
+                {/* Spacer matching left meta column */}
+                <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0" />
+                {/* Gathering grid matching right visual column */}
+                <div className="flex-1 relative h-full">
+                  {/* 4 Straight Dotted Exit Lines from the 4 evidence cards above */}
+                  <div className="grid grid-cols-4 gap-3.5 w-full h-full">
+                    {[0, 1, 2, 3].map((colIdx) => (
+                      <div key={colIdx} className="relative flex flex-col items-center h-full">
+                        {/* Exit line from card bottom (y=0) down to gathering bus (y=36px) */}
+                        <div
+                          className={`absolute top-0 h-[36px] w-[2px] border-l-2 border-dotted transition-colors duration-300 ${
+                            s5GatherActive
+                              ? 'border-[#DC2626] animate-flow-dash'
+                              : 'border-[#141413]'
+                          }`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Horizontal gathering bus line joining all 4 lines together at y=36px */}
+                  <div
+                    className={`absolute top-[36px] left-[11.82%] right-[11.82%] h-[2px] border-t-2 border-dotted transition-colors duration-300 ${
+                      s5GatherActive
+                        ? 'border-[#DC2626] animate-flow-dash'
+                        : 'border-[#141413]'
+                    }`}
+                  />
+
+                  {/* Central convergence node dot at y=36px, left: 50% */}
+                  <div
+                    className={`absolute top-[36px] left-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full border-2 border-white shadow-xs z-10 transition-colors duration-300 ${
+                      s5GatherActive ? 'bg-[#DC2626]' : 'bg-[#141413]'
+                    }`}
+                  />
+
+                  {/* Vertical trunk line feeding into Step 05 (from y=36px down to y=64px) */}
+                  <div
+                    className={`absolute top-[36px] bottom-0 left-1/2 -translate-x-1/2 w-[2px] border-l-2 border-dotted transition-colors duration-300 ${
+                      s5GatherActive
+                        ? 'border-[#DC2626] animate-flow-dash'
+                        : 'border-[#141413]'
+                    }`}
+                  />
+                </div>
+              </div>
+            </div>
             {/* Timeline node dot (md+) */}
             <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#F4B2A8] bg-[#FEECE8] items-center justify-center z-10 flex-shrink-0">
               <span className={`w-2 h-2 rounded-full transition-colors ${
