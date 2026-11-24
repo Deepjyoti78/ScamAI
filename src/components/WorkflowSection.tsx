@@ -165,7 +165,7 @@ export default function WorkflowSection() {
   const [step2Ref, step2InView] = useStepInView(0.12, '0px 0px -80px 0px');
   const [step3Ref, step3InView] = useStepInView(0.12, '0px 0px -80px 0px');
   const [step4Ref, step4InView] = useStepInView(0.12, '0px 0px -80px 0px');
-  const [step5Ref, step5InView] = useStepInView(0.12, '0px 0px -80px 0px');
+  const [step5Ref, step5InView] = useStepInView(0.01, '0px 0px 200px 0px');
 
   /* ── TYPEWRITER ANIMATIONS FOR STEP 01 & 02 META HEADINGS ── */
   const s1Title = useTypewriter('Submit a job posting', step1InView, 32, 100);
@@ -379,11 +379,13 @@ export default function WorkflowSection() {
   const [s5CardRevealed, setS5CardRevealed] = useState(false);
   const [s5Score, setS5Score] = useState(0);
 
+  const isStep5Visible = step4InView || step5InView;
+
   useEffect(() => {
-    if (!step5InView) return;
+    if (!isStep5Visible) return;
 
     // 1. Gathering lines drop down and merge
-    const tGather = setTimeout(() => setS5GatherActive(true), 250);
+    const tGather = setTimeout(() => setS5GatherActive(true), 150);
 
     // 2. Section 05 card forms and reveals
     const tCard = setTimeout(() => {
@@ -398,14 +400,14 @@ export default function WorkflowSection() {
           clearInterval(scoreInterval);
         }
         setS5Score(curScore);
-      }, 35);
-    }, 600);
+      }, 30);
+    }, 300);
 
     return () => {
       clearTimeout(tGather);
       clearTimeout(tCard);
     };
-  }, [step5InView]);
+  }, [isStep5Visible]);
 
   return (
     <section
@@ -1075,13 +1077,11 @@ export default function WorkflowSection() {
                           y1="231"
                           x2="230"
                           y2="308"
-                          stroke="#141413"
-                          strokeWidth="1.5"
-                          strokeDasharray="4 4"
-                          className="animate-flow-dash"
+                          stroke="#A8A29E"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
-                        <circle cx="230" cy="231" r="3" fill="#141413" />
-                        <circle cx="230" cy="308" r="3.5" fill="#141413" />
+                        <circle cx="230" cy="231" r="2" fill="#A8A29E" />
                       </g>
                     )}
 
@@ -1189,14 +1189,6 @@ export default function WorkflowSection() {
                 </div>
 
               </div>
-
-              {/* Bottom Docking Node at x=63.35% where dotted line exits into Step 04 */}
-              {s3RingActive && (
-                <span
-                  className="hidden lg:block absolute -bottom-1.5 -translate-x-1/2 w-3 h-3 rounded-full bg-[#141413] border-2 border-white shadow-xs z-20"
-                  style={{ left: '63.35%' }}
-                />
-              )}
             </div>
           </div>
 
@@ -1208,7 +1200,7 @@ export default function WorkflowSection() {
           <div
             id="step-04"
             ref={step4Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ease-out ${
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 mt-10 sm:mt-12 md:mt-14 transition-all duration-700 ease-out ${
               step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
@@ -1216,7 +1208,7 @@ export default function WorkflowSection() {
                 INTER-SECTION PIPELINE CONNECTOR (SECTION 03 -> SECTION 04)
                 (Seamlessly bridges Step 03 bottom into the 4 evidence cards)
             ══════════════════════════════════════════════════════════════ */}
-            <div className={`hidden lg:block absolute -top-16 left-0 right-0 h-16 pointer-events-none z-20 transition-all duration-700 ease-out ${
+            <div className={`hidden lg:block absolute -top-[120px] left-0 right-0 h-[120px] pointer-events-none z-20 transition-all duration-700 ease-out ${
               step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}>
               <div className="flex items-stretch gap-6 md:gap-10 h-full">
@@ -1226,17 +1218,17 @@ export default function WorkflowSection() {
                 <div className="flex-1 relative h-full">
                   {/* Top Feeder line from ScamShield AI brain (at 63.35%) */}
                   <div
-                    className={`absolute top-0 w-[2px] h-[28px] border-l-2 border-dotted transition-colors duration-300 ${
+                    className={`absolute top-0 w-[1px] h-[52px] border-l border-dashed transition-colors duration-300 ${
                       s4FeederActive
-                        ? 'border-[#141413] animate-flow-dash'
-                        : 'border-[#141413]/40'
+                        ? 'border-[#A8A29E] animate-flow-dash'
+                        : 'border-[#A8A29E]/40'
                     }`}
                     style={{ left: '63.35%' }}
                   />
 
-                  {/* Junction node dot */}
+                  {/* Single Junction node dot */}
                   <div
-                    className={`absolute top-[28px] -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-white shadow-xs z-10 transition-colors duration-300 ${
+                    className={`absolute top-[52px] -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-white shadow-xs z-10 transition-colors duration-300 ${
                       s4FeederActive ? 'bg-[#141413]' : 'bg-[#A8A29E]'
                     }`}
                     style={{ left: '63.35%' }}
@@ -1244,10 +1236,10 @@ export default function WorkflowSection() {
 
                   {/* Horizontal distribution bus line spanning across the 4 cards */}
                   <div
-                    className={`absolute top-[28px] left-[11.82%] right-[11.82%] h-[2px] border-t-2 border-dotted transition-colors duration-300 ${
+                    className={`absolute top-[52px] left-[11.82%] right-[11.82%] h-[1px] border-t border-dashed transition-colors duration-300 ${
                       s4FeederActive
-                        ? 'border-[#141413] animate-flow-dash'
-                        : 'border-[#141413]/40'
+                        ? 'border-[#A8A29E] animate-flow-dash'
+                        : 'border-[#A8A29E]/40'
                     }`}
                   />
 
@@ -1257,12 +1249,12 @@ export default function WorkflowSection() {
                       const isActive = s4CardsCount > colIdx;
                       return (
                         <div key={colIdx} className="relative flex flex-col items-center h-full">
-                          {/* Drop line from horizontal bus (y=28px) down to card top (y=64px) */}
+                          {/* Drop line from horizontal bus (y=52px) down to card top (y=120px) */}
                           <div
-                            className={`absolute top-[28px] bottom-0 w-[2px] border-l-2 border-dotted transition-colors duration-300 ${
+                            className={`absolute top-[52px] bottom-0 w-[1px] border-l border-dashed transition-colors duration-300 ${
                               isActive
-                                ? 'border-[#141413] animate-flow-dash'
-                                : 'border-[#141413]/40'
+                                ? 'border-[#A8A29E] animate-flow-dash'
+                                : 'border-[#A8A29E]/40'
                             }`}
                           />
                         </div>
@@ -1306,9 +1298,9 @@ export default function WorkflowSection() {
                   s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E0DED4]'
                 }`}>
                   {/* Top docking node */}
-                  <div className="hidden lg:flex absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
+                  <div className="hidden lg:flex absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
                   {/* Bottom docking node */}
-                  <div className="hidden lg:flex absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white items-center justify-center z-20 shadow-xs" />
+                  <div className="hidden lg:flex absolute -bottom-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
 
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1341,9 +1333,9 @@ export default function WorkflowSection() {
                   s4CardsCount >= 2 ? 'opacity-100 translate-y-0 border-[#DC2626] ring-1 ring-[#DC2626]/25 bg-[#FFF5F4]' : 'opacity-0 translate-y-4 pointer-events-none border-[#F6C6BF]'
                 }`}>
                   {/* Top docking node */}
-                  <div className="hidden lg:flex absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
+                  <div className="hidden lg:flex absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
                   {/* Bottom docking node */}
-                  <div className="hidden lg:flex absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white items-center justify-center z-20 shadow-xs" />
+                  <div className="hidden lg:flex absolute -bottom-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
 
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1376,9 +1368,9 @@ export default function WorkflowSection() {
                   s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E0DED4]'
                 }`}>
                   {/* Top docking node */}
-                  <div className="hidden lg:flex absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
+                  <div className="hidden lg:flex absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
                   {/* Bottom docking node */}
-                  <div className="hidden lg:flex absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white items-center justify-center z-20 shadow-xs" />
+                  <div className="hidden lg:flex absolute -bottom-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
 
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1411,9 +1403,9 @@ export default function WorkflowSection() {
                   s4CardsCount >= 4 ? 'opacity-100 translate-y-0 border-[#D97706] ring-1 ring-[#D97706]/25 bg-[#FFFBEB]' : 'opacity-0 translate-y-4 pointer-events-none border-[#FDE68A]'
                 }`}>
                   {/* Top docking node */}
-                  <div className="hidden lg:flex absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
+                  <div className="hidden lg:flex absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
                   {/* Bottom docking node */}
-                  <div className="hidden lg:flex absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white items-center justify-center z-20 shadow-xs" />
+                  <div className="hidden lg:flex absolute -bottom-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white items-center justify-center z-20 shadow-xs" />
 
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1453,16 +1445,16 @@ export default function WorkflowSection() {
           <div
             id="step-05"
             ref={step5Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ease-out ${
-              step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 mt-10 sm:mt-12 md:mt-14 transition-all duration-700 ease-out ${
+              isStep5Visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
             {/* ══════════════════════════════════════════════════════════════
                 INTER-SECTION GATHERING PIPELINE (SECTION 04 -> SECTION 05)
                 (All 4 cards drop lines down into gathering bus and join into Step 05)
             ══════════════════════════════════════════════════════════════ */}
-            <div className={`hidden lg:block absolute -top-16 left-0 right-0 h-16 pointer-events-none z-20 transition-all duration-700 ease-out ${
-              step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+            <div className={`hidden lg:block absolute -top-[120px] left-0 right-0 h-[120px] pointer-events-none z-20 transition-all duration-700 ease-out ${
+              isStep5Visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}>
               <div className="flex items-stretch gap-6 md:gap-10 h-full">
                 {/* Spacer matching left meta column */}
@@ -1473,40 +1465,40 @@ export default function WorkflowSection() {
                   <div className="grid grid-cols-4 gap-3.5 w-full h-full">
                     {[0, 1, 2, 3].map((colIdx) => (
                       <div key={colIdx} className="relative flex flex-col items-center h-full">
-                        {/* Exit line from card bottom (y=0) down to gathering bus (y=36px) */}
+                        {/* Exit line from card bottom (y=0) down to gathering bus (y=64px) */}
                         <div
-                          className={`absolute top-0 h-[36px] w-[2px] border-l-2 border-dotted transition-colors duration-300 ${
+                          className={`absolute top-0 h-[64px] w-[1px] border-l border-dashed transition-colors duration-300 ${
                             s5GatherActive
-                              ? 'border-[#DC2626] animate-flow-dash'
-                              : 'border-[#141413]'
+                              ? 'border-[#A8A29E] animate-flow-dash'
+                              : 'border-[#A8A29E]/40'
                           }`}
                         />
                       </div>
                     ))}
                   </div>
 
-                  {/* Horizontal gathering bus line joining all 4 lines together at y=36px */}
+                  {/* Horizontal gathering bus line joining all 4 lines together at y=64px */}
                   <div
-                    className={`absolute top-[36px] left-[11.82%] right-[11.82%] h-[2px] border-t-2 border-dotted transition-colors duration-300 ${
+                    className={`absolute top-[64px] left-[11.82%] right-[11.82%] h-[1px] border-t border-dashed transition-colors duration-300 ${
                       s5GatherActive
-                        ? 'border-[#DC2626] animate-flow-dash'
-                        : 'border-[#141413]'
+                        ? 'border-[#A8A29E] animate-flow-dash'
+                        : 'border-[#A8A29E]/40'
                     }`}
                   />
 
-                  {/* Central convergence node dot at y=36px, left: 50% */}
+                  {/* Central convergence node dot at y=64px, left: 50% */}
                   <div
-                    className={`absolute top-[36px] left-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full border-2 border-white shadow-xs z-10 transition-colors duration-300 ${
-                      s5GatherActive ? 'bg-[#DC2626]' : 'bg-[#141413]'
+                    className={`absolute top-[64px] left-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-white shadow-xs z-10 transition-colors duration-300 ${
+                      s5GatherActive ? 'bg-[#141413]' : 'bg-[#A8A29E]'
                     }`}
                   />
 
-                  {/* Vertical trunk line feeding into Step 05 (from y=36px down to y=64px) */}
+                  {/* Vertical trunk line feeding into Step 05 (from y=64px down to y=120px) */}
                   <div
-                    className={`absolute top-[36px] bottom-0 left-1/2 -translate-x-1/2 w-[2px] border-l-2 border-dotted transition-colors duration-300 ${
+                    className={`absolute top-[64px] bottom-0 left-1/2 -translate-x-1/2 w-[1px] border-l border-dashed transition-colors duration-300 ${
                       s5GatherActive
-                        ? 'border-[#DC2626] animate-flow-dash'
-                        : 'border-[#141413]'
+                        ? 'border-[#A8A29E] animate-flow-dash'
+                        : 'border-[#A8A29E]/40'
                     }`}
                   />
                 </div>
@@ -1514,9 +1506,7 @@ export default function WorkflowSection() {
             </div>
             {/* Timeline node dot (md+) */}
             <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#F4B2A8] bg-[#FEECE8] items-center justify-center z-10 flex-shrink-0">
-              <span className={`w-2 h-2 rounded-full transition-colors ${
-                s5CardRevealed ? 'bg-[#DC2626] scale-125' : 'bg-[#DC2626]'
-              }`} />
+              <span className="w-2 h-2 rounded-full transition-colors bg-[#DC2626]" />
             </div>
 
             {/* Step Left Meta Column */}
@@ -1538,13 +1528,11 @@ export default function WorkflowSection() {
             </div>
 
             {/* Step Right Visual Card: Warm Rose-Porcelain Verdict Card */}
-            <div className={`flex-1 bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border rounded-none p-5 sm:p-7 shadow-[0_4px_24px_rgba(220,38,38,0.06),inset_0_1px_0_0_rgba(255,255,255,0.85)] relative overflow-hidden transition-all duration-700 ${
-              s5CardRevealed
-                ? 'opacity-100 scale-100 border-[#DC2626] ring-2 ring-[#DC2626]/20 shadow-[0_8px_30px_rgba(220,38,38,0.12)]'
-                : 'opacity-0 scale-95 border-[#F6C6BF] pointer-events-none'
+            <div className={`flex-1 bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(220,38,38,0.12)] border-[#DC2626] ring-1 ring-[#DC2626]/20 relative overflow-hidden transition-all duration-700 ${
+              isStep5Visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}>
               {/* Receiver node dot where gathering trunk plugs into Section 05 */}
-              <span className="hidden lg:block absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#DC2626] border-2 border-white shadow z-20" />
+              <span className="hidden lg:block absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white shadow-xs z-20" />
 
               {/* Elevated specular highlight line */}
               <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
