@@ -721,11 +721,11 @@ export default function WorkflowSection() {
                 {/* Center: 1-to-6 Junction SVG Network (Structured Corner Architecture matching Section 03) */}
                 <div className="hidden lg:block w-[96px] h-[276px] relative flex-shrink-0 -mx-[1px]">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 96 276" fill="none">
-                    {/* Step 1: Single Horizontal Trunk from Card Middle Dot (x=0, y=138) to Junction (x=36, y=138) */}
+                    {/* Step 1: Single Horizontal Trunk from Card Middle Dot (x=1, y=138) to Junction (x=36, y=138) */}
                     {s2DotActive && (
                       <>
                         <line
-                          x1="0"
+                          x1="1"
                           y1="138"
                           x2="36"
                           y2="138"
@@ -739,14 +739,14 @@ export default function WorkflowSection() {
                       </>
                     )}
 
-                    {/* Step 2: 6 Corner-Turn Branch Lines departing from Junction Node into each Pill */}
+                    {/* Step 2: 6 Corner-Turn Branch Lines departing from Junction Node and terminating directly on each Pill Dot */}
                     {[
-                      { y: 19, path: 'M 36 138 L 42 138 Q 48 138 48 130 L 48 29 Q 48 19 58 19 L 96 19' },
-                      { y: 65, path: 'M 36 138 L 42 138 Q 48 138 48 130 L 48 75 Q 48 65 58 65 L 96 65' },
-                      { y: 111, path: 'M 36 138 L 42 138 Q 48 138 48 132 L 48 119 Q 48 111 56 111 L 96 111' },
-                      { y: 165, path: 'M 36 138 L 42 138 Q 48 138 48 144 L 48 157 Q 48 165 56 165 L 96 165' },
-                      { y: 211, path: 'M 36 138 L 42 138 Q 48 138 48 146 L 48 201 Q 48 211 58 211 L 96 211' },
-                      { y: 257, path: 'M 36 138 L 42 138 Q 48 138 48 146 L 48 247 Q 48 257 58 257 L 96 257' },
+                      { y: 24, path: 'M 36 138 L 42 138 Q 48 138 48 128 L 48 34 Q 48 24 58 24 L 96 24' },
+                      { y: 70, path: 'M 36 138 L 42 138 Q 48 138 48 128 L 48 80 Q 48 70 58 70 L 96 70' },
+                      { y: 115, path: 'M 36 138 L 42 138 Q 48 138 48 132 L 48 123 Q 48 115 56 115 L 96 115' },
+                      { y: 161, path: 'M 36 138 L 42 138 Q 48 138 48 144 L 48 153 Q 48 161 56 161 L 96 161' },
+                      { y: 206, path: 'M 36 138 L 42 138 Q 48 138 48 146 L 48 196 Q 48 206 58 206 L 96 206' },
+                      { y: 252, path: 'M 36 138 L 42 138 Q 48 138 48 146 L 48 242 Q 48 252 58 252 L 96 252' },
                     ].map((branch, i) => {
                       const isLineActive = s2RevealedCount > i;
                       return (
@@ -760,6 +760,8 @@ export default function WorkflowSection() {
                                 className="flow-dash-line"
                                 fill="none"
                               />
+                              {/* Terminal docking node dot touching the pill boundary dot */}
+                              <circle cx="96" cy={branch.y} r="2" fill="#141413" />
                               {/* Traveling crimson data pulse */}
                               <circle r="2" fill="#DC2626" opacity="0">
                                 <animateMotion
@@ -1041,14 +1043,14 @@ export default function WorkflowSection() {
                       </g>
                     )}
 
-                    {/* Downward Straight Dotted Line from bottom of brain orbit through bottom of card */}
+                    {/* Downward Straight Dotted Line from bottom of brain orbit to bottom boundary of card */}
                     {s3RingActive && (
                       <g>
                         <line
                           x1="230"
                           y1="231"
                           x2="230"
-                          y2="308"
+                          y2="280"
                           stroke="#A8A29E"
                           strokeWidth="1"
                           className="flow-dash-line"
@@ -1186,53 +1188,62 @@ export default function WorkflowSection() {
               <div className="flex items-stretch gap-6 md:gap-10 h-full">
                 {/* Spacer matching left meta column */}
                 <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0" />
-                {/* Connector grid matching right visual column */}
+                {/* Connector canvas matching right visual column (Pure SVG with exact flow-dash-line styling) */}
                 <div className="flex-1 relative h-full">
-                  {/* Top Feeder line from ScamShield AI brain (at 63.35%) */}
-                  <div
-                    className={`absolute top-0 w-[1px] border-l border-dashed border-[#A8A29E] transition-all duration-400 ease-out ${
-                      s4FeederActive
-                        ? 'h-[52px] opacity-100 animate-flow-dash'
-                        : 'h-0 opacity-0'
-                    }`}
-                    style={{ left: '63.35%' }}
-                  />
+                  <svg className="w-full h-full absolute inset-0 overflow-visible" fill="none">
+                    {/* Top Feeder line from ScamShield AI brain (at 63.35%, y=0 to y=52) */}
+                    {s4FeederActive && (
+                      <>
+                        <line
+                          x1="63.35%"
+                          y1="0"
+                          x2="63.35%"
+                          y2="52"
+                          stroke="#A8A29E"
+                          strokeWidth="1"
+                          className="flow-dash-line"
+                        />
+                        {/* Single central junction node dot */}
+                        <circle cx="63.35%" cy="52" r="2.5" fill="#141413" />
+                        <circle cx="63.35%" cy="52" r="1" fill="#FAF9F5" />
+                      </>
+                    )}
 
-                  {/* Single Junction node dot */}
-                  <div
-                    className={`absolute top-[52px] -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-white shadow-xs z-10 transition-all duration-300 ease-out ${
-                      s4FeederActive ? 'scale-100 opacity-100 bg-[#141413]' : 'scale-0 opacity-0 bg-[#A8A29E]'
-                    }`}
-                    style={{ left: '63.35%' }}
-                  />
+                    {/* Horizontal distribution bus line spanning across the 4 cards (from 11.82% to 88.18% at y=52) */}
+                    {s4CardsCount >= 1 && (
+                      <line
+                        x1="11.82%"
+                        y1="52"
+                        x2="88.18%"
+                        y2="52"
+                        stroke="#A8A29E"
+                        strokeWidth="1"
+                        className="flow-dash-line"
+                      />
+                    )}
 
-                  {/* Horizontal distribution bus line spanning across the 4 cards */}
-                  <div
-                    className={`absolute top-[52px] left-[11.82%] right-[11.82%] h-[1px] border-t border-dashed border-[#A8A29E] transition-all duration-400 ease-out ${
-                      s4CardsCount >= 1
-                        ? 'opacity-100 animate-flow-dash'
-                        : 'opacity-0'
-                    }`}
-                  />
-
-                  {/* 4 Straight Dotted Drop Lines into the 4 evidence cards below */}
-                  <div className="grid grid-cols-4 gap-3.5 w-full h-full">
-                    {[0, 1, 2, 3].map((colIdx) => {
-                      const isActive = s4CardsCount > colIdx;
-                      return (
-                        <div key={colIdx} className="relative flex flex-col items-center h-full">
-                          {/* Drop line from horizontal bus (y=52px) down to card top (y=120px) */}
-                          <div
-                            className={`absolute top-[52px] w-[1px] border-l border-dashed border-[#A8A29E] transition-all duration-300 ease-out ${
-                              isActive
-                                ? 'h-[68px] opacity-100 animate-flow-dash'
-                                : 'h-0 opacity-0'
-                            }`}
-                          />
-                        </div>
-                      );
+                    {/* 4 Straight Dotted Drop Lines into the 4 evidence cards below */}
+                    {[
+                      { x: '11.82%', colIdx: 0 },
+                      { x: '37.27%', colIdx: 1 },
+                      { x: '62.73%', colIdx: 2 },
+                      { x: '88.18%', colIdx: 3 },
+                    ].map((drop) => {
+                      const isActive = s4CardsCount > drop.colIdx;
+                      return isActive ? (
+                        <line
+                          key={drop.colIdx}
+                          x1={drop.x}
+                          y1="52"
+                          x2={drop.x}
+                          y2="120"
+                          stroke="#A8A29E"
+                          strokeWidth="1"
+                          className="flow-dash-line"
+                        />
+                      ) : null;
                     })}
-                  </div>
+                  </svg>
                 </div>
               </div>
             </div>
@@ -1428,48 +1439,58 @@ export default function WorkflowSection() {
               <div className="flex items-stretch gap-6 md:gap-10 h-full">
                 {/* Spacer matching left meta column */}
                 <div className="md:w-[280px] lg:w-[310px] md:pl-9 flex-shrink-0" />
-                {/* Gathering grid matching right visual column */}
+                {/* Gathering canvas matching right visual column (Pure SVG with exact flow-dash-line styling) */}
                 <div className="flex-1 relative h-full">
-                  {/* 4 Straight Dotted Exit Lines from the 4 evidence cards above */}
-                  <div className="grid grid-cols-4 gap-3.5 w-full h-full">
-                    {[0, 1, 2, 3].map((colIdx) => (
-                      <div key={colIdx} className="relative flex flex-col items-center h-full">
-                        {/* Exit line from card bottom (y=0) down to gathering bus (y=64px) */}
-                        <div
-                          className={`absolute top-0 w-[1px] border-l border-dashed border-[#A8A29E] transition-all duration-400 ease-out ${
-                            s5GatherActive
-                              ? 'h-[64px] opacity-100 animate-flow-dash'
-                              : 'h-0 opacity-0'
-                          }`}
+                  <svg className="w-full h-full absolute inset-0 overflow-visible" fill="none">
+                    {/* 4 Straight Dotted Exit Lines from the 4 evidence cards above (y=0 down to y=64) */}
+                    {s5GatherActive && (
+                      <>
+                        {[
+                          { x: '11.82%', colIdx: 0 },
+                          { x: '37.27%', colIdx: 1 },
+                          { x: '62.73%', colIdx: 2 },
+                          { x: '88.18%', colIdx: 3 },
+                        ].map((exit) => (
+                          <line
+                            key={exit.colIdx}
+                            x1={exit.x}
+                            y1="0"
+                            x2={exit.x}
+                            y2="64"
+                            stroke="#A8A29E"
+                            strokeWidth="1"
+                            className="flow-dash-line"
+                          />
+                        ))}
+
+                        {/* Horizontal gathering bus line joining all 4 lines together at y=64 */}
+                        <line
+                          x1="11.82%"
+                          y1="64"
+                          x2="88.18%"
+                          y2="64"
+                          stroke="#A8A29E"
+                          strokeWidth="1"
+                          className="flow-dash-line"
                         />
-                      </div>
-                    ))}
-                  </div>
 
-                  {/* Horizontal gathering bus line joining all 4 lines together at y=64px */}
-                  <div
-                    className={`absolute top-[64px] left-[11.82%] right-[11.82%] h-[1px] border-t border-dashed border-[#A8A29E] transition-all duration-400 ease-out ${
-                      s5GatherActive
-                        ? 'opacity-100 animate-flow-dash'
-                        : 'opacity-0'
-                    }`}
-                  />
+                        {/* Central convergence node dot at y=64, left: 50% */}
+                        <circle cx="50%" cy="64" r="2.5" fill="#141413" />
+                        <circle cx="50%" cy="64" r="1" fill="#FAF9F5" />
 
-                  {/* Central convergence node dot at y=64px, left: 50% */}
-                  <div
-                    className={`absolute top-[64px] left-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-white shadow-xs z-10 transition-all duration-300 ease-out ${
-                      s5GatherActive ? 'scale-100 opacity-100 bg-[#141413]' : 'scale-0 opacity-0 bg-[#A8A29E]'
-                    }`}
-                  />
-
-                  {/* Vertical trunk line feeding into Step 05 (from y=64px down to y=120px) */}
-                  <div
-                    className={`absolute top-[64px] w-[1px] left-1/2 -translate-x-1/2 border-l border-dashed border-[#A8A29E] transition-all duration-300 ease-out ${
-                      s5GatherActive
-                        ? 'h-[56px] opacity-100 animate-flow-dash'
-                        : 'h-0 opacity-0'
-                    }`}
-                  />
+                        {/* Vertical trunk line feeding into Step 05 (from y=64 down to y=120) */}
+                        <line
+                          x1="50%"
+                          y1="64"
+                          x2="50%"
+                          y2="120"
+                          stroke="#A8A29E"
+                          strokeWidth="1"
+                          className="flow-dash-line"
+                        />
+                      </>
+                    )}
+                  </svg>
                 </div>
               </div>
             </div>
