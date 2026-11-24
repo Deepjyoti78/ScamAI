@@ -316,48 +316,69 @@ export default function WorkflowSection() {
     return () => clearTimeout(tApply);
   }, [step2InView]);
 
-  /* ── STEP 03 ANIMATION STATE ── */
+  /* ── STEP 03 CHOREOGRAPHED ANIMATION STATE ── */
   const [s3PillsCount, setS3PillsCount] = useState(0);
-  const [s3Converged, setS3Converged] = useState(false);
+  const [s3LinesActive, setS3LinesActive] = useState(false);
+  const [s3JunctionActive, setS3JunctionActive] = useState(false);
+  const [s3LineToCircleActive, setS3LineToCircleActive] = useState(false);
   const [s3RingActive, setS3RingActive] = useState(false);
+  const [s3BrainActive, setS3BrainActive] = useState(false);
   const [s3SatellitesStep, setS3SatellitesStep] = useState(0);
+  const [s3BottomDotActive, setS3BottomDotActive] = useState(false);
 
   useEffect(() => {
     if (!step3InView) return;
 
-    // 1. 6 pills reveal one by one
+    const timers: any[] = [];
+
+    // 1. 6 pills reveal one by one with subtle stagger
     for (let i = 1; i <= 6; i++) {
-      setTimeout(() => {
-        setS3PillsCount(i);
-      }, 150 + i * 140);
+      timers.push(
+        setTimeout(() => {
+          setS3PillsCount(i);
+        }, 120 + i * 130)
+      );
     }
 
-    // 2. Converge lines to central junction dot
-    const tConv = setTimeout(() => setS3Converged(true), 1150);
+    // 2. After all cards appear: dotted lines from each card animate out toward central junction (76, 139)
+    timers.push(setTimeout(() => setS3LinesActive(true), 1050));
 
-    // 3. Circular ring and ScamShield brain appear
-    const tRing = setTimeout(() => setS3RingActive(true), 1550);
+    // 3. Lines meet at common junction point (76, 139) -> junction dot illuminates
+    timers.push(setTimeout(() => setS3JunctionActive(true), 1800));
 
-    // 4. 4 satellite badges and connectors appear one by one
-    const tSat1 = setTimeout(() => setS3SatellitesStep(1), 1900); // 1. Pattern scoring
-    const tSat2 = setTimeout(() => setS3SatellitesStep(2), 2350); // 2. Text analysis
-    const tSat3 = setTimeout(() => setS3SatellitesStep(3), 2800); // 3. Feature explanation
-    const tSat4 = setTimeout(() => setS3SatellitesStep(4), 3250); // 4. Risk synthesis
+    // 4. Line extends from junction point to circular orbit edge (133.4, 139)
+    timers.push(setTimeout(() => setS3LineToCircleActive(true), 2050));
+
+    // 5. Circular orbit ring forms 360 degrees around ScamShield brain
+    timers.push(setTimeout(() => setS3RingActive(true), 2350));
+
+    // 6. From that circle, ScamShield brain illustration and title emerge slowly
+    timers.push(setTimeout(() => setS3BrainActive(true), 3200));
+
+    // 7. After the brain emerges properly: 4 satellite badges & connectors appear one by one
+    timers.push(setTimeout(() => setS3SatellitesStep(1), 4450)); // 1. Pattern scoring
+    timers.push(setTimeout(() => setS3SatellitesStep(2), 4850)); // 2. Text analysis
+    timers.push(setTimeout(() => setS3SatellitesStep(3), 5250)); // 3. Feature explanation
+    timers.push(setTimeout(() => setS3SatellitesStep(4), 5650)); // 4. Risk synthesis
+
+    // 8. Bottom docking dot at (225.4, 231) activates, ready to stream down
+    timers.push(setTimeout(() => setS3BottomDotActive(true), 6050));
 
     return () => {
-      clearTimeout(tConv);
-      clearTimeout(tRing);
-      clearTimeout(tSat1);
-      clearTimeout(tSat2);
-      clearTimeout(tSat3);
-      clearTimeout(tSat4);
+      timers.forEach(clearTimeout);
     };
   }, [step3InView]);
 
   /* ── STEP 04 & 05 CHOREOGRAPHED ANIMATION PIPELINE ── */
   const [s4FeederActive, setS4FeederActive] = useState(false);
+  const [s4JunctionActive, setS4JunctionActive] = useState(false);
+  const [s4BusActive, setS4BusActive] = useState(false);
   const [s4CardsCount, setS4CardsCount] = useState(0);
-  const [s5GatherActive, setS5GatherActive] = useState(false);
+
+  const [s5ExitLinesActive, setS5ExitLinesActive] = useState(false);
+  const [s5GatherBusActive, setS5GatherBusActive] = useState(false);
+  const [s5ConvergenceDotActive, setS5ConvergenceDotActive] = useState(false);
+  const [s5TrunkActive, setS5TrunkActive] = useState(false);
   const [s5CardRevealed, setS5CardRevealed] = useState(false);
   const [s5Score, setS5Score] = useState(0);
 
@@ -366,42 +387,57 @@ export default function WorkflowSection() {
   useEffect(() => {
     if (!step4InView && !step5InView) return;
 
-    // 1. Feeder line streams down from Section 03 circle to junction point
-    const tFeed = setTimeout(() => setS4FeederActive(true), 150);
+    const timers: any[] = [];
+    let scoreInterval: any = null;
 
-    // 2. From junction point, branch lines reveal the 4 evidence cards sequentially
-    const tC1 = setTimeout(() => setS4CardsCount(1), 550);
-    const tC2 = setTimeout(() => setS4CardsCount(2), 800);
-    const tC3 = setTimeout(() => setS4CardsCount(3), 1050);
-    const tC4 = setTimeout(() => setS4CardsCount(4), 1300);
+    // 1. Feeder line streams down from Section 03 circle to junction point (y=52, 62.73%)
+    timers.push(setTimeout(() => setS4FeederActive(true), 120));
 
-    // 3. AFTER all 4 cards are generated in cross-check evidence: exit lines drop down and gather together into junction
-    const tGather = setTimeout(() => setS5GatherActive(true), 1650);
+    // 2. Junction dot pops in at junction point
+    timers.push(setTimeout(() => setS4JunctionActive(true), 550));
 
-    // 4. From convergence junction point, feed trunk into Step 05 and generate High Risk verdict card
-    const tVerdict = setTimeout(() => {
-      setS5CardRevealed(true);
+    // 3. Feeder line divides into 4 parts (horizontal distribution bus branches out & 4 drop lines stream down)
+    timers.push(setTimeout(() => setS4BusActive(true), 700));
 
-      // 5. Model score counts up smoothly to 94
-      let curScore = 0;
-      const scoreInterval = setInterval(() => {
-        curScore += 3;
-        if (curScore >= 94) {
-          curScore = 94;
-          clearInterval(scoreInterval);
-        }
-        setS5Score(curScore);
-      }, 25);
-    }, 2150);
+    // 4. From that four-part division, all 4 evidence cards reveal sequentially
+    timers.push(setTimeout(() => setS4CardsCount(1), 900));
+    timers.push(setTimeout(() => setS4CardsCount(2), 1150));
+    timers.push(setTimeout(() => setS4CardsCount(3), 1400));
+    timers.push(setTimeout(() => setS4CardsCount(4), 1650));
+
+    // 5. AFTER completing Section 4: all 4 cards from bottom animate lines getting out (y=0 down to y=64)
+    timers.push(setTimeout(() => setS5ExitLinesActive(true), 2100));
+
+    // 6. Exit lines gather together along the horizontal bus toward central convergence junction (50%, 64)
+    timers.push(setTimeout(() => setS5GatherBusActive(true), 2550));
+
+    // 7. Convergence junction dot appears and pulses
+    timers.push(setTimeout(() => setS5ConvergenceDotActive(true), 2850));
+
+    // 8. From convergence junction point, single vertical trunk dotted line generates downward (y=64 to y=120)
+    timers.push(setTimeout(() => setS5TrunkActive(true), 3050));
+
+    // 9. Dotted trunk generates the High Risk verdict card in Step 05
+    timers.push(
+      setTimeout(() => {
+        setS5CardRevealed(true);
+
+        // 10. Model score counts up smoothly to 94
+        let curScore = 0;
+        scoreInterval = setInterval(() => {
+          curScore += 3;
+          if (curScore >= 94) {
+            curScore = 94;
+            clearInterval(scoreInterval);
+          }
+          setS5Score(curScore);
+        }, 25);
+      }, 3400)
+    );
 
     return () => {
-      clearTimeout(tFeed);
-      clearTimeout(tC1);
-      clearTimeout(tC2);
-      clearTimeout(tC3);
-      clearTimeout(tC4);
-      clearTimeout(tGather);
-      clearTimeout(tVerdict);
+      timers.forEach(clearTimeout);
+      if (scoreInterval) clearInterval(scoreInterval);
     };
   }, [step4InView, step5InView]);
 
@@ -429,6 +465,46 @@ export default function WorkflowSection() {
         .bg-grid-parchment {
           background-image: radial-gradient(rgba(20, 20, 19, 0.055) 1px, transparent 1px);
           background-size: 16px 16px;
+        }
+        @keyframes busExpand {
+          from {
+            transform: scaleX(0);
+            opacity: 0;
+          }
+          to {
+            transform: scaleX(1);
+            opacity: 1;
+          }
+        }
+        @keyframes busGather {
+          from {
+            transform: scaleX(0.7);
+            opacity: 0;
+          }
+          to {
+            transform: scaleX(1);
+            opacity: 1;
+          }
+        }
+        @keyframes circleForm {
+          from {
+            transform: scale(0.65);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        @keyframes dropStream {
+          from {
+            opacity: 0;
+            transform: translateY(-6px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       `}</style>
 
@@ -923,66 +999,123 @@ export default function WorkflowSection() {
                         <stop offset="80%" stopColor="#A8A29E" stopOpacity="0.9" />
                         <stop offset="100%" stopColor="#A8A29E" stopOpacity="0.4" />
                       </linearGradient>
+
+                      {/* Line drawing masks for each of the 6 incoming corner paths */}
+                      {[
+                        { d: 'M -12 19 L 42 19 Q 54 19 54 31 L 54 127 Q 54 139 64 139 L 76 139' },
+                        { d: 'M -12 67 L 42 67 Q 54 67 54 79 L 54 127 Q 54 139 64 139 L 76 139' },
+                        { d: 'M -12 115 L 44 115 Q 54 115 54 125 L 54 129 Q 54 139 64 139 L 76 139' },
+                        { d: 'M -12 163 L 44 163 Q 54 163 54 153 L 54 149 Q 54 139 64 139 L 76 139' },
+                        { d: 'M -12 211 L 42 211 Q 54 211 54 199 L 54 151 Q 54 139 64 139 L 76 139' },
+                        { d: 'M -12 259 L 42 259 Q 54 259 54 247 L 54 151 Q 54 139 64 139 L 76 139' },
+                      ].map((p, i) => (
+                        <mask key={i} id={`s3-line-mask-${i}`}>
+                          <path
+                            d={p.d}
+                            stroke="white"
+                            strokeWidth="16"
+                            strokeLinecap="round"
+                            fill="none"
+                            pathLength="100"
+                            strokeDasharray="100"
+                            strokeDashoffset={s3LinesActive ? 0 : 100}
+                            style={{
+                              transition: `stroke-dashoffset 0.75s cubic-bezier(0.2, 0.9, 0.3, 1) ${i * 60}ms`,
+                            }}
+                          />
+                        </mask>
+                      ))}
+
+                      {/* Line drawing mask from junction (76, 139) to circular orbit edge (133.4, 139) */}
+                      <mask id="s3-junction-to-circle-mask">
+                        <line
+                          x1="76"
+                          y1="139"
+                          x2="133.4"
+                          y2="139"
+                          stroke="white"
+                          strokeWidth="16"
+                          strokeLinecap="round"
+                          pathLength="100"
+                          strokeDasharray="100"
+                          strokeDashoffset={s3LineToCircleActive ? 0 : 100}
+                          style={{
+                            transition: 'stroke-dashoffset 0.32s cubic-bezier(0.2, 0.9, 0.3, 1)',
+                          }}
+                        />
+                      </mask>
+
+                      {/* Circle drawing mask forming the 360-degree orbit ring */}
+                      <mask id="s3-circle-mask">
+                        <path
+                          d="M 133.4 139 A 92 92 0 1 1 133.4 138.9"
+                          stroke="white"
+                          strokeWidth="16"
+                          strokeLinecap="round"
+                          fill="none"
+                          pathLength="100"
+                          strokeDasharray="100"
+                          strokeDashoffset={s3RingActive ? 0 : 100}
+                          style={{
+                            transition: 'stroke-dashoffset 0.85s cubic-bezier(0.22, 1, 0.36, 1)',
+                          }}
+                        />
+                      </mask>
                     </defs>
 
-                    {/* 6 Dotted lines arising directly from pill dots, turning with corners, and merging into central junction (76, 139) */}
-                    {s3Converged && (
-                      <>
-                        {/* Pill 0: Job content (y=19) -> goes straight to 42, turns down, curves into junction */}
+                    {/* 6 Dotted lines arising directly from pill dots, turning with corners, and drawing into central junction (76, 139) */}
+                    {[
+                      { y: 19, d: 'M -12 19 L 42 19 Q 54 19 54 31 L 54 127 Q 54 139 64 139 L 76 139' },
+                      { y: 67, d: 'M -12 67 L 42 67 Q 54 67 54 79 L 54 127 Q 54 139 64 139 L 76 139' },
+                      { y: 115, d: 'M -12 115 L 44 115 Q 54 115 54 125 L 54 129 Q 54 139 64 139 L 76 139' },
+                      { y: 163, d: 'M -12 163 L 44 163 Q 54 163 54 153 L 54 149 Q 54 139 64 139 L 76 139' },
+                      { y: 211, d: 'M -12 211 L 42 211 Q 54 211 54 199 L 54 151 Q 54 139 64 139 L 76 139' },
+                      { y: 259, d: 'M -12 259 L 42 259 Q 54 259 54 247 L 54 151 Q 54 139 64 139 L 76 139' },
+                    ].map((branch, i) => (
+                      <g key={i}>
                         <path
-                          d="M -12 19 L 42 19 Q 54 19 54 31 L 54 127 Q 54 139 64 139 L 76 139"
+                          d={branch.d}
                           stroke="url(#s3-fade-entry)"
                           strokeWidth="1"
                           className="flow-dash-line"
+                          mask={`url(#s3-line-mask-${i})`}
                         />
-                        {/* Pill 1: Domain & URL (y=67) */}
-                        <path
-                          d="M -12 67 L 42 67 Q 54 67 54 79 L 54 127 Q 54 139 64 139 L 76 139"
-                          stroke="url(#s3-fade-entry)"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
-                        {/* Pill 2: Recruiter email (y=115) */}
-                        <path
-                          d="M -12 115 L 44 115 Q 54 115 54 125 L 54 129 Q 54 139 64 139 L 76 139"
-                          stroke="url(#s3-fade-entry)"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
-                        {/* Pill 3: Application destination (y=163) */}
-                        <path
-                          d="M -12 163 L 44 163 Q 54 163 54 153 L 54 149 Q 54 139 64 139 L 76 139"
-                          stroke="url(#s3-fade-entry)"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
-                        {/* Pill 4: Payment request (y=211) */}
-                        <path
-                          d="M -12 211 L 42 211 Q 54 211 54 199 L 54 151 Q 54 139 64 139 L 76 139"
-                          stroke="url(#s3-fade-entry)"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
-                        {/* Pill 5: Employer & web evidence (y=259) */}
-                        <path
-                          d="M -12 259 L 42 259 Q 54 259 54 247 L 54 151 Q 54 139 64 139 L 76 139"
-                          stroke="url(#s3-fade-entry)"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
-                      </>
-                    )}
+                        {/* Crimson data pulse traveling along the line once active */}
+                        {s3LinesActive && (
+                          <circle r="2" fill="#DC2626" opacity="0">
+                            <animateMotion
+                              path={branch.d}
+                              dur="2.2s"
+                              begin={`${0.4 + i * 0.15}s`}
+                              repeatCount="indefinite"
+                              calcMode="linear"
+                            />
+                            <animate
+                              attributeName="opacity"
+                              values="0;0.9;0.9;0"
+                              keyTimes="0;0.12;0.85;1"
+                              dur="2.2s"
+                              begin={`${0.4 + i * 0.15}s`}
+                              repeatCount="indefinite"
+                            />
+                          </circle>
+                        )}
+                      </g>
+                    ))}
 
-                    {/* Central junction point dot */}
-                    {s3Converged && (
-                      <>
-                        <circle cx="76" cy="139" r="3.5" fill="#A8A29E" />
-                        <circle cx="76" cy="139" r="1.2" fill="#FAF9F5" />
-                      </>
-                    )}
+                    {/* Central junction point dot where all lines meet */}
+                    <g
+                      className={`transition-all duration-300 ${
+                        s3JunctionActive ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                      }`}
+                      style={{ transformOrigin: '76px 139px' }}
+                    >
+                      <circle cx="76" cy="139" r="3.5" fill="#141413" />
+                      <circle cx="76" cy="139" r="1.2" fill="#FAF9F5" />
+                    </g>
 
                     {/* Horizontal dotted line into the circular ring at x=133.4 (225.4 - 92) */}
-                    {s3RingActive && (
+                    {s3LineToCircleActive && (
                       <>
                         <line
                           x1="76"
@@ -992,12 +1125,15 @@ export default function WorkflowSection() {
                           stroke="#A8A29E"
                           strokeWidth="1"
                           className="flow-dash-line"
+                          style={{
+                            animation: 'dropStream 0.3s ease-out forwards',
+                          }}
                         />
-                        <circle cx="133.4" cy="139" r="2" fill="#A8A29E" />
+                        <circle cx="133.4" cy="139" r="2" fill="#141413" className="transition-opacity duration-300" />
                       </>
                     )}
 
-                    {/* Circular Orbit Ring around Brain (cx=225.4, cy=139, r=92) aligned directly with Step 04 Web Corroboration */}
+                    {/* Circular Orbit Ring around Brain forming 360 degrees (cx=225.4, cy=139, r=92) */}
                     {s3RingActive && (
                       <circle
                         cx="225.4"
@@ -1007,70 +1143,84 @@ export default function WorkflowSection() {
                         strokeWidth="1"
                         className="flow-dash-line"
                         fill="none"
+                        style={{
+                          animation: 'circleForm 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                          transformOrigin: '225.4px 139px',
+                        }}
                       />
                     )}
 
                     {/* 4 Satellite Connectors appearing one by one */}
                     {/* 1. Pattern scoring connector */}
                     {s3SatellitesStep >= 1 && (
-                      <g className="transition-opacity duration-300">
+                      <g className="transition-all duration-400 ease-out">
                         <line x1="160.4" y1="74" x2="121.4" y2="44" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
-                        <circle cx="121.4" cy="44" r="2" fill="#A8A29E" />
+                        <circle cx="121.4" cy="44" r="2" fill="#141413" />
                       </g>
                     )}
 
                     {/* 2. Text analysis connector */}
                     {s3SatellitesStep >= 2 && (
-                      <g className="transition-opacity duration-300">
+                      <g className="transition-all duration-400 ease-out">
                         <line x1="225.4" y1="47" x2="225.4" y2="22" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
-                        <circle cx="225.4" cy="22" r="2" fill="#A8A29E" />
+                        <circle cx="225.4" cy="22" r="2" fill="#141413" />
                       </g>
                     )}
 
                     {/* 3. Feature explanation connector */}
                     {s3SatellitesStep >= 3 && (
-                      <g className="transition-opacity duration-300">
+                      <g className="transition-all duration-400 ease-out">
                         <line x1="290.4" y1="74" x2="329.4" y2="44" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
-                        <circle cx="329.4" cy="44" r="2" fill="#A8A29E" />
+                        <circle cx="329.4" cy="44" r="2" fill="#141413" />
                       </g>
                     )}
 
                     {/* 4. Risk synthesis connector */}
                     {s3SatellitesStep >= 4 && (
-                      <g className="transition-opacity duration-300">
+                      <g className="transition-all duration-400 ease-out">
                         <line x1="317.4" y1="139" x2="353.4" y2="139" stroke="#A8A29E" strokeWidth="1" className="flow-dash-line" />
                         <circle cx="353.4" cy="139" r="2" fill="#DC2626" />
                       </g>
                     )}
 
                     {/* Docking dot at bottom boundary of circular brain orbit (cx=225.4, cy=231) directly vertically collinear with Web Corroboration */}
-                    {s3RingActive && (
-                      <circle cx="225.4" cy="231" r="2" fill="#A8A29E" />
-                    )}
+                    <g
+                      className={`transition-all duration-300 ${
+                        s3BottomDotActive ? 'opacity-100 scale-125' : 'opacity-60 scale-100'
+                      }`}
+                      style={{ transformOrigin: '225.4px 231px' }}
+                    >
+                      <circle cx="225.4" cy="231" r="2.5" fill="#141413" />
+                      <circle cx="225.4" cy="231" r="1" fill="#FAF9F5" />
+                    </g>
 
-                    {/* SVG foreignObject: Perfectly centered Brain illustration & ScamShield Engine typography */}
-                    {s3RingActive && (
-                      <foreignObject
-                        x="135.4"
-                        y="55"
-                        width="180"
-                        height="168"
-                        className="overflow-visible pointer-events-none"
+                    {/* SVG foreignObject: Perfectly centered Brain illustration & ScamShield Engine typography emerging slowly */}
+                    <foreignObject
+                      x="135.4"
+                      y="55"
+                      width="180"
+                      height="168"
+                      className="overflow-visible pointer-events-none"
+                    >
+                      <div
+                        className={`w-full h-full flex flex-col items-center justify-center text-center select-none transition-all duration-1000 ease-out ${
+                          s3BrainActive
+                            ? 'opacity-100 scale-100 blur-0 translate-y-0'
+                            : 'opacity-0 scale-[0.6] blur-[6px] translate-y-2'
+                        }`}
                       >
-                        <div className="w-full h-full flex flex-col items-center justify-center text-center select-none transition-all duration-500">
-                          <div className="relative w-[116px] h-[72px] flex items-center justify-center">
-                            <img
-                              src="/Detailed Ivory Brain Illustration.png"
-                              alt="ScamShield Analysis Engine"
-                              className="w-full h-full object-contain mix-blend-multiply select-none pointer-events-none drop-shadow-[0_8px_18px_rgba(20,20,19,0.12)]"
-                            />
-                          </div>
-                          <span className="font-serif font-bold text-[13px] sm:text-[14px] text-[#141413] tracking-tight mt-1 text-center leading-tight">
-                            ScamShield<br />Analysis Engine
-                          </span>
+                        <div className="relative w-[116px] h-[72px] flex items-center justify-center">
+                          <img
+                            src="/Detailed Ivory Brain Illustration.png"
+                            alt="ScamShield Analysis Engine"
+                            className="w-full h-full object-contain mix-blend-multiply select-none pointer-events-none drop-shadow-[0_8px_18px_rgba(20,20,19,0.12)]"
+                          />
                         </div>
-                      </foreignObject>
-                    )}
+                        <span className="font-serif font-bold text-[13px] sm:text-[14px] text-[#141413] tracking-tight mt-1 text-center leading-tight">
+                          ScamShield<br />Analysis Engine
+                        </span>
+                      </div>
+                    </foreignObject>
 
                     {/* Satellite Badges rendered directly inside SVG coordinate space */}
                     {/* Badge 1: Pattern scoring */}
@@ -1182,24 +1332,33 @@ export default function WorkflowSection() {
                   <svg className="w-full h-full absolute inset-0 overflow-visible" fill="none">
                     {/* Continuous feeder line connecting the Section 03 circle bottom dot directly to Section 04 junction dot (100% straight vertical) */}
                     {s4FeederActive && (
-                      <>
-                        <line
-                          x1="62.73%"
-                          y1="-78"
-                          x2="62.73%"
-                          y2="52"
-                          stroke="#A8A29E"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
-                        {/* Single central junction node dot */}
-                        <circle cx="62.73%" cy="52" r="2.5" fill="#141413" />
-                        <circle cx="62.73%" cy="52" r="1" fill="#FAF9F5" />
-                      </>
+                      <line
+                        x1="62.73%"
+                        y1="-78"
+                        x2="62.73%"
+                        y2="52"
+                        stroke="#A8A29E"
+                        strokeWidth="1"
+                        className="flow-dash-line"
+                        style={{
+                          animation: 'dropStream 0.45s ease-out forwards',
+                        }}
+                      />
                     )}
 
-                    {/* Horizontal distribution bus line spanning across the 4 cards (from 11.82% to 88.18% at y=52) */}
-                    {s4CardsCount >= 1 && (
+                    {/* Single central junction node dot */}
+                    {s4JunctionActive && (
+                      <g
+                        className="transition-all duration-300 animate-scale-pop"
+                        style={{ transformOrigin: '62.73% 52px' }}
+                      >
+                        <circle cx="62.73%" cy="52" r="2.5" fill="#141413" />
+                        <circle cx="62.73%" cy="52" r="1" fill="#FAF9F5" />
+                      </g>
+                    )}
+
+                    {/* Horizontal distribution bus lines branching out from junction dot */}
+                    {s4BusActive && (
                       <line
                         x1="11.82%"
                         y1="52"
@@ -1208,6 +1367,10 @@ export default function WorkflowSection() {
                         stroke="#A8A29E"
                         strokeWidth="1"
                         className="flow-dash-line"
+                        style={{
+                          animation: 'busExpand 0.4s ease-out forwards',
+                          transformOrigin: '62.73% 52px',
+                        }}
                       />
                     )}
 
@@ -1229,6 +1392,9 @@ export default function WorkflowSection() {
                           stroke="#A8A29E"
                           strokeWidth="1"
                           className="flow-dash-line"
+                          style={{
+                            animation: 'dropStream 0.35s ease-out forwards',
+                          }}
                         />
                       ) : null;
                     })}
@@ -1440,7 +1606,7 @@ export default function WorkflowSection() {
                 <div className="flex-1 relative h-full">
                   <svg className="w-full h-full absolute inset-0 overflow-visible" fill="none">
                     {/* 4 Straight Dotted Exit Lines from the 4 evidence cards above (y=0 down to y=64) */}
-                    {s5GatherActive && (
+                    {s5ExitLinesActive && (
                       <>
                         {[
                           { x: '11.82%', colIdx: 0 },
@@ -1457,35 +1623,56 @@ export default function WorkflowSection() {
                             stroke="#A8A29E"
                             strokeWidth="1"
                             className="flow-dash-line"
+                            style={{
+                              animation: 'dropStream 0.4s ease-out forwards',
+                            }}
                           />
                         ))}
+                      </>
+                    )}
 
-                        {/* Horizontal gathering bus line joining all 4 lines together at y=64 */}
-                        <line
-                          x1="11.82%"
-                          y1="64"
-                          x2="88.18%"
-                          y2="64"
-                          stroke="#A8A29E"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
+                    {/* Horizontal gathering bus lines converging into center at y=64 */}
+                    {s5GatherBusActive && (
+                      <line
+                        x1="11.82%"
+                        y1="64"
+                        x2="88.18%"
+                        y2="64"
+                        stroke="#A8A29E"
+                        strokeWidth="1"
+                        className="flow-dash-line"
+                        style={{
+                          animation: 'busGather 0.4s ease-out forwards',
+                          transformOrigin: '50% 64px',
+                        }}
+                      />
+                    )}
 
-                        {/* Central convergence node dot at y=64, left: 50% */}
+                    {/* Central convergence node dot at y=64, left: 50% */}
+                    {s5ConvergenceDotActive && (
+                      <g
+                        className="transition-all duration-300 animate-scale-pop"
+                        style={{ transformOrigin: '50% 64px' }}
+                      >
                         <circle cx="50%" cy="64" r="2.5" fill="#141413" />
                         <circle cx="50%" cy="64" r="1" fill="#FAF9F5" />
+                      </g>
+                    )}
 
-                        {/* Vertical trunk line feeding into Step 05 (from y=64 down to y=120) */}
-                        <line
-                          x1="50%"
-                          y1="64"
-                          x2="50%"
-                          y2="120"
-                          stroke="#A8A29E"
-                          strokeWidth="1"
-                          className="flow-dash-line"
-                        />
-                      </>
+                    {/* Vertical trunk line feeding into Step 05 (from y=64 down to y=120) */}
+                    {s5TrunkActive && (
+                      <line
+                        x1="50%"
+                        y1="64"
+                        x2="50%"
+                        y2="120"
+                        stroke="#A8A29E"
+                        strokeWidth="1"
+                        className="flow-dash-line"
+                        style={{
+                          animation: 'dropStream 0.35s ease-out forwards',
+                        }}
+                      />
                     )}
                   </svg>
                 </div>
