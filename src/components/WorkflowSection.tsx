@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 /* ── INTERSECTION OBSERVER HOOK FOR SCROLL-DRIVEN TRIGGERING ── */
-function useStepInView(threshold = 0.2) {
+function useStepInView(threshold = 0.12, rootMargin = '0px 0px -80px 0px') {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isInView, setIsInView] = useState(false);
 
@@ -37,13 +37,13 @@ function useStepInView(threshold = 0.2) {
       },
       {
         threshold,
-        rootMargin: '0px 0px -40px 0px',
+        rootMargin,
       }
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, rootMargin]);
 
   return [ref, isInView] as const;
 }
@@ -126,11 +126,12 @@ export default function WorkflowSection() {
   const navigate = useNavigate();
 
   /* ── SECTION REFS FOR SCROLL-DRIVEN OBSERVATION ── */
-  const [step1Ref, step1InView] = useStepInView(0.2);
-  const [step2Ref, step2InView] = useStepInView(0.2);
-  const [step3Ref, step3InView] = useStepInView(0.2);
-  const [step4Ref, step4InView] = useStepInView(0.2);
-  const [step5Ref, step5InView] = useStepInView(0.2);
+  const [headerRef, headerInView] = useStepInView(0.1, '0px 0px -60px 0px');
+  const [step1Ref, step1InView] = useStepInView(0.12, '0px 0px -80px 0px');
+  const [step2Ref, step2InView] = useStepInView(0.12, '0px 0px -80px 0px');
+  const [step3Ref, step3InView] = useStepInView(0.12, '0px 0px -80px 0px');
+  const [step4Ref, step4InView] = useStepInView(0.12, '0px 0px -80px 0px');
+  const [step5Ref, step5InView] = useStepInView(0.12, '0px 0px -80px 0px');
 
   /* ── STEP 01 ANIMATION STATE ── */
   const FULL_URL = 'careers-rapidtech.com/jobs/product-designer';
@@ -283,7 +284,7 @@ export default function WorkflowSection() {
   return (
     <section
       id="workflow"
-      className="w-full border-t border-[#E0DED4] px-4 sm:px-6 lg:px-10 py-16 sm:py-20 md:py-24 bg-[#F5F3EA] relative overflow-hidden"
+      className="w-full border-t border-[#E0DED4] px-4 sm:px-6 lg:px-10 py-16 sm:py-20 md:py-24 bg-[#FAF9F5] relative overflow-hidden"
     >
       {/* Visual texture styles & animations */}
       <style>{`
@@ -310,7 +311,12 @@ export default function WorkflowSection() {
       <div className="max-w-[1140px] mx-auto">
 
         {/* ── SECTION HEADER (CENTERED, CLEAN & EDITORIAL) ── */}
-        <div className="text-center max-w-xl mx-auto mb-12 sm:mb-16">
+        <div
+          ref={headerRef}
+          className={`text-center max-w-xl mx-auto mb-12 sm:mb-16 transition-all duration-700 ease-out ${
+            headerInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+          }`}
+        >
           <h2 className="text-[32px] sm:text-[40px] md:text-[44px] font-serif font-normal text-[#141413] tracking-tight leading-[1.1] mb-2.5">
             How It Works
           </h2>
@@ -323,16 +329,19 @@ export default function WorkflowSection() {
         <div className="relative flex flex-col gap-12 sm:gap-14 md:gap-16">
 
           {/* Continuous Left Spine Line (visible on md+) */}
-          <div className="hidden md:block absolute left-[10px] top-[24px] bottom-[30px] w-[1px] bg-[#E0DED4] pointer-events-none" />
+          <div className={`hidden md:block absolute left-[10px] top-[24px] bottom-[30px] w-[1px] bg-[#E0DED4] pointer-events-none transition-opacity duration-700 ${
+            step1InView ? 'opacity-100' : 'opacity-0'
+          }`} />
 
           {/* ══════════════════════════════════════════════════════════════
               STEP 01: SUBMIT A JOB POSTING
               (Scroll-Triggered: text appears -> URL entered -> Search clicked -> Arrow emerges -> Product Designer card appears)
           ══════════════════════════════════════════════════════════════ */}
           <div
+            id="step-01"
             ref={step1Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ${
-              step1InView ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-4'
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ease-out ${
+              step1InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
             {/* Timeline node dot (md+) */}
@@ -488,8 +497,8 @@ export default function WorkflowSection() {
           <div
             id="step-02"
             ref={step2Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ${
-              step2InView ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-4'
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ease-out ${
+              step2InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
             {/* Timeline node dot (md+) */}
@@ -613,7 +622,7 @@ export default function WorkflowSection() {
                         className={`bg-[#FFFFFF] border rounded-none px-3.5 py-2 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
                           isRevealed
                             ? 'opacity-100 translate-x-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]'
-                            : 'opacity-20 translate-x-2 border-dashed border-[#E0DED4]'
+                            : 'opacity-0 translate-x-3 pointer-events-none border-dashed border-[#E0DED4]'
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
@@ -647,8 +656,8 @@ export default function WorkflowSection() {
           <div
             id="step-03"
             ref={step3Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ${
-              step3InView ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-4'
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ease-out ${
+              step3InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
             {/* Timeline node dot (md+) */}
@@ -872,7 +881,9 @@ export default function WorkflowSection() {
               INTER-SECTION PIPELINE CONNECTOR (SECTION 03 -> SECTION 04)
               (Bottom line of brain connects down and branches into all 4 cards below)
           ══════════════════════════════════════════════════════════════ */}
-          <div className="hidden lg:block relative -my-9 z-20">
+          <div className={`hidden lg:block relative -my-9 z-20 transition-all duration-700 ease-out ${
+            step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+          }`}>
             <div className="flex items-center">
               <div className="w-[280px] lg:w-[310px] pl-9 flex-shrink-0" />
               <div className="flex-1 px-5 sm:px-7">
@@ -929,8 +940,8 @@ export default function WorkflowSection() {
           <div
             id="step-04"
             ref={step4Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ${
-              step4InView ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-4'
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ease-out ${
+              step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
             {/* Timeline node dot (md+) */}
@@ -967,7 +978,7 @@ export default function WorkflowSection() {
 
                 {/* Card 1: Domain consistency */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
-                  s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-20 translate-y-2 border-[#E0DED4]'
+                  s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E0DED4]'
                 }`}>
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -997,7 +1008,7 @@ export default function WorkflowSection() {
 
                 {/* Card 2: Credential verification (Concern) */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(220,38,38,0.03)] transition-all duration-500 relative ${
-                  s4CardsCount >= 2 ? 'opacity-100 translate-y-0 border-[#DC2626] ring-1 ring-[#DC2626]/25 bg-[#FFF5F4]' : 'opacity-20 translate-y-2 border-[#F6C6BF]'
+                  s4CardsCount >= 2 ? 'opacity-100 translate-y-0 border-[#DC2626] ring-1 ring-[#DC2626]/25 bg-[#FFF5F4]' : 'opacity-0 translate-y-4 pointer-events-none border-[#F6C6BF]'
                 }`}>
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1027,7 +1038,7 @@ export default function WorkflowSection() {
 
                 {/* Card 3: Web corroboration */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
-                  s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-20 translate-y-2 border-[#E0DED4]'
+                  s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-0 translate-y-4 pointer-events-none border-[#E0DED4]'
                 }`}>
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1057,7 +1068,7 @@ export default function WorkflowSection() {
 
                 {/* Card 4: Employer legitimacy (Warning) */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(217,119,6,0.03)] transition-all duration-500 relative ${
-                  s4CardsCount >= 4 ? 'opacity-100 translate-y-0 border-[#D97706] ring-1 ring-[#D97706]/25 bg-[#FFFBEB]' : 'opacity-20 translate-y-2 border-[#FDE68A]'
+                  s4CardsCount >= 4 ? 'opacity-100 translate-y-0 border-[#D97706] ring-1 ring-[#D97706]/25 bg-[#FFFBEB]' : 'opacity-0 translate-y-4 pointer-events-none border-[#FDE68A]'
                 }`}>
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1094,7 +1105,9 @@ export default function WorkflowSection() {
               INTER-SECTION GATHERING PIPELINE (SECTION 04 -> SECTION 05)
               (All 4 cards drop lines down into gathering bus and join to form Section 05)
           ══════════════════════════════════════════════════════════════ */}
-          <div className="hidden lg:block relative -my-9 z-20">
+          <div className={`hidden lg:block relative -my-9 z-20 transition-all duration-700 ease-out ${
+            step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+          }`}>
             <div className="flex items-center">
               <div className="w-[280px] lg:w-[310px] pl-9 flex-shrink-0" />
               <div className="flex-1 px-5 sm:px-7">
@@ -1149,8 +1162,8 @@ export default function WorkflowSection() {
           <div
             id="step-05"
             ref={step5Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ${
-              step5InView ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-4'
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 transition-all duration-700 ease-out ${
+              step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
             {/* Timeline node dot (md+) */}
@@ -1182,7 +1195,7 @@ export default function WorkflowSection() {
             <div className={`flex-1 bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border rounded-none p-5 sm:p-7 shadow-[0_4px_24px_rgba(220,38,38,0.06),inset_0_1px_0_0_rgba(255,255,255,0.85)] relative overflow-hidden transition-all duration-700 ${
               s5CardRevealed
                 ? 'opacity-100 scale-100 border-[#DC2626] ring-2 ring-[#DC2626]/20 shadow-[0_8px_30px_rgba(220,38,38,0.12)]'
-                : 'opacity-40 scale-95 border-[#F6C6BF]'
+                : 'opacity-0 scale-95 border-[#F6C6BF] pointer-events-none'
             }`}>
               {/* Receiver node dot where gathering trunk plugs into Section 05 */}
               <span className="hidden lg:block absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#DC2626] border-2 border-white shadow z-20" />
