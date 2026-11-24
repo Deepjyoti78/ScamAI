@@ -62,10 +62,10 @@ function JobPostingCard({
 
   return (
     <div
-      className={`bg-[#FFFFFF] border rounded-none p-4 sm:p-5 relative transition-all duration-300 ${
+      className={`bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-4 sm:p-5 relative transition-all duration-300 ${
         isApplyActive
-          ? 'border-[#141413] shadow-[0_8px_24px_rgba(20,20,19,0.08)]'
-          : 'border-[#E0DED4] shadow-[0_2px_12px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]'
+          ? 'shadow-[0_8px_24px_rgba(20,20,19,0.07)]'
+          : 'shadow-[0_2px_12px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]'
       } ${className}`}
     >
       {/* Specular top highlight */}
@@ -283,7 +283,7 @@ export default function WorkflowSection() {
   return (
     <section
       id="workflow"
-      className="w-full border-t border-[#E0DED4] px-4 sm:px-6 lg:px-10 py-16 sm:py-20 md:py-24 bg-[#FAF9F5] relative overflow-hidden"
+      className="w-full border-t border-[#E0DED4] px-4 sm:px-6 lg:px-10 py-16 sm:py-20 md:py-24 bg-[#F5F3EA] relative overflow-hidden"
     >
       {/* Visual texture styles & animations */}
       <style>{`
@@ -375,12 +375,10 @@ export default function WorkflowSection() {
               </div>
             </div>
 
-            {/* Step Right Visual Card: Enhanced Texture + Minimal Illustration */}
-            <div className={`flex-1 bg-gradient-to-br from-[#FFFFFF] via-[#FAF9F6] to-[#F5F4EE] bg-grid-parchment border rounded-none p-5 sm:p-7 shadow-[0_8px_32px_rgba(20,20,19,0.04),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500 ${
-              s1CardRevealed ? 'border-[#141413]' : 'border-[#E0DED4]'
-            }`}>
+            {/* Step Right Visual Card: Enhanced Pure Porcelain Background with Soft Neutral Border */}
+            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
               {/* Specular hairline at top edge */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FFFFFF] to-transparent pointer-events-none z-10" />
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
               <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-6 items-center relative min-h-[250px]">
                 {/* Left: 3D Minimal Laptop Mockup with Floating URL Input Box */}
@@ -526,9 +524,10 @@ export default function WorkflowSection() {
             </div>
 
             {/* Step Right Visual Card: 1-to-6 Junction Network Architecture */}
-            <div className={`flex-1 bg-[#FAF9F6] bg-grid-parchment border rounded-none p-5 sm:p-7 shadow-[0_4px_24px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500 ${
-              s2RevealedCount >= 6 ? 'border-[#141413] ring-1 ring-[#141413]/10' : 'border-[#E0DED4]'
-            }`}>
+            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
+              {/* Specular hairline at top edge */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
               <div className="flex flex-col lg:flex-row items-center relative">
 
                 {/* Left: Product Designer Card with prominent node dot in the exact vertical middle */}
@@ -619,7 +618,7 @@ export default function WorkflowSection() {
                         key={i}
                         className={`bg-[#FFFFFF] border rounded-none px-3.5 py-2 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
                           isRevealed
-                            ? 'opacity-100 translate-x-0 border-[#141413] shadow-[0_2px_10px_rgba(20,20,19,0.08)]'
+                            ? 'opacity-100 translate-x-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]'
                             : 'opacity-20 translate-x-2 border-dashed border-[#E0DED4]'
                         }`}
                       >
@@ -684,9 +683,10 @@ export default function WorkflowSection() {
             </div>
 
             {/* Step Right Visual Card: Unified Canvas with Smaller Circular Ring */}
-            <div className={`flex-1 bg-[#FAF9F6] bg-grid-parchment border rounded-none p-5 sm:p-7 shadow-[0_4px_24px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500 ${
-              s3SatellitesActive ? 'border-[#141413] ring-1 ring-[#141413]/10' : 'border-[#E0DED4]'
-            }`}>
+            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
+              {/* Specular hairline at top edge */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
               <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6 relative">
 
                 {/* Left: 6 Input Feature Pills appearing one by one */}
@@ -965,14 +965,15 @@ export default function WorkflowSection() {
             </div>
 
             {/* Step Right Visual Card: 4-Column Evidence Cards */}
-            <div className={`flex-1 bg-[#FAF9F6] bg-grid-parchment border rounded-none p-5 sm:p-7 shadow-[0_4px_24px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500 ${
-              s4CardsCount >= 4 ? 'border-[#141413] ring-1 ring-[#141413]/10' : 'border-[#E0DED4]'
-            }`}>
+            <div className="flex-1 bg-[#FFFFFF] border border-[#E0DED4] rounded-none p-5 sm:p-7 shadow-[0_8px_30px_rgba(20,20,19,0.05),0_1px_3px_rgba(20,20,19,0.02)] relative overflow-hidden transition-all duration-500">
+              {/* Specular hairline at top edge */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
 
                 {/* Card 1: Domain consistency */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
-                  s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#141413] ring-1 ring-[#141413]/15' : 'opacity-20 translate-y-2 border-[#E0DED4]'
+                  s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-20 translate-y-2 border-[#E0DED4]'
                 }`}>
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1032,7 +1033,7 @@ export default function WorkflowSection() {
 
                 {/* Card 3: Web corroboration */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
-                  s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#141413] ring-1 ring-[#141413]/15' : 'opacity-20 translate-y-2 border-[#E0DED4]'
+                  s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#E0DED4] shadow-[0_2px_8px_rgba(20,20,19,0.04)]' : 'opacity-20 translate-y-2 border-[#E0DED4]'
                 }`}>
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
