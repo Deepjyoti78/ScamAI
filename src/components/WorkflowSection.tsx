@@ -64,7 +64,7 @@ function JobPostingCard({
     <div
       className={`bg-[#FFFFFF] border rounded-none p-4 sm:p-5 relative transition-all duration-300 ${
         isApplyActive
-          ? 'border-[#141413] ring-2 ring-[#16A34A]/30 shadow-[0_8px_24px_rgba(20,20,19,0.08)]'
+          ? 'border-[#141413] shadow-[0_8px_24px_rgba(20,20,19,0.08)]'
           : 'border-[#E0DED4] shadow-[0_2px_12px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF]'
       } ${className}`}
     >
@@ -103,26 +103,20 @@ function JobPostingCard({
         Join our product team to design intuitive, user-centric experiences and drive growth.
       </p>
 
-      {/* Action button: Apply Now with pulsing / highlighted state */}
+      {/* Action button: Apply Now in signature obsidian black */}
       <div className="relative">
         <button
           type="button"
           onClick={onApplyClick || (() => navigate('/investigate'))}
           className={`w-full inline-flex items-center justify-center gap-2 h-[34px] px-3 rounded-none text-[12px] font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
             isApplyActive
-              ? 'bg-[#16A34A] text-white ring-2 ring-[#16A34A] ring-offset-2 scale-[1.02] shadow-[0_0_18px_rgba(22,163,74,0.4)]'
+              ? 'bg-[#141413] text-[#FAF9F5] shadow-[0_4px_14px_rgba(20,20,19,0.25)] ring-1 ring-[#141413]'
               : 'bg-[#141413] text-[#FAF9F5] hover:bg-[#262523] active:scale-[0.99]'
           }`}
         >
           <span>Apply Now</span>
           <ArrowRight size={13} className={isApplyActive ? 'translate-x-1 transition-transform' : ''} />
         </button>
-
-        {isApplyActive && (
-          <span className="absolute -top-2.5 right-2 px-1.5 py-0.5 bg-[#16A34A] text-white font-mono text-[9px] font-bold rounded-none shadow uppercase animate-bounce">
-            Triggered
-          </span>
-        )}
       </div>
     </div>
   );
@@ -350,7 +344,7 @@ export default function WorkflowSection() {
             {/* Timeline node dot (md+) */}
             <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                s1CardRevealed ? 'bg-[#16A34A] scale-125' : 'bg-[#141413]'
+                s1CardRevealed ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
             </div>
 
@@ -373,7 +367,7 @@ export default function WorkflowSection() {
               {/* 4-dash pagination indicator */}
               <div className="flex items-center gap-1.5 pt-1">
                 <span className={`w-4 h-[3px] rounded-none transition-colors duration-300 ${
-                  s1CardRevealed ? 'bg-[#16A34A]' : 'bg-[#141413]'
+                  s1CardRevealed ? 'bg-[#141413]' : 'bg-[#141413]'
                 }`} />
                 <span className="w-4 h-[3px] bg-[#E0DED4] rounded-none" />
                 <span className="w-4 h-[3px] bg-[#E0DED4] rounded-none" />
@@ -382,91 +376,96 @@ export default function WorkflowSection() {
             </div>
 
             {/* Step Right Visual Card: Enhanced Texture + Minimal Illustration */}
-            <div className={`flex-1 bg-[#FAF9F6] bg-grid-parchment border rounded-none p-5 sm:p-7 shadow-[0_4px_24px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500 ${
-              s1CardRevealed ? 'border-[#141413] ring-1 ring-[#141413]/10' : 'border-[#E0DED4]'
+            <div className={`flex-1 bg-gradient-to-br from-[#FFFFFF] via-[#FAF9F6] to-[#F5F4EE] bg-grid-parchment border rounded-none p-5 sm:p-7 shadow-[0_8px_32px_rgba(20,20,19,0.04),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500 ${
+              s1CardRevealed ? 'border-[#141413]' : 'border-[#E0DED4]'
             }`}>
-              <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-6 items-center relative min-h-[240px]">
+              {/* Specular hairline at top edge */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FFFFFF] to-transparent pointer-events-none z-10" />
+
+              <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-6 items-center relative min-h-[250px]">
                 {/* Left: 3D Minimal Laptop Mockup with Floating URL Input Box */}
                 <div className="relative flex flex-col items-center justify-center py-2 w-full">
-                  <div className="relative w-full max-w-[340px] flex items-center justify-center">
-                    {/* Minimalist olive speed bursts */}
-                    <div className="absolute -top-3 right-8 sm:right-12 flex items-end gap-1.5 pointer-events-none select-none z-20">
-                      <span className="w-[2px] h-3 bg-[#4A6B3E] transform -rotate-[30deg] origin-bottom rounded-none" />
-                      <span className="w-[2px] h-4 bg-[#4A6B3E] transform -translate-y-0.5 rounded-none" />
-                      <span className="w-[2px] h-3 bg-[#4A6B3E] transform rotate-[30deg] origin-bottom rounded-none" />
+                  <div className="relative w-full max-w-[420px] flex items-center justify-center">
+                    {/* Minimalist obsidian speed bursts */}
+                    <div className="absolute -top-3 right-6 sm:right-10 flex items-end gap-1.5 pointer-events-none select-none z-20">
+                      <span className="w-[2px] h-3.5 bg-[#141413] transform -rotate-[30deg] origin-bottom rounded-none" />
+                      <span className="w-[2px] h-4.5 bg-[#141413] transform -translate-y-0.5 rounded-none" />
+                      <span className="w-[2px] h-3.5 bg-[#141413] transform rotate-[30deg] origin-bottom rounded-none" />
                     </div>
 
                     <img
                       src="/Monochrome Laptop UI Render.png"
                       alt="Job Posting Input"
-                      className="w-full h-auto max-h-[210px] object-contain drop-shadow-[0_8px_20px_rgba(20,20,19,0.07)] mix-blend-multiply select-none pointer-events-none"
+                      className="w-full h-auto max-h-[250px] scale-110 sm:scale-115 object-contain drop-shadow-[0_12px_28px_rgba(20,20,19,0.08)] mix-blend-multiply select-none pointer-events-none transition-transform duration-500"
                     />
 
                     {/* Floating URL Pill Box with paste & typing animation */}
                     <div
-                      className={`absolute top-[46%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[94%] max-w-[330px] bg-[#FFFFFF] border-2 rounded-none p-1.5 shadow-[0_8px_24px_rgba(20,20,19,0.14)] z-10 flex items-center gap-2 transition-all duration-500 ${
+                      className={`absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-[320px] bg-[#FFFFFF] border-2 rounded-none p-1.5 shadow-[0_8px_24px_rgba(20,20,19,0.14)] z-20 flex items-center gap-2 transition-all duration-500 ${
                         s1BoxEntered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                       } ${
-                        s1SearchClicked ? 'border-[#16A34A] ring-2 ring-[#16A34A]/25' : 'border-[#141413]'
+                        s1SearchClicked ? 'border-[#141413] ring-1 ring-[#141413]/20' : 'border-[#141413]'
                       }`}
                     >
-                      <LinkIcon size={13} className={`flex-shrink-0 ml-1 transition-colors ${
-                        s1SearchClicked ? 'text-[#16A34A]' : 'text-[#4A6B3E]'
-                      }`} />
+                      <LinkIcon size={13} className="flex-shrink-0 ml-1 text-[#141413]" />
                       <div className="text-[10px] sm:text-[10.5px] font-mono text-[#141413] truncate font-semibold flex-1 flex items-center">
                         <span>{typedUrl || <span className="text-[#99968E] font-normal italic">Paste job URL...</span>}</span>
                         {step1InView && !s1SearchClicked && (
-                          <span className="w-[2px] h-3.5 bg-[#16A34A] ml-0.5 animate-pulse inline-block" />
+                          <span className="w-[2px] h-3.5 bg-[#141413] ml-0.5 animate-pulse inline-block" />
                         )}
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setTypedUrl(FULL_URL);
-                          setS1SearchClicked(true);
-                          setS1ArrowVisible(true);
-                          setS1CardRevealed(true);
-                        }}
-                        className={`w-6 h-6 flex items-center justify-center rounded-none flex-shrink-0 transition-all cursor-pointer ${
-                          s1SearchClicked
-                            ? 'bg-[#16A34A] text-white scale-110 shadow-sm'
-                            : 'bg-[#141413] text-white hover:bg-[#262523]'
-                        }`}
-                        title="Click to search"
-                      >
-                        <Search size={11} />
-                      </button>
-                    </div>
+                      
+                      {/* Search Button & Directly Anchored Arrow */}
+                      <div className="relative flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setTypedUrl(FULL_URL);
+                            setS1SearchClicked(true);
+                            setS1ArrowVisible(true);
+                            setS1CardRevealed(true);
+                          }}
+                          className={`w-6 h-6 flex items-center justify-center rounded-none transition-all cursor-pointer ${
+                            s1SearchClicked
+                              ? 'bg-[#141413] text-[#FAF9F5] scale-105 shadow-sm'
+                              : 'bg-[#141413] text-[#FAF9F5] hover:bg-[#262523]'
+                          }`}
+                          title="Click to search"
+                        >
+                          <Search size={11} />
+                        </button>
 
-                    {/* Dotted Arrow emerging from Search Button towards Apply Now */}
-                    {s1ArrowVisible && (
-                      <svg
-                        className="hidden lg:block absolute -right-16 top-[46%] w-32 h-24 pointer-events-none z-20 overflow-visible text-[#16A34A]"
-                        viewBox="0 0 128 96"
-                        fill="none"
-                      >
-                        <defs>
-                          <marker
-                            id="s1-arrowhead"
-                            markerWidth="7"
-                            markerHeight="7"
-                            refX="5"
-                            refY="3.5"
-                            orient="auto"
+                        {/* Dotted Arrow emerging directly from Search Button center towards Apply Now */}
+                        {s1ArrowVisible && (
+                          <svg
+                            className="hidden lg:block absolute left-[calc(100%+2px)] top-[12px] w-[180px] h-[130px] pointer-events-none z-30 overflow-visible text-[#141413]"
+                            viewBox="0 0 180 130"
+                            fill="none"
                           >
-                            <polygon points="0,1 6,3.5 0,6" fill="#16A34A" />
-                          </marker>
-                        </defs>
-                        <path
-                          d="M 4 8 C 24 8, 32 76, 122 76"
-                          stroke="currentColor"
-                          strokeWidth="1.75"
-                          strokeDasharray="4 4"
-                          className="animate-flow-dash"
-                          markerEnd="url(#s1-arrowhead)"
-                        />
-                      </svg>
-                    )}
+                            <defs>
+                              <marker
+                                id="s1-arrowhead-black"
+                                markerWidth="6"
+                                markerHeight="6"
+                                refX="4"
+                                refY="3"
+                                orient="auto"
+                              >
+                                <polygon points="0,0.5 5,3 0,5.5" fill="#141413" />
+                              </marker>
+                            </defs>
+                            <path
+                              d="M 2 0 C 45 0, 72 74, 142 78"
+                              stroke="#141413"
+                              strokeWidth="1.75"
+                              strokeDasharray="4 4"
+                              className="animate-flow-dash"
+                              markerEnd="url(#s1-arrowhead-black)"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -492,7 +491,7 @@ export default function WorkflowSection() {
 
           {/* ══════════════════════════════════════════════════════════════
               STEP 02: EXTRACT SIGNALS
-              (Apply Now clicks -> Node dot on right boundary -> 6 lines fan out one by one -> 6 pills reveal one by one)
+              (Apply Now clicks -> Node dot in middle of right boundary -> 1 trunk to junction -> 6 branching lines -> 6 pills reveal)
           ══════════════════════════════════════════════════════════════ */}
           <div
             id="step-02"
@@ -504,7 +503,7 @@ export default function WorkflowSection() {
             {/* Timeline node dot (md+) */}
             <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                s2RevealedCount >= 6 ? 'bg-[#16A34A] scale-125' : 'bg-[#141413]'
+                s2RevealedCount >= 6 ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
             </div>
 
@@ -526,13 +525,13 @@ export default function WorkflowSection() {
               </p>
             </div>
 
-            {/* Step Right Visual Card: Seamless Connector from Card Boundary Dot to 6 Feature Pills */}
+            {/* Step Right Visual Card: 1-to-6 Junction Network Architecture */}
             <div className={`flex-1 bg-[#FAF9F6] bg-grid-parchment border rounded-none p-5 sm:p-7 shadow-[0_4px_24px_rgba(20,20,19,0.03),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-500 ${
               s2RevealedCount >= 6 ? 'border-[#141413] ring-1 ring-[#141413]/10' : 'border-[#E0DED4]'
             }`}>
               <div className="flex flex-col lg:flex-row items-center relative">
 
-                {/* Left: Product Designer Card with prominent node dot on right boundary */}
+                {/* Left: Product Designer Card with prominent node dot in the exact vertical middle */}
                 <div className="w-full lg:w-[280px] flex-shrink-0 relative">
                   <JobPostingCard
                     isApplyActive={s2ApplyClicked}
@@ -543,39 +542,57 @@ export default function WorkflowSection() {
                     }}
                   />
 
-                  {/* PROMINENT NODE DOT ON THE RIGHT BOUNDARY TOUCHING THE CARD */}
-                  <div className={`hidden lg:flex absolute -right-2 top-[132px] -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white items-center justify-center z-30 shadow transition-all duration-300 ${
-                    s2DotActive ? 'bg-[#16A34A] scale-125' : 'bg-[#141413]'
+                  {/* PROMINENT NODE DOT ON THE RIGHT BOUNDARY IN EXACT VERTICAL MIDDLE */}
+                  <div className={`hidden lg:flex absolute -right-[7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white items-center justify-center z-30 shadow transition-all duration-300 ${
+                    s2DotActive ? 'bg-[#141413] ring-2 ring-[#141413]/25 scale-110' : 'bg-[#141413]'
                   }`}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                    <span className="w-1 h-1 rounded-full bg-[#FAF9F5]" />
                   </div>
                 </div>
 
-                {/* Center: 6 Straight Dotted Lines arising directly from the boundary dot with ZERO gap */}
-                <div className="hidden lg:block w-[80px] h-[270px] relative flex-shrink-0 -mx-[1px]">
-                  <svg className="w-full h-full overflow-visible" viewBox="0 0 80 270" fill="none">
-                    {[18, 66, 114, 162, 210, 258].map((yTarget, i) => {
+                {/* Center: 1-to-6 Junction SVG Network (Hero Pattern) */}
+                <div className="hidden lg:block w-[96px] h-[276px] relative flex-shrink-0 -mx-[1px]">
+                  <svg className="w-full h-full overflow-visible" viewBox="0 0 96 276" fill="none">
+                    {/* Step 1: Single Horizontal Trunk from Card Middle Dot (x=0, y=138) to Junction (x=40, y=138) */}
+                    {s2DotActive && (
+                      <>
+                        <line
+                          x1="0"
+                          y1="138"
+                          x2="40"
+                          y2="138"
+                          stroke="#141413"
+                          strokeWidth="1.5"
+                          strokeDasharray="3 3"
+                          className="animate-flow-dash"
+                        />
+                        {/* Central Junction Node Dot */}
+                        <circle cx="40" cy="138" r="3.5" fill="#141413" />
+                        <circle cx="40" cy="138" r="1.5" fill="#FAF9F5" />
+                      </>
+                    )}
+
+                    {/* Step 2: 6 S-Curved Branch Lines departing from Junction Node into each Pill */}
+                    {[19, 65, 111, 165, 211, 257].map((yTarget, i) => {
                       const isLineActive = s2RevealedCount > i;
                       return (
                         <g key={i}>
                           {isLineActive && (
                             <>
-                              <line
-                                x1="0"
-                                y1="132"
-                                x2="80"
-                                y2={yTarget}
-                                stroke="#16A34A"
+                              <path
+                                d={`M 40 138 C 62 138, 74 ${yTarget}, 96 ${yTarget}`}
+                                stroke="#141413"
                                 strokeWidth="1.5"
-                                strokeDasharray="4 4"
+                                strokeDasharray="3 3"
                                 className="animate-flow-dash"
+                                fill="none"
                               />
                               {/* Docking dot touching the left edge of each pill */}
                               <circle
-                                cx="80"
+                                cx="96"
                                 cy={yTarget}
-                                r="3"
-                                fill="#16A34A"
+                                r="2.5"
+                                fill="#141413"
                                 className="transition-all duration-300"
                               />
                             </>
@@ -586,7 +603,7 @@ export default function WorkflowSection() {
                   </svg>
                 </div>
 
-                {/* Right: 6 Feature Pills that appear one by one as each dotted line arrives */}
+                {/* Right: 6 Feature Pills that appear one by one as each dotted branch arrives */}
                 <div className="w-full lg:flex-1 space-y-2 relative">
                   {[
                     { icon: <FileText size={13} className="text-[#141413]" />, title: 'Job content' },
@@ -616,8 +633,8 @@ export default function WorkflowSection() {
                           </span>
                         </div>
                         {isRevealed && (
-                          <span className="text-[9.5px] font-mono text-[#16A34A] font-semibold uppercase animate-pulse">
-                            Captured
+                          <span className="text-[9px] font-mono text-[#55524B] bg-[#F5F4EE] border border-[#E0DED4] px-1.5 py-0.5 font-semibold uppercase tracking-wider">
+                            Extracted
                           </span>
                         )}
                       </div>
@@ -644,7 +661,7 @@ export default function WorkflowSection() {
             {/* Timeline node dot (md+) */}
             <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                s3SatellitesActive ? 'bg-[#16A34A] scale-125' : 'bg-[#141413]'
+                s3SatellitesActive ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
             </div>
 
@@ -701,7 +718,7 @@ export default function WorkflowSection() {
                         </div>
                         {/* Right connection dot */}
                         <span className={`w-2 h-2 rounded-full transition-colors ${
-                          s3Converged ? 'bg-[#16A34A]' : 'bg-[#141413]'
+                          s3Converged ? 'bg-[#141413]' : 'bg-[#141413]'
                         }`} />
                       </div>
                     );
@@ -719,18 +736,18 @@ export default function WorkflowSection() {
                           y1={yOrigin}
                           x2="55"
                           y2="140"
-                          stroke="#16A34A"
+                          stroke="#141413"
                           strokeWidth="1.5"
                           strokeDasharray="4 4"
                           className="animate-flow-dash"
                         />
-                        <circle cx="0" cy={yOrigin} r="2.5" fill="#16A34A" />
+                        <circle cx="0" cy={yOrigin} r="2.5" fill="#141413" />
                       </g>
                     ))}
 
                     {/* Central junction point dot */}
                     {s3Converged && (
-                      <circle cx="55" cy="140" r="4" fill="#16A34A" className="animate-pulse" />
+                      <circle cx="55" cy="140" r="4" fill="#141413" className="animate-pulse" />
                     )}
 
                     {/* Horizontal dotted line into the circular ring at x=95 (180 - 85) */}
@@ -740,7 +757,7 @@ export default function WorkflowSection() {
                         y1="140"
                         x2="95"
                         y2="140"
-                        stroke="#16A34A"
+                        stroke="#141413"
                         strokeWidth="1.5"
                         strokeDasharray="4 4"
                         className="animate-flow-dash"
@@ -753,7 +770,7 @@ export default function WorkflowSection() {
                         cx="180"
                         cy="140"
                         r="85"
-                        stroke="#16A34A"
+                        stroke="#141413"
                         strokeWidth="1.75"
                         strokeDasharray="4 4"
                         className="animate-flow-dash transition-all duration-500"
@@ -786,12 +803,12 @@ export default function WorkflowSection() {
                           y1="225"
                           x2="180"
                           y2="300"
-                          stroke="#16A34A"
+                          stroke="#141413"
                           strokeWidth="2"
                           strokeDasharray="4 4"
                           className="animate-flow-dash"
                         />
-                        <circle cx="180" cy="225" r="3" fill="#16A34A" />
+                        <circle cx="180" cy="225" r="3" fill="#141413" />
                       </>
                     )}
                   </svg>
@@ -870,7 +887,7 @@ export default function WorkflowSection() {
                   <div className="grid grid-cols-4 gap-3.5 w-full relative">
                     <div className="col-start-3 flex justify-center h-4">
                       <div className={`w-[2px] h-full border-l-2 border-dashed transition-colors duration-300 ${
-                        s4FeederActive ? 'border-[#16A34A]' : 'border-[#141413]'
+                        s4FeederActive ? 'border-[#141413]' : 'border-[#141413]'
                       }`} />
                     </div>
                   </div>
@@ -880,7 +897,7 @@ export default function WorkflowSection() {
                     <div className="grid grid-cols-4 gap-3.5 w-full h-full">
                       <div className="col-span-4 relative flex items-center">
                         <div className={`w-[75%] mx-auto border-t-2 border-dashed transition-colors duration-300 ${
-                          s4FeederActive ? 'border-[#16A34A]' : 'border-[#141413]'
+                          s4FeederActive ? 'border-[#141413]' : 'border-[#141413]'
                         }`} />
                       </div>
                     </div>
@@ -893,13 +910,13 @@ export default function WorkflowSection() {
                       return (
                         <div key={colIdx} className="flex flex-col items-center">
                           <div className={`w-2 h-2 rounded-full mb-0.5 transition-colors duration-300 ${
-                            isActive ? 'bg-[#16A34A]' : 'bg-[#141413]'
+                            isActive ? 'bg-[#141413]' : 'bg-[#141413]'
                           }`} />
                           <div className={`w-[2px] h-5 border-l-2 border-dashed transition-colors duration-300 ${
-                            isActive ? 'border-[#16A34A]' : 'border-[#141413]'
+                            isActive ? 'border-[#141413]' : 'border-[#141413]'
                           }`} />
                           <div className={`w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[5px] transition-colors duration-300 ${
-                            isActive ? 'border-t-[#16A34A]' : 'border-t-[#141413]'
+                            isActive ? 'border-t-[#141413]' : 'border-t-[#141413]'
                           }`} />
                         </div>
                       );
@@ -925,7 +942,7 @@ export default function WorkflowSection() {
             {/* Timeline node dot (md+) */}
             <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                s4CardsCount >= 4 ? 'bg-[#16A34A] scale-125' : 'bg-[#141413]'
+                s4CardsCount >= 4 ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
             </div>
 
@@ -955,7 +972,7 @@ export default function WorkflowSection() {
 
                 {/* Card 1: Domain consistency */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
-                  s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#16A34A] ring-1 ring-[#16A34A]/25' : 'opacity-20 translate-y-2 border-[#E0DED4]'
+                  s4CardsCount >= 1 ? 'opacity-100 translate-y-0 border-[#141413] ring-1 ring-[#141413]/15' : 'opacity-20 translate-y-2 border-[#E0DED4]'
                 }`}>
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -965,7 +982,7 @@ export default function WorkflowSection() {
                         </div>
                         <span className="w-[1px] h-3.5 bg-[#E0DED4]" />
                       </div>
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-none bg-emerald-50 border border-emerald-200 text-emerald-700">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-none bg-[#F5F4EE] border border-[#E0DED4] text-[#141413]">
                         <Check size={12} strokeWidth={2.5} />
                       </span>
                     </div>
@@ -977,7 +994,7 @@ export default function WorkflowSection() {
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-[#F0EEE6]">
-                    <span className="text-[9.5px] font-mono text-emerald-700 font-semibold uppercase">
+                    <span className="text-[9.5px] font-mono text-[#55524B] font-semibold uppercase">
                       Check complete
                     </span>
                   </div>
@@ -1015,7 +1032,7 @@ export default function WorkflowSection() {
 
                 {/* Card 3: Web corroboration */}
                 <div className={`bg-[#FFFFFF] border rounded-none p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-500 relative ${
-                  s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#16A34A] ring-1 ring-[#16A34A]/25' : 'opacity-20 translate-y-2 border-[#E0DED4]'
+                  s4CardsCount >= 3 ? 'opacity-100 translate-y-0 border-[#141413] ring-1 ring-[#141413]/15' : 'opacity-20 translate-y-2 border-[#E0DED4]'
                 }`}>
                   <div>
                     <div className="flex items-center justify-between mb-2.5">
@@ -1025,7 +1042,7 @@ export default function WorkflowSection() {
                         </div>
                         <span className="w-[1px] h-3.5 bg-[#E0DED4]" />
                       </div>
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-none bg-emerald-50 border border-emerald-200 text-emerald-700">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-none bg-[#F5F4EE] border border-[#E0DED4] text-[#141413]">
                         <Check size={12} strokeWidth={2.5} />
                       </span>
                     </div>
@@ -1037,7 +1054,7 @@ export default function WorkflowSection() {
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-[#F0EEE6]">
-                    <span className="text-[9.5px] font-mono text-emerald-700 font-semibold uppercase">
+                    <span className="text-[9.5px] font-mono text-[#55524B] font-semibold uppercase">
                       Check complete
                     </span>
                   </div>
