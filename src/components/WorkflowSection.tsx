@@ -309,18 +309,12 @@ export default function WorkflowSection() {
 
       <div className="max-w-[1140px] mx-auto">
 
-        {/* ── SECTION HEADER (CLEAN & EDITORIAL, PLAY CONTROLS REMOVED) ── */}
-        <div className="mb-12 sm:mb-16">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-none bg-[#262523] text-[#FAF9F5] font-mono text-[11px] font-bold tracking-widest uppercase shadow-sm">
-              04
-            </div>
-            <span className="text-[#D0CDC2] font-mono text-[16px]">|</span>
-            <h2 className="text-[30px] sm:text-[38px] md:text-[42px] font-serif font-normal text-[#141413] tracking-tight leading-[1.1]">
-              How It Works
-            </h2>
-          </div>
-          <p className="text-[14.5px] sm:text-[15.5px] text-[#625F58] font-normal max-w-xl pl-0 sm:pl-1">
+        {/* ── SECTION HEADER (CENTERED, CLEAN & EDITORIAL) ── */}
+        <div className="text-center max-w-xl mx-auto mb-12 sm:mb-16">
+          <h2 className="text-[32px] sm:text-[40px] md:text-[44px] font-serif font-normal text-[#141413] tracking-tight leading-[1.1] mb-2.5">
+            How It Works
+          </h2>
+          <p className="text-[12.5px] sm:text-[13.5px] text-[#625F58] font-normal leading-relaxed max-w-md mx-auto">
             From job posting to informed decision through connected, explainable AI verification.
           </p>
         </div>
