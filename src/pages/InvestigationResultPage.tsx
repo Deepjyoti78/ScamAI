@@ -306,7 +306,7 @@ export default function InvestigationResultPage() {
                     Extracted from URL
                     {inv.extractionStatus === 'success' && (
                       <span className="text-[#2e7d32] font-sans font-medium text-[10px] ml-1">
-                        ✓ Verified fetch
+                        Text retrieved
                       </span>
                     )}
                     {inv.extractionStatus === 'failed' && (
@@ -389,7 +389,7 @@ export default function InvestigationResultPage() {
               </div>
             )}
 
-            {/* ── Visual Navigation Tab Bar ── */}
+            {/* ── Visual Navigation Tab Bar (Clean, Minimal, Zero Clunky Scrollbar) ── */}
             <div className="flex items-center gap-1 overflow-x-auto pb-1 mb-6 border-b border-[#E0DED4] no-scrollbar">
               <button
                 onClick={() => setActiveTab('overview')}
@@ -479,10 +479,10 @@ export default function InvestigationResultPage() {
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-[11px] uppercase tracking-widest text-[#77746C] font-semibold flex items-center gap-1.5">
                       <Sparkles size={13} className="text-[#141413]" />
-                      Model Fraud Risk Gauge
+                      ML model score
                     </p>
                     <span className="text-[11px] text-[#77746C] font-mono">
-                      Thresholds: 30% Advisory · 60% Severe
+                      Initial bands: 30% / 60%; rules may raise tier
                     </span>
                   </div>
                   <RiskGauge
@@ -499,10 +499,10 @@ export default function InvestigationResultPage() {
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-[11px] uppercase tracking-widest text-[#77746C] font-semibold flex items-center gap-1.5">
                       <ShieldCheck size={13} className="text-[#141413]" />
-                      4-Pillar Security Health Matrix
+                      Model and rule observations
                     </p>
                     <span className="text-[11px] text-[#77746C]">
-                      Deterministic &amp; Probabilistic Cross-Check
+                      Classifier, rules and external status
                     </span>
                   </div>
                   <SecurityPillars
@@ -541,7 +541,7 @@ export default function InvestigationResultPage() {
                   {signalsCount > 0 && (
                     <div className="mt-4 pt-3 border-t border-[#E0DED4] flex items-center justify-between">
                       <span className="text-[11px] text-[#77746C]">
-                        {flaggedSignals.length} risk words · {cleanSignals.length} legitimate words
+                        {flaggedSignals.length} class-1 terms · {cleanSignals.length} class-0 terms
                       </span>
                       <button
                         onClick={() => setActiveTab('chart')}

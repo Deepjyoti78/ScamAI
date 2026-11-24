@@ -41,16 +41,78 @@ body {
   background-color: #FAF9F5;
 }
 
-/* Scrollbar */
+/* ==========================================================================
+   Ultra-Sleek Minimal Scrollbar System (Cross-Browser & High DPI)
+   ========================================================================== */
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #FAF9F5;
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #E0DED4;
-  border-radius: 3px;
+  background: #D0CDC2;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #99968E;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Completely hidden scrollbar utility (preserves native swipe/scroll gestures) */
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Specific utility for ultra-thin, hairline scrollable tracks */
+.thin-scrollbar,
+.minimal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #D0CDC2 transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar,
+.minimal-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track,
+.minimal-scrollbar::-webkit-scrollbar-track {
+  background: rgba(20, 20, 19, 0.03);
+  border-radius: 9999px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb,
+.minimal-scrollbar::-webkit-scrollbar-thumb {
+  background: #D0CDC2;
+  border-radius: 9999px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover,
+.minimal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #141413;
 }
 
 /* ==========================================================================
