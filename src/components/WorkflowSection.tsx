@@ -164,8 +164,8 @@ export default function WorkflowSection() {
   const [step1Ref, step1InView] = useStepInView(0.12, '0px 0px -80px 0px');
   const [step2Ref, step2InView] = useStepInView(0.12, '0px 0px -80px 0px');
   const [step3Ref, step3InView] = useStepInView(0.12, '0px 0px -80px 0px');
-  const [step4Ref, step4InView] = useStepInView(0.08, '0px 0px 80px 0px');
-  const [step5Ref, step5InView] = useStepInView(0.05, '0px 0px 180px 0px');
+  const [step4Ref, step4InView] = useStepInView(0.2, '0px 0px -100px 0px');
+  const [step5Ref, step5InView] = useStepInView(0.2, '0px 0px -100px 0px');
 
   /* ── TYPEWRITER ANIMATIONS FOR STEP 01 & 02 META HEADINGS ── */
   const s1Title = useTypewriter('Submit a job posting', step1InView, 32, 100);
@@ -325,6 +325,7 @@ export default function WorkflowSection() {
   const [s3BrainActive, setS3BrainActive] = useState(false);
   const [s3SatellitesStep, setS3SatellitesStep] = useState(0);
   const [s3BottomDotActive, setS3BottomDotActive] = useState(false);
+  const [s3Completed, setS3Completed] = useState(false);
 
   useEffect(() => {
     if (!step3InView) return;
@@ -336,59 +337,57 @@ export default function WorkflowSection() {
       timers.push(
         setTimeout(() => {
           setS3PillsCount(i);
-        }, 120 + i * 130)
+        }, 80 + i * 95)
       );
     }
 
-    // 2. After all cards appear: dotted lines from each card animate out toward central junction (76, 139)
-    timers.push(setTimeout(() => setS3LinesActive(true), 1050));
+    // 2. Dotted lines from each card animate out toward central junction (76, 139)
+    timers.push(setTimeout(() => setS3LinesActive(true), 750));
 
     // 3. Lines meet at common junction point (76, 139) -> junction dot illuminates
-    timers.push(setTimeout(() => setS3JunctionActive(true), 1800));
+    timers.push(setTimeout(() => setS3JunctionActive(true), 1400));
 
     // 4. Line extends from junction point to circular orbit edge (133.4, 139)
-    timers.push(setTimeout(() => setS3LineToCircleActive(true), 2050));
+    timers.push(setTimeout(() => setS3LineToCircleActive(true), 1620));
 
     // 5. Circular orbit ring forms 360 degrees around ScamShield brain
-    timers.push(setTimeout(() => setS3RingActive(true), 2350));
+    timers.push(setTimeout(() => setS3RingActive(true), 1900));
 
-    // 6. From that circle, ScamShield brain illustration and title emerge slowly
-    timers.push(setTimeout(() => setS3BrainActive(true), 3200));
+    // 6. ScamShield brain illustration and title emerge slowly
+    timers.push(setTimeout(() => setS3BrainActive(true), 2550));
 
     // 7. After the brain emerges properly: 4 satellite badges & connectors appear one by one
-    timers.push(setTimeout(() => setS3SatellitesStep(1), 4450)); // 1. Pattern scoring
-    timers.push(setTimeout(() => setS3SatellitesStep(2), 4850)); // 2. Text analysis
-    timers.push(setTimeout(() => setS3SatellitesStep(3), 5250)); // 3. Feature explanation
-    timers.push(setTimeout(() => setS3SatellitesStep(4), 5650)); // 4. Risk synthesis
+    timers.push(setTimeout(() => setS3SatellitesStep(1), 3450)); // 1. Pattern scoring
+    timers.push(setTimeout(() => setS3SatellitesStep(2), 3800)); // 2. Text analysis
+    timers.push(setTimeout(() => setS3SatellitesStep(3), 4150)); // 3. Feature explanation
+    timers.push(setTimeout(() => setS3SatellitesStep(4), 4500)); // 4. Risk synthesis
 
     // 8. Bottom docking dot at (225.4, 231) activates, ready to stream down
-    timers.push(setTimeout(() => setS3BottomDotActive(true), 6050));
+    timers.push(
+      setTimeout(() => {
+        setS3BottomDotActive(true);
+        setS3Completed(true);
+      }, 4850)
+    );
 
     return () => {
       timers.forEach(clearTimeout);
     };
   }, [step3InView]);
 
-  /* ── STEP 04 & 05 CHOREOGRAPHED ANIMATION PIPELINE ── */
+  /* ── STEP 04 CHOREOGRAPHED ANIMATION PIPELINE ── */
   const [s4FeederActive, setS4FeederActive] = useState(false);
   const [s4JunctionActive, setS4JunctionActive] = useState(false);
   const [s4BusActive, setS4BusActive] = useState(false);
   const [s4CardsCount, setS4CardsCount] = useState(0);
-
-  const [s5ExitLinesActive, setS5ExitLinesActive] = useState(false);
-  const [s5GatherBusActive, setS5GatherBusActive] = useState(false);
-  const [s5ConvergenceDotActive, setS5ConvergenceDotActive] = useState(false);
-  const [s5TrunkActive, setS5TrunkActive] = useState(false);
-  const [s5CardRevealed, setS5CardRevealed] = useState(false);
-  const [s5Score, setS5Score] = useState(0);
-
-  const isStep5Visible = step4InView || step5InView;
+  const [s4Completed, setS4Completed] = useState(false);
 
   useEffect(() => {
-    if (!step4InView && !step5InView) return;
+    // Section 04 starts ONLY after Section 03 completes (or if Section 03 was not triggered)
+    if (!s3Completed && step3InView) return;
+    if (!step4InView && !s3Completed) return;
 
     const timers: any[] = [];
-    let scoreInterval: any = null;
 
     // 1. Feeder line streams down from Section 03 circle to junction point (y=52, 62.73%)
     timers.push(setTimeout(() => setS4FeederActive(true), 120));
@@ -397,32 +396,66 @@ export default function WorkflowSection() {
     timers.push(setTimeout(() => setS4JunctionActive(true), 550));
 
     // 3. Feeder line divides into 4 parts (horizontal distribution bus branches out & 4 drop lines stream down)
-    timers.push(setTimeout(() => setS4BusActive(true), 700));
+    timers.push(setTimeout(() => setS4BusActive(true), 750));
 
     // 4. From that four-part division, all 4 evidence cards reveal sequentially
-    timers.push(setTimeout(() => setS4CardsCount(1), 900));
-    timers.push(setTimeout(() => setS4CardsCount(2), 1150));
-    timers.push(setTimeout(() => setS4CardsCount(3), 1400));
-    timers.push(setTimeout(() => setS4CardsCount(4), 1650));
+    timers.push(setTimeout(() => setS4CardsCount(1), 950));
+    timers.push(setTimeout(() => setS4CardsCount(2), 1180));
+    timers.push(setTimeout(() => setS4CardsCount(3), 1410));
+    timers.push(
+      setTimeout(() => {
+        setS4CardsCount(4);
+        setS4Completed(true);
+      }, 1640)
+    );
 
-    // 5. AFTER completing Section 4: all 4 cards from bottom animate lines getting out (y=0 down to y=64)
-    timers.push(setTimeout(() => setS5ExitLinesActive(true), 2100));
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [s3Completed, step3InView, step4InView]);
 
-    // 6. Exit lines gather together along the horizontal bus toward central convergence junction (50%, 64)
-    timers.push(setTimeout(() => setS5GatherBusActive(true), 2550));
+  /* ── STEP 05 INDEPENDENT SCROLL-TRIGGERED ANIMATION PIPELINE ── */
+  const [s5ExitLinesActive, setS5ExitLinesActive] = useState(false);
+  const [s5GatherBusActive, setS5GatherBusActive] = useState(false);
+  const [s5ConvergenceDotActive, setS5ConvergenceDotActive] = useState(false);
+  const [s5TrunkActive, setS5TrunkActive] = useState(false);
+  const [s5CardRevealed, setS5CardRevealed] = useState(false);
+  const [s5Score, setS5Score] = useState(0);
 
-    // 7. Convergence junction dot appears and pulses
-    timers.push(setTimeout(() => setS5ConvergenceDotActive(true), 2850));
+  useEffect(() => {
+    // Step 05 triggers ONLY when user actually scrolls into Step 05!
+    if (!step5InView) return;
 
-    // 8. From convergence junction point, single vertical trunk dotted line generates downward (y=64 to y=120)
-    timers.push(setTimeout(() => setS5TrunkActive(true), 3050));
+    // Ensure Step 04 cards are visible if user scrolled quickly into Step 05
+    if (!s4Completed) {
+      setS4CardsCount(4);
+      setS4FeederActive(true);
+      setS4JunctionActive(true);
+      setS4BusActive(true);
+      setS4Completed(true);
+    }
 
-    // 9. Dotted trunk generates the High Risk verdict card in Step 05
+    const timers: any[] = [];
+    let scoreInterval: any = null;
+
+    // 1. All 4 cards from bottom animate exit lines getting out (y=0 down to y=64)
+    timers.push(setTimeout(() => setS5ExitLinesActive(true), 150));
+
+    // 2. Exit lines gather together along the horizontal bus toward central convergence junction (50%, 64)
+    timers.push(setTimeout(() => setS5GatherBusActive(true), 550));
+
+    // 3. Convergence junction dot appears and pulses
+    timers.push(setTimeout(() => setS5ConvergenceDotActive(true), 850));
+
+    // 4. From convergence junction point, single vertical trunk dotted line generates downward (y=64 to y=120)
+    timers.push(setTimeout(() => setS5TrunkActive(true), 1050));
+
+    // 5. Dotted trunk generates the High Risk verdict card in Step 05
     timers.push(
       setTimeout(() => {
         setS5CardRevealed(true);
 
-        // 10. Model score counts up smoothly to 94
+        // 6. Model score counts up smoothly to 94
         let curScore = 0;
         scoreInterval = setInterval(() => {
           curScore += 3;
@@ -431,15 +464,15 @@ export default function WorkflowSection() {
             clearInterval(scoreInterval);
           }
           setS5Score(curScore);
-        }, 25);
-      }, 3400)
+        }, 22);
+      }, 1350)
     );
 
     return () => {
       timers.forEach(clearTimeout);
       if (scoreInterval) clearInterval(scoreInterval);
     };
-  }, [step4InView, step5InView]);
+  }, [step5InView, s4Completed]);
 
   return (
     <section
@@ -1314,7 +1347,7 @@ export default function WorkflowSection() {
             id="step-04"
             ref={step4Ref}
             className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 mt-10 sm:mt-12 md:mt-14 transition-all duration-700 ease-out ${
-              step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
+              step4InView || s4FeederActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
             {/* ══════════════════════════════════════════════════════════════
@@ -1322,7 +1355,7 @@ export default function WorkflowSection() {
                 (Seamlessly bridges Step 03 bottom into the 4 evidence cards)
             ══════════════════════════════════════════════════════════════ */}
             <div className={`hidden lg:block absolute -top-[120px] left-0 right-0 h-[120px] pointer-events-none z-20 transition-all duration-700 ease-out ${
-              step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+              s4FeederActive || step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}>
               <div className="flex items-stretch gap-6 md:gap-10 h-full">
                 {/* Spacer matching left meta column */}
@@ -1589,7 +1622,7 @@ export default function WorkflowSection() {
             id="step-05"
             ref={step5Ref}
             className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 mt-10 sm:mt-12 md:mt-14 transition-all duration-700 ease-out ${
-              isStep5Visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
             }`}
           >
             {/* ══════════════════════════════════════════════════════════════
@@ -1597,7 +1630,7 @@ export default function WorkflowSection() {
                 (All 4 cards drop lines down into gathering bus and join into Step 05)
             ══════════════════════════════════════════════════════════════ */}
             <div className={`hidden lg:block absolute -top-[120px] left-0 right-0 h-[120px] pointer-events-none z-20 transition-all duration-700 ease-out ${
-              isStep5Visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+              step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}>
               <div className="flex items-stretch gap-6 md:gap-10 h-full">
                 {/* Spacer matching left meta column */}
@@ -1679,8 +1712,12 @@ export default function WorkflowSection() {
               </div>
             </div>
             {/* Timeline node dot (md+) */}
-            <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#F4B2A8] bg-[#FEECE8] items-center justify-center z-10 flex-shrink-0">
-              <span className="w-2 h-2 rounded-full transition-colors bg-[#DC2626]" />
+            <div className={`hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border items-center justify-center z-10 flex-shrink-0 transition-all duration-300 ${
+              step5InView ? 'border-[#F4B2A8] bg-[#FEECE8]' : 'border-[#D0CDC2] bg-[#FAF9F5]'
+            }`}>
+              <span className={`w-2 h-2 rounded-full transition-colors ${
+                step5InView ? 'bg-[#DC2626]' : 'bg-[#99968E]'
+              }`} />
             </div>
 
             {/* Step Left Meta Column */}
