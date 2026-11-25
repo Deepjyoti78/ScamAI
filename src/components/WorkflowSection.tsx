@@ -596,7 +596,7 @@ export default function WorkflowSection() {
         </div>
 
         {/* ── TIMELINE VERTICAL STACK (STEPS 01 - 05) ── */}
-        <div className="relative flex flex-col gap-12 sm:gap-14 md:gap-16">
+        <div className="relative flex flex-col gap-16 sm:gap-20 md:gap-24 lg:gap-28">
 
           {/* Single Unified Left Spine Line (anchored strictly from Dot 01 to Dot 05, NO line below Dot 05) */}
           <div className="hidden md:block absolute left-[9.5px] top-[34px] pointer-events-none z-10">
@@ -894,7 +894,6 @@ export default function WorkflowSection() {
                           className="flow-dash-line"
                         />
                         {/* Central Junction Node Dot */}
-                        <circle cx="36" cy="138" r="5" fill="#141413" opacity="0.12" className="animate-ping" style={{ animationDuration: '2.5s' }} />
                         <circle cx="36" cy="138" r="2.5" fill="#141413" />
                         <circle cx="36" cy="138" r="1" fill="#FAF9F5" />
                       </>
@@ -1199,9 +1198,6 @@ export default function WorkflowSection() {
                       }`}
                       style={{ transformOrigin: '76px 139px' }}
                     >
-                      {s3JunctionActive && (
-                        <circle cx="76" cy="139" r="6" fill="#141413" opacity="0.14" className="animate-ping" style={{ animationDuration: '2.5s' }} />
-                      )}
                       <circle cx="76" cy="139" r="3.5" fill="#141413" />
                       <circle cx="76" cy="139" r="1.2" fill="#FAF9F5" />
                     </g>
@@ -1282,9 +1278,6 @@ export default function WorkflowSection() {
                       }`}
                       style={{ transformOrigin: '225.4px 231px' }}
                     >
-                      {s3BottomDotActive && (
-                        <circle cx="225.4" cy="231" r="5.5" fill="#141413" opacity="0.15" className="animate-ping" style={{ animationDuration: '2.5s' }} />
-                      )}
                       <circle cx="225.4" cy="231" r="2.5" fill="#141413" />
                       <circle cx="225.4" cy="231" r="1" fill="#FAF9F5" />
                     </g>
@@ -1408,7 +1401,7 @@ export default function WorkflowSection() {
           <div
             id="step-04"
             ref={step4Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 mt-10 sm:mt-12 md:mt-14 transition-all duration-700 ease-out ${
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 mt-12 sm:mt-14 md:mt-16 transition-all duration-700 ease-out ${
               step4InView || s4FeederActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
             }`}
           >
@@ -1416,7 +1409,7 @@ export default function WorkflowSection() {
                 INTER-SECTION PIPELINE CONNECTOR (SECTION 03 -> SECTION 04)
                 (Seamlessly bridges Step 03 bottom into the 4 evidence cards)
             ══════════════════════════════════════════════════════════════ */}
-            <div className={`hidden lg:block absolute -top-[120px] left-0 right-0 h-[120px] pointer-events-none z-20 transition-all duration-700 ease-out ${
+            <div className={`hidden lg:block absolute -top-[140px] left-0 right-0 h-[140px] pointer-events-none z-20 transition-all duration-700 ease-out ${
               s4FeederActive || step4InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}>
               <div className="flex items-stretch gap-6 md:gap-10 h-full">
@@ -1429,9 +1422,9 @@ export default function WorkflowSection() {
                     {s4FeederActive && (
                       <line
                         x1="62.73%"
-                        y1="-78"
+                        y1="-75"
                         x2="62.73%"
-                        y2="52"
+                        y2="60"
                         stroke="#A8A29E"
                         strokeWidth="1"
                         className="flow-dash-line"
@@ -1445,11 +1438,10 @@ export default function WorkflowSection() {
                     {s4JunctionActive && (
                       <g
                         className="transition-all duration-300 animate-subtle-pop"
-                        style={{ transformOrigin: '62.73% 52px' }}
+                        style={{ transformOrigin: '62.73% 60px' }}
                       >
-                        <circle cx="62.73%" cy="52" r="6" fill="#141413" opacity="0.14" className="animate-ping" style={{ animationDuration: '2.5s' }} />
-                        <circle cx="62.73%" cy="52" r="2.5" fill="#141413" />
-                        <circle cx="62.73%" cy="52" r="1" fill="#FAF9F5" />
+                        <circle cx="62.73%" cy="60" r="2.5" fill="#141413" />
+                        <circle cx="62.73%" cy="60" r="1" fill="#FAF9F5" />
                       </g>
                     )}
 
@@ -1457,15 +1449,15 @@ export default function WorkflowSection() {
                     {s4BusActive && (
                       <line
                         x1="11.82%"
-                        y1="52"
+                        y1="60"
                         x2="88.18%"
-                        y2="52"
+                        y2="60"
                         stroke="#A8A29E"
                         strokeWidth="1"
                         className="flow-dash-line"
                         style={{
                           animation: 'busExpand 0.4s ease-out forwards',
-                          transformOrigin: '62.73% 52px',
+                          transformOrigin: '62.73% 60px',
                         }}
                       />
                     )}
@@ -1482,9 +1474,9 @@ export default function WorkflowSection() {
                         <line
                           key={drop.colIdx}
                           x1={drop.x}
-                          y1="52"
+                          y1="60"
                           x2={drop.x}
-                          y2="120"
+                          y2="140"
                           stroke="#A8A29E"
                           strokeWidth="1"
                           className="flow-dash-line"
@@ -1688,7 +1680,7 @@ export default function WorkflowSection() {
           <div
             id="step-05"
             ref={step5Ref}
-            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 mt-10 sm:mt-12 md:mt-14 transition-all duration-700 ease-out ${
+            className={`relative flex flex-col md:flex-row items-stretch gap-6 md:gap-10 mt-12 sm:mt-14 md:mt-16 transition-all duration-700 ease-out ${
               step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
             }`}
           >
@@ -1696,7 +1688,7 @@ export default function WorkflowSection() {
                 INTER-SECTION GATHERING PIPELINE (SECTION 04 -> SECTION 05)
                 (All 4 cards drop lines down into gathering bus and join into Step 05)
             ══════════════════════════════════════════════════════════════ */}
-            <div className={`hidden lg:block absolute -top-[120px] left-0 right-0 h-[120px] pointer-events-none z-20 transition-all duration-700 ease-out ${
+            <div className={`hidden lg:block absolute -top-[140px] left-0 right-0 h-[140px] pointer-events-none z-20 transition-all duration-700 ease-out ${
               step5InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}>
               <div className="flex items-stretch gap-6 md:gap-10 h-full">
@@ -1705,7 +1697,7 @@ export default function WorkflowSection() {
                 {/* Gathering canvas matching right visual column (Pure SVG with exact flow-dash-line styling) */}
                 <div className="flex-1 relative h-full">
                   <svg className="w-full h-full absolute inset-0 overflow-visible" fill="none">
-                    {/* 4 Straight Dotted Exit Lines from the 4 evidence cards above (y=0 down to y=64) */}
+                    {/* 4 Straight Dotted Exit Lines from the 4 evidence cards above (y=0 down to y=60) */}
                     {s5ExitLinesActive && (
                       <>
                         {[
@@ -1719,7 +1711,7 @@ export default function WorkflowSection() {
                             x1={exit.x}
                             y1="0"
                             x2={exit.x}
-                            y2="64"
+                            y2="60"
                             stroke="#A8A29E"
                             strokeWidth="1"
                             className="flow-dash-line"
@@ -1731,42 +1723,41 @@ export default function WorkflowSection() {
                       </>
                     )}
 
-                    {/* Horizontal gathering bus lines converging into center at y=64 */}
+                    {/* Horizontal gathering bus lines converging into center at y=60 */}
                     {s5GatherBusActive && (
                       <line
                         x1="11.82%"
-                        y1="64"
+                        y1="60"
                         x2="88.18%"
-                        y2="64"
+                        y2="60"
                         stroke="#A8A29E"
                         strokeWidth="1"
                         className="flow-dash-line"
                         style={{
                           animation: 'busGather 0.4s ease-out forwards',
-                          transformOrigin: '50% 64px',
+                          transformOrigin: '50% 60px',
                         }}
                       />
                     )}
 
-                    {/* Central convergence node dot at y=64, left: 50% */}
+                    {/* Central convergence node dot at y=60, left: 50% */}
                     {s5ConvergenceDotActive && (
                       <g
                         className="transition-all duration-300 animate-subtle-pop"
-                        style={{ transformOrigin: '50% 64px' }}
+                        style={{ transformOrigin: '50% 60px' }}
                       >
-                        <circle cx="50%" cy="64" r="6" fill="#DC2626" opacity="0.18" className="animate-ping" style={{ animationDuration: '2.5s' }} />
-                        <circle cx="50%" cy="64" r="2.5" fill="#DC2626" />
-                        <circle cx="50%" cy="64" r="1" fill="#FAF9F5" />
+                        <circle cx="50%" cy="60" r="2.5" fill="#DC2626" />
+                        <circle cx="50%" cy="60" r="1" fill="#FAF9F5" />
                       </g>
                     )}
 
-                    {/* Vertical trunk line feeding into Step 05 (from y=64 down to y=120) */}
+                    {/* Vertical trunk line feeding into Step 05 (from y=60 down to y=140) */}
                     {s5TrunkActive && (
                       <line
                         x1="50%"
-                        y1="64"
+                        y1="60"
                         x2="50%"
-                        y2="120"
+                        y2="140"
                         stroke="#A8A29E"
                         strokeWidth="1"
                         className="flow-dash-line"

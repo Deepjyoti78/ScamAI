@@ -1,7 +1,6 @@
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import WorkflowSection from '../components/WorkflowSection';
-import RecentInvestigations from '../components/RecentInvestigations';
 import AboutSection from '../components/AboutSection';
 
 export default function HomePage() {
@@ -11,7 +10,6 @@ export default function HomePage() {
       <main className="max-w-[1200px] mx-auto border-x border-[#E0DED4] bg-[#FAF9F5]">
         <HeroSection />
         <WorkflowSection />
-        <RecentInvestigations />
         <AboutSection />
       </main>
       <footer className="bg-[#FAF9F5]">
