@@ -18,6 +18,7 @@ import {
   Briefcase,
   Coins,
   Sparkles,
+  Lock,
 } from 'lucide-react';
 
 /* ── INTERSECTION OBSERVER HOOK FOR SCROLL-DRIVEN TRIGGERING ── */
@@ -539,6 +540,42 @@ export default function WorkflowSection() {
             transform: translateY(0);
           }
         }
+        @keyframes subtlePop {
+          0% {
+            transform: scale(0.92);
+          }
+          50% {
+            transform: scale(1.18);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+        .animate-subtle-pop {
+          animation: subtlePop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes ambientDotPulse {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(20, 20, 19, 0.22);
+          }
+          50% {
+            box-shadow: 0 0 0 5px rgba(20, 20, 19, 0.08), 0 0 8px rgba(20, 20, 19, 0.16);
+          }
+        }
+        .animate-dot-glow {
+          animation: ambientDotPulse 2.4s ease-in-out infinite;
+        }
+        @keyframes ambientRedDotPulse {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.28);
+          }
+          50% {
+            box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.12), 0 0 8px rgba(220, 38, 38, 0.22);
+          }
+        }
+        .animate-red-dot-glow {
+          animation: ambientRedDotPulse 2.4s ease-in-out infinite;
+        }
       `}</style>
 
       <div className="max-w-[1140px] mx-auto">
@@ -589,7 +626,11 @@ export default function WorkflowSection() {
             }`}
           >
             {/* Timeline node dot (md+) */}
-            <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
+            <div className={`hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0 transition-all duration-300 ${
+              step1InView
+                ? 'border-[#141413] animate-subtle-pop animate-dot-glow'
+                : 'border-[#D0CDC2]'
+            }`}>
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
                 s1CardRevealed ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
@@ -647,23 +688,32 @@ export default function WorkflowSection() {
                       className="w-full h-auto max-h-[250px] scale-110 sm:scale-115 object-contain drop-shadow-[0_12px_28px_rgba(20,20,19,0.08)] mix-blend-multiply select-none pointer-events-none transition-transform duration-500"
                     />
 
-                    {/* Floating URL Pill Box with paste & typing animation */}
+                    {/* Floating URL Pill Box with paste & typing animation (Refined porcelain address bar) */}
                     <div
-                      className={`absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-[320px] bg-[#FFFFFF] border-2 rounded-none p-1.5 shadow-[0_8px_24px_rgba(20,20,19,0.14)] z-20 flex items-center gap-2 transition-all duration-500 ${
+                      className={`absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[94%] max-w-[340px] bg-white border border-[#DCD9D0] rounded-none p-1.5 shadow-[0_12px_32px_-4px_rgba(20,20,19,0.14),0_4px_12px_-2px_rgba(20,20,19,0.06),inset_0_1px_0_0_#FFFFFF] z-20 flex items-center gap-2 transition-all duration-500 ${
                         s1BoxEntered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                       } ${
-                        s1SearchClicked ? 'border-[#141413] ring-1 ring-[#141413]/20' : 'border-[#141413]'
+                        s1SearchClicked ? 'ring-1 ring-[#141413]/25 border-[#141413]/40' : 'hover:border-[#BBB8AF]'
                       }`}
                     >
-                      <LinkIcon size={13} className="flex-shrink-0 ml-1 text-[#141413]" />
-                      <div className="text-[10px] sm:text-[10.5px] font-mono text-[#141413] truncate font-semibold flex-1 flex items-center">
-                        <span>{typedUrl || <span className="text-[#99968E] font-normal italic">Paste job URL...</span>}</span>
+                      {/* Top Specular Hairline */}
+                      <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-white pointer-events-none shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
+
+                      {/* HTTPS Security Badge */}
+                      <div className="flex-shrink-0 flex items-center gap-1 px-1.5 py-0.5 bg-[#F5F4EE] border border-[#E2DFD7] text-[9px] font-mono text-[#55524B] select-none">
+                        <Lock size={9} className="text-[#15803D]" />
+                        <span className="font-semibold text-[#141413]">https://</span>
+                      </div>
+
+                      {/* URL Text with typing animation */}
+                      <div className="text-[10px] sm:text-[10.5px] font-mono text-[#141413] truncate font-medium flex-1 flex items-center">
+                        <span>{typedUrl || <span className="text-[#99968E] font-normal italic">careers-rapidtech.com/jobs...</span>}</span>
                         {step1InView && !s1SearchClicked && (
-                          <span className="w-[2px] h-3.5 bg-[#141413] ml-0.5 animate-pulse inline-block" />
+                          <span className="w-[1.5px] h-3 bg-[#141413] ml-0.5 animate-pulse inline-block" />
                         )}
                       </div>
                       
-                      {/* Search Button & Directly Anchored Arrow */}
+                      {/* Search / Inspect Button & Directly Anchored Arrow */}
                       <div className="relative flex-shrink-0">
                         <button
                           type="button"
@@ -673,14 +723,15 @@ export default function WorkflowSection() {
                             setS1ArrowVisible(true);
                             setS1CardRevealed(true);
                           }}
-                          className={`w-6 h-6 flex items-center justify-center rounded-none transition-all cursor-pointer ${
+                          className={`h-6 px-2 flex items-center gap-1 rounded-none transition-all cursor-pointer font-mono text-[10px] font-medium ${
                             s1SearchClicked
                               ? 'bg-[#141413] text-[#FAF9F5] scale-105 shadow-sm'
                               : 'bg-[#141413] text-[#FAF9F5] hover:bg-[#262523]'
                           }`}
                           title="Click to search"
                         >
-                          <Search size={11} />
+                          <Search size={10} />
+                          <span className="hidden sm:inline">Inspect</span>
                         </button>
 
                         {/* Dotted Arrow emerging directly from Search Button center towards Apply Now (Landing Page Style) */}
@@ -772,7 +823,7 @@ export default function WorkflowSection() {
             {/* Timeline node dot (md+) */}
             <div className={`hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0 transition-all duration-300 ${
               timelineProgress >= 0.22 || step2InView
-                ? 'border-[#141413] shadow-xs'
+                ? 'border-[#141413] shadow-xs animate-subtle-pop animate-dot-glow'
                 : 'border-[#D0CDC2]'
             }`}>
               <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
@@ -822,8 +873,8 @@ export default function WorkflowSection() {
                   />
 
                   {/* Node dot on the right boundary in exact vertical middle matching Section 03 style */}
-                  <div className={`hidden lg:flex absolute -right-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-30 shadow-xs transition-transform duration-300 ${
-                    s2DotActive ? 'scale-110' : ''
+                  <div className={`hidden lg:flex absolute -right-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#141413] border border-white items-center justify-center z-30 shadow-xs transition-all duration-300 ${
+                    s2DotActive ? 'scale-125 animate-subtle-pop animate-dot-glow' : ''
                   }`} />
                 </div>
 
@@ -843,6 +894,7 @@ export default function WorkflowSection() {
                           className="flow-dash-line"
                         />
                         {/* Central Junction Node Dot */}
+                        <circle cx="36" cy="138" r="5" fill="#141413" opacity="0.12" className="animate-ping" style={{ animationDuration: '2.5s' }} />
                         <circle cx="36" cy="138" r="2.5" fill="#141413" />
                         <circle cx="36" cy="138" r="1" fill="#FAF9F5" />
                       </>
@@ -955,7 +1007,11 @@ export default function WorkflowSection() {
             }`}
           >
             {/* Timeline node dot (md+) */}
-            <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
+            <div className={`hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0 transition-all duration-300 ${
+              step3InView
+                ? 'border-[#141413] animate-subtle-pop animate-dot-glow'
+                : 'border-[#D0CDC2]'
+            }`}>
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
                 s3SatellitesStep >= 4 ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
@@ -1139,10 +1195,13 @@ export default function WorkflowSection() {
                     {/* Central junction point dot where all lines meet */}
                     <g
                       className={`transition-all duration-300 ${
-                        s3JunctionActive ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                        s3JunctionActive ? 'opacity-100 scale-100 animate-subtle-pop' : 'opacity-0 scale-0'
                       }`}
                       style={{ transformOrigin: '76px 139px' }}
                     >
+                      {s3JunctionActive && (
+                        <circle cx="76" cy="139" r="6" fill="#141413" opacity="0.14" className="animate-ping" style={{ animationDuration: '2.5s' }} />
+                      )}
                       <circle cx="76" cy="139" r="3.5" fill="#141413" />
                       <circle cx="76" cy="139" r="1.2" fill="#FAF9F5" />
                     </g>
@@ -1219,10 +1278,13 @@ export default function WorkflowSection() {
                     {/* Docking dot at bottom boundary of circular brain orbit (cx=225.4, cy=231) directly vertically collinear with Web Corroboration */}
                     <g
                       className={`transition-all duration-300 ${
-                        s3BottomDotActive ? 'opacity-100 scale-125' : 'opacity-60 scale-100'
+                        s3BottomDotActive ? 'opacity-100 scale-125 animate-subtle-pop' : 'opacity-60 scale-100'
                       }`}
                       style={{ transformOrigin: '225.4px 231px' }}
                     >
+                      {s3BottomDotActive && (
+                        <circle cx="225.4" cy="231" r="5.5" fill="#141413" opacity="0.15" className="animate-ping" style={{ animationDuration: '2.5s' }} />
+                      )}
                       <circle cx="225.4" cy="231" r="2.5" fill="#141413" />
                       <circle cx="225.4" cy="231" r="1" fill="#FAF9F5" />
                     </g>
@@ -1382,9 +1444,10 @@ export default function WorkflowSection() {
                     {/* Single central junction node dot */}
                     {s4JunctionActive && (
                       <g
-                        className="transition-all duration-300 animate-scale-pop"
+                        className="transition-all duration-300 animate-subtle-pop"
                         style={{ transformOrigin: '62.73% 52px' }}
                       >
+                        <circle cx="62.73%" cy="52" r="6" fill="#141413" opacity="0.14" className="animate-ping" style={{ animationDuration: '2.5s' }} />
                         <circle cx="62.73%" cy="52" r="2.5" fill="#141413" />
                         <circle cx="62.73%" cy="52" r="1" fill="#FAF9F5" />
                       </g>
@@ -1436,7 +1499,11 @@ export default function WorkflowSection() {
               </div>
             </div>
             {/* Timeline node dot (md+) */}
-            <div className="hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border border-[#D0CDC2] bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0">
+            <div className={`hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border bg-[#FAF9F5] items-center justify-center z-10 flex-shrink-0 transition-all duration-300 ${
+              step4InView
+                ? 'border-[#141413] animate-subtle-pop animate-dot-glow'
+                : 'border-[#D0CDC2]'
+            }`}>
               <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${
                 s4CardsCount >= 4 ? 'bg-[#141413] scale-125' : 'bg-[#141413]'
               }`} />
@@ -1684,10 +1751,11 @@ export default function WorkflowSection() {
                     {/* Central convergence node dot at y=64, left: 50% */}
                     {s5ConvergenceDotActive && (
                       <g
-                        className="transition-all duration-300 animate-scale-pop"
+                        className="transition-all duration-300 animate-subtle-pop"
                         style={{ transformOrigin: '50% 64px' }}
                       >
-                        <circle cx="50%" cy="64" r="2.5" fill="#141413" />
+                        <circle cx="50%" cy="64" r="6" fill="#DC2626" opacity="0.18" className="animate-ping" style={{ animationDuration: '2.5s' }} />
+                        <circle cx="50%" cy="64" r="2.5" fill="#DC2626" />
                         <circle cx="50%" cy="64" r="1" fill="#FAF9F5" />
                       </g>
                     )}
@@ -1713,10 +1781,10 @@ export default function WorkflowSection() {
             </div>
             {/* Timeline node dot (md+) */}
             <div className={`hidden md:flex absolute left-0 top-[24px] w-5 h-5 -translate-x-[0px] rounded-full border items-center justify-center z-10 flex-shrink-0 transition-all duration-300 ${
-              step5InView ? 'border-[#F4B2A8] bg-[#FEECE8]' : 'border-[#D0CDC2] bg-[#FAF9F5]'
+              step5InView ? 'border-[#DC2626] bg-[#FAF9F6] animate-subtle-pop animate-red-dot-glow' : 'border-[#D0CDC2] bg-[#FAF9F5]'
             }`}>
               <span className={`w-2 h-2 rounded-full transition-colors ${
-                step5InView ? 'bg-[#DC2626]' : 'bg-[#99968E]'
+                step5InView ? 'bg-[#DC2626] scale-110' : 'bg-[#99968E]'
               }`} />
             </div>
 
@@ -1735,46 +1803,45 @@ export default function WorkflowSection() {
               </p>
             </div>
 
-            {/* Step Right Visual Card: Warm Rose-Porcelain Verdict Card (Generated from convergence junction) */}
-            <div className={`flex-1 bg-gradient-to-b from-[#FFF2F0] via-[#FEECE8] to-[#FDE4E0] border rounded-none p-5 sm:p-7 border-[#DC2626] ring-1 ring-[#DC2626]/20 relative overflow-hidden transition-all duration-700 ease-out ${
+            {/* Step Right Visual Card: Warm Porcelain Editorial Verdict Card (Generated from convergence junction) */}
+            <div className={`flex-1 bg-[#FAF9F6] border border-[#E2DFD7] rounded-none p-5 sm:p-7 shadow-[0_12px_36px_-6px_rgba(20,20,19,0.08),0_4px_12px_-2px_rgba(20,20,19,0.04),inset_0_1px_0_0_#FFFFFF] relative overflow-hidden transition-all duration-700 ease-out ${
               s5CardRevealed
-                ? 'opacity-100 translate-y-0 scale-100 shadow-[0_8px_30px_rgba(220,38,38,0.12),inset_0_1px_0_0_#FFFFFF]'
+                ? 'opacity-100 translate-y-0 scale-100'
                 : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
             }`}>
               {/* Receiver node dot where gathering trunk plugs into Section 05 */}
               <span className={`hidden lg:block absolute -top-[4px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#141413] border border-white shadow-xs z-20 transition-all duration-300 ${
-                s5CardRevealed ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+                s5CardRevealed ? 'scale-100 opacity-100 animate-subtle-pop animate-dot-glow' : 'scale-0 opacity-0'
               }`} />
 
               {/* Elevated specular highlight line */}
               <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-white pointer-events-none z-10 shadow-[0_1px_2px_rgba(255,255,255,0.9)]" />
 
               {/* 3-Column Metric Header Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-4 border-b border-[#F4B2A8]/60">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pb-5 border-b border-[#E8E6DE]">
                 {/* Col 1: Assessment */}
                 <div>
-                  <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider text-[#991B1B]">
+                  <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider text-[#625F58]">
                     ASSESSMENT
                   </span>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className={`w-5 h-5 rounded-none bg-[#DC2626] text-white flex items-center justify-center flex-shrink-0 transition-transform duration-300 ${
-                      s5CardRevealed ? 'scale-110 shadow-sm' : ''
-                    }`}>
-                      <ShieldAlert size={12} strokeWidth={2.2} />
-                    </div>
-                    <span className="text-[20px] sm:text-[22px] font-serif font-bold text-[#7F1D1D] leading-tight">
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className="text-[22px] sm:text-[25px] font-serif font-bold text-[#141413] leading-tight">
                       High Risk
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none bg-[#FEECE8] border border-[#F6C6BF] text-[#DC2626] text-[10px] font-mono font-semibold">
+                      <ShieldAlert size={11} strokeWidth={2.5} />
+                      CRITICAL
                     </span>
                   </div>
                 </div>
 
-                {/* Col 2: Model Score with Live Counting Animation */}
-                <div className="sm:border-l sm:border-[#F4B2A8]/60 sm:pl-4">
-                  <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider text-[#991B1B]">
-                    MODEL SCORE
+                {/* Col 2: Model Score with Live Counting Animation & Sleek Meter */}
+                <div className="sm:border-l sm:border-[#E8E6DE] sm:pl-5">
+                  <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider text-[#625F58]">
+                    MODEL CONFIDENCE
                   </span>
                   <div className="flex items-baseline gap-1 mt-1 font-mono">
-                    <span className={`text-[22px] sm:text-[25px] font-bold leading-none transition-colors duration-300 ${
+                    <span className={`text-[24px] sm:text-[28px] font-bold leading-none transition-colors duration-300 ${
                       s5Score >= 80 ? 'text-[#DC2626]' : 'text-[#141413]'
                     }`}>
                       {s5Score}
@@ -1783,39 +1850,53 @@ export default function WorkflowSection() {
                       /100
                     </span>
                   </div>
+                  {/* Minimal hairline risk meter */}
+                  <div className="w-full h-1.5 bg-[#EAE7DF] rounded-none mt-2 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#DC2626] to-[#B91C1C] transition-all duration-500 ease-out"
+                      style={{ width: `${s5Score}%` }}
+                    />
+                  </div>
                 </div>
 
                 {/* Col 3: Key Risk Factors */}
-                <div className="sm:border-l sm:border-[#F4B2A8]/60 sm:pl-4">
-                  <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider text-[#991B1B]">
+                <div className="sm:border-l sm:border-[#E8E6DE] sm:pl-5">
+                  <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider text-[#625F58]">
                     TOP RISK FACTORS
                   </span>
-                  <ul className="mt-1 space-y-0.5 text-[11px] text-[#7F1D1D] font-medium leading-tight">
-                    <li className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-[#DC2626] rounded-none flex-shrink-0" />
-                      Domain mismatch
+                  <ul className="mt-1.5 space-y-1 text-[11px] text-[#141413] font-medium leading-tight">
+                    <li className="flex items-center justify-between gap-1.5">
+                      <span className="flex items-center gap-1.5 truncate">
+                        <span className="w-1.5 h-1.5 bg-[#DC2626] rounded-none flex-shrink-0" />
+                        Domain mismatch
+                      </span>
+                      <span className="text-[9.5px] font-mono text-[#77746C] flex-shrink-0">High</span>
                     </li>
-                    <li className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-[#DC2626] rounded-none flex-shrink-0" />
-                      Upfront registration fee
+                    <li className="flex items-center justify-between gap-1.5">
+                      <span className="flex items-center gap-1.5 truncate">
+                        <span className="w-1.5 h-1.5 bg-[#DC2626] rounded-none flex-shrink-0" />
+                        Upfront registration fee
+                      </span>
+                      <span className="text-[9.5px] font-mono text-[#DC2626] font-semibold flex-shrink-0">Critical</span>
                     </li>
-                    <li className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-[#DC2626] rounded-none flex-shrink-0" />
-                      Unverified employer
+                    <li className="flex items-center justify-between gap-1.5">
+                      <span className="flex items-center gap-1.5 truncate">
+                        <span className="w-1.5 h-1.5 bg-[#D97706] rounded-none flex-shrink-0" />
+                        Unverified employer
+                      </span>
+                      <span className="text-[9.5px] font-mono text-[#77746C] flex-shrink-0">Review</span>
                     </li>
                   </ul>
                 </div>
               </div>
 
-              {/* Explanatory Body */}
-              <div className="pt-4 pb-4">
-                <p className="text-[12px] sm:text-[12.5px] text-[#7F1D1D] leading-relaxed font-normal">
-                  <strong className="font-semibold text-[#661010]">Likely a recruitment scam.</strong> The posting shows multiple warning signs, including a mismatched company domain, a request for an upfront fee, and an unverified employer.
-                </p>
+              {/* Explanatory Body in clean editorial callout */}
+              <div className="my-4 p-3.5 bg-[#F5F4EE] border-l-2 border-[#DC2626] text-[12px] sm:text-[12.5px] text-[#3E3D38] leading-relaxed">
+                <strong className="font-semibold text-[#141413]">Likely a recruitment scam.</strong> The posting exhibits multiple severe inconsistencies: an unverified personal email domain used in lieu of corporate domain, upfront fee solicitation, and zero verified hiring records.
               </div>
 
               {/* Action row with Open detailed report button */}
-              <div className="pt-3 border-t border-[#F4B2A8]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="pt-3 border-t border-[#E8E6DE] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={() => navigate('/investigate')}
@@ -1827,7 +1908,8 @@ export default function WorkflowSection() {
                 </button>
 
                 <div className="flex items-center gap-1.5 text-[10.5px] text-[#77746C] font-mono">
-                  <span>Illustrative analysis demo data</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
+                  <span>Multi-pillar synthesis complete</span>
                 </div>
               </div>
 
